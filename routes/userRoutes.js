@@ -1,5 +1,5 @@
 const router  = require('express').Router();
-const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode }  = require('../api/user.api');
+const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode,addwishListToItem }  = require('../api/user.api');
 const jsonwebtoken = require('jsonwebtoken');
 //add user
 router.post('/add', (req, res) => {
@@ -9,9 +9,9 @@ router.post('/add', (req, res) => {
             _id:newUser._id,
             name :newUser.name,
             email : newUser.email,
-            gender : newUser.gender,
             type : newUser.type,
-            phoneNumber :newUser.phoneNumber
+            phoneNumber :newUser.phoneNumber,
+            wishList:newUser.wishList
         },"jwtSecret")
         res.json(token);
 
@@ -49,9 +49,9 @@ router.post('/getUser',(req,res)=>{
             _id:user._id,
             name :user.name,
             email : user.email,
-            gender : user.gender,
             type : user.type,
             phoneNumber :user.phoneNumber,
+            wishList:newUser.wishList
         },"jwtSecret")
         const password = user.password;
         console.log('in router get');
@@ -85,9 +85,9 @@ router.post('/update/:id', (req, res) => {
                 _id:user._id,
                 name :user.name,
                 email : user.email,
-                gender : user.gender,
                 type : user.type,
-                phoneNumber :user.phoneNumber
+                phoneNumber :user.phoneNumber,
+                wishList:newUser.wishList
             },"jwtSecret")
             res.json(
                 {token}
@@ -115,5 +115,10 @@ router.post('/getCode',(req,res)=>{
 
 // })
 
+router.post('/addwishlist/:id', (req, res) => {
+    addwishListToItem(req.params.id,req.body.wishList).then((user) => {
+        res.json(user);
+    })
+})
 
 module.exports = router;

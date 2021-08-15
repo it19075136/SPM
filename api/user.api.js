@@ -164,7 +164,27 @@ var nodemailer = require('nodemailer');
 
    })
   }
-
+  function addwishListToItem(id,wishList) {
+    return new Promise((resolve, reject) => {
+      User.findById(id)
+        .then((user) => {
+          user.wishList = [...wishList]
+          user
+          .save()
+          .then((user) => {
+           console.log('in then');
+            resolve(user);
+          })
+          .catch((err) => {
+           console.log('err');
+            reject(err);
+          });
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
  module.exports = {
    createuser,
    getAllUsers,
@@ -172,5 +192,6 @@ var nodemailer = require('nodemailer');
    deleteUserById,
    updateUserById,
    getUsetByEmailAndPassword,
-   getEmailAndPassCode
+   getEmailAndPassCode,
+   addwishListToItem
  };
