@@ -39,8 +39,9 @@ const sparePartsSchema = new Schema({
         type: Array,
         required: true
     },
-    publishDate: {
-        
+    status: {
+        type: String,
+        default: 'pending'
     }
 },{
     timestamps: true
