@@ -3,7 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/userRoutes');
-const documentRouter = require('./routes/documentRoutes');
+const vehicleRouter = require('./routes/vehicleRoutes');
+// const documentRouter = require('./routes/documentRoutes');
 
 mongoose.connect(process.env.DB_KEY||'&w=majority', {
     useNewUrlParser: true,
@@ -23,6 +24,8 @@ app.use(cors());
 
 app.use('/user', userRouter);//user routes
 
-app.use('/document',documentRouter); //document routes
+app.use('/vehicle', vehicleRouter);//user routes
+
+// app.use('/document',documentRouter); //document routes
 
 module.exports = app;
