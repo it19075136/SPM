@@ -27,7 +27,7 @@ const sparePartsSchema = new Schema({
     negotiable:{ 
         type: Boolean
     },
-    imageUrl:{
+    imageUrls:{
         type: Array,
         required: true
     },
