@@ -8,7 +8,7 @@ function addSparePartAd(payload) {
         spareParts.save().then((sparepart) => {
             resolve(newSparePart);
         }).catch((err) => {
-            reject(err);
+            resolve(err);
         })
 
     })
@@ -20,7 +20,7 @@ function getAllSparePartsAds() {
         spareParts.find().then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            reject(err);
+            resolve(err);
         })
     })
 }
@@ -31,7 +31,7 @@ function getSparePartById(id) {
         spareParts.findById(id).then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            reject(err)
+            resolve(err)
         });
     });
 }
@@ -42,7 +42,7 @@ function updateSparePartById(id, payload) {
         spareParts.findByIdAndUpdate(id, {$set: payload}).then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            reject(err);
+            resolve(err);
         });
     })
 }
@@ -53,7 +53,9 @@ function deleteSparepartsById(id){
         spareParts.findByIdAndRemove(id).then(() => {
             resolve("Successfully deleted!");
         }).catch((err) => {
-            reject(err);
+            resolve(err);
         })
     })
 }
+
+module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById }
