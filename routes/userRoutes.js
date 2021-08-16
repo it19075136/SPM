@@ -73,8 +73,6 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/update/:id', (req, res) => {
-
-
     req.body._id = req.params.id;
  console.log('in router post')
  console.log(req.body)
