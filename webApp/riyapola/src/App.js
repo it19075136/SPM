@@ -8,6 +8,7 @@ function App() {
         <Route exact path='/vehicleAd/create'>
           Hello add form
         </Route>
+        {/* Add components */}
       </Switch>
     </BrowserRouter>
   );
