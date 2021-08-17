@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Checkbox, Form } from 'semantic-ui-react'
 
 const signin = () => (
-  <Form>
+  <Form className='form-centered'>
     <Form.Field>
       <label>Email</label>
       <input placeholder='Email' />
