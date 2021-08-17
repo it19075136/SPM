@@ -1,68 +1,67 @@
-import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Segment, Divider, Header } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid } from 'semantic-ui-react'
 
-const vehicleMakeOptions = [
-    { key: 't', text: 'Toyota', value: 'toyota' },
-    { key: 's', text: 'Suzuki', value: 'suzuki' },
-    { key: 'h', text: 'Honda', value: 'honda' },
+const partTypeOption = [
+    { key: 'b', text: 'Body Components', value: 'components' },
+    { key: 'a', text: 'Car Audio Systems', value: 'audio' },
+    { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
 ]
 
-const vehicleModelOptions = [
-    { key: 'ax', text: 'Axio', value: 'axio' },
-    { key: 'al', text: 'Allion', value: 'allion' },
-    { key: 'v', text: 'Vitz', value: 'vitz' },
-]
+export default class sparePartAdForm extends Component {
+    state = {}
+    handleChange = (e, { value }) => this.setState({ value })
 
-const vehicleBodyOptions = [
-    { key: 'h', text: 'Hatchback', value: 'hatchback' },
-    { key: 's', text: 'Sedan', value: 'sedan' },
-    { key: 'c', text: 'Coupe', value: 'coupe' },
-]
-
-const transmissionOptions = [
-    { key: 'a', text: 'Automatic', value: 'automatic' },
-    { key: 'm', text: 'Manual', value: 'manual' },
-    { key: 't', text: 'Triptonic', value: 'triptonic' },
-]
-
-const fuelOptions = [
-    { key: 'p', text: 'Petrol', value: 'petrol' },
-    { key: 'd', text: 'Diesel', value: 'diesel' },
-    { key: 'h', text: 'Hybrid', value: 'hybrid' },
-]
-
-const phoneOptions = [
-    { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
-]
-
-export default class vehicleAdForm extends Component {
     render() {
+        const { value } = this.state
         return (
-            <Form className='form-centered'>
-                    <Form.Field required
-                        width='16'
-                        id='advertisementTitle'
-                        control={Input}
-                        label='Advertisement Title'
-                        placeholder='Add an advertisement title'
-                        error={{
-                            content: 'Please enter a valid title',
-                            pointing: 'below',
-                        }}
-                    />
+
+            <Form className="form-centered" width="10">
+                <Header as='h2' color='blue' textAlign='center'>
+                    Add Spare Parts Form
+                </Header>
+                <Segment raised>
+                    <Form.Group inline>
+                        <label>Category</label>
+                        <Form.Field
+                            control={Radio}
+                            label='Used'
+                            value='1'
+                            checked={value === '1'}
+                            onChange={this.handleChange}
+                        />
+                        <Form.Field
+                            control={Radio}
+                            label='New'
+                            value='2'
+                            checked={value === '2'}
+                            onChange={this.handleChange}
+                        />
+                        <Form.Field
+                            control={Radio}
+                            label='Recondition'
+                            value='3'
+                            checked={value === '3'}
+                            onChange={this.handleChange}
+                        />
+                    </Form.Group>
                     <Form.Field required
                         width='16'
                         control={Select}
-                        options={vehicleMakeOptions}
-                        label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
-                        placeholder='Vehicle Make'
+                        option={partTypeOption}
+                        label={{ children: 'Vehicle Make', htmlFor: 'part' }}
+                        placeholder='Part or Accessory Type'
                         search
                         searchInput={{ id: 'vehicleMake' }}
                     />
+                    <Form.Field>
+                        <label>Advertisement Title</label>
+                        <input placeholder='Title Name' />
+                    </Form.Field>
+                    
+                    
                     <Form.Field required
                         width='16'
                         control={Select}
-                        options={vehicleModelOptions}
                         label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
                         placeholder='Vehicle Model'
                         search
@@ -71,7 +70,6 @@ export default class vehicleAdForm extends Component {
                     <Form.Field required
                         width='16'
                         control={Select}
-                        options={vehicleMakeOptions}
                         label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                         placeholder='Vehicle Make'
                         search
@@ -80,7 +78,6 @@ export default class vehicleAdForm extends Component {
                     <Form.Field required
                         width='16'
                         control={Select}
-                        options={vehicleBodyOptions}
                         label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
                         placeholder='Vehicle Body Type'
                         search
@@ -89,7 +86,6 @@ export default class vehicleAdForm extends Component {
                     <Form.Field required
                         width='16'
                         control={Select}
-                        options={transmissionOptions}
                         label={{ children: 'Transmission', htmlFor: 'transmission' }}
                         placeholder='Transmission'
                         search
@@ -105,7 +101,6 @@ export default class vehicleAdForm extends Component {
                         />
                         <Form.Field required
                             control={Select}
-                            options={fuelOptions}
                             label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
                             placeholder='Fuel Type'
                             search
@@ -156,7 +151,6 @@ export default class vehicleAdForm extends Component {
                         <Form.Field required
                             id='phoneCode'
                             control={Select}
-                            options={phoneOptions}
                             label='Code'
                             placeholder='Code'
                         />
@@ -178,6 +172,7 @@ export default class vehicleAdForm extends Component {
                         control={Button}
                         content='Post Ad'
                     />
+                </Segment>
             </Form>
         )
     }

@@ -5,6 +5,7 @@ import NavBar from './layouts/navbar';
 import Footer from './layouts/footer';
 import signup from './components/signup';
 import signin from './components/signin';
+import sparePartAdForm from './components/sparePartsAdForm';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
         <Route exact path='/signup' component={signup} />
         <Route exact path='/signin' component={signin} />
+        <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
         {/* Add components */}
       </Switch>
       <Footer/>

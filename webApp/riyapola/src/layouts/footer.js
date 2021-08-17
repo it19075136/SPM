@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Divider, Grid, Header, Image, List, Segment } from 'semantic-ui-react';
+import './style.css';
 
 export default class footer extends Component {
     render() {
         return (
-                <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em'}}>
+            <div>
+                <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '5em 0em' }} className="footer">
                     <Container textAlign='center'>
                         <Grid divided inverted stackable>
                             <Grid.Column width={3}>
@@ -43,7 +45,7 @@ export default class footer extends Component {
                         </Grid>
 
                         <Divider inverted section />
-                        <Image centered size='mini' src='/logo.png' />
+                        <Image centered size='small' src='./images/logo-white.png' />
                         <List horizontal inverted divided link size='small'>
                             <List.Item as='a' href='#'>
                                 Site Map
@@ -60,6 +62,8 @@ export default class footer extends Component {
                         </List>
                     </Container>
                 </Segment>
+            </div>
+
         )
     }
 }

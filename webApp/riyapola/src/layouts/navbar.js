@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Menu} from 'semantic-ui-react';
-import './navbar.css';
+import './style.css';
 
 export default class navbar extends Component {
     state = {}
@@ -10,10 +10,10 @@ export default class navbar extends Component {
     render() {
         const { activeItem } = this.state
         return (
-            <div >
-                <Menu stackable className="navbar">
+            <div>
+                <Menu stackable className="navbar" inverted >
                     <Menu.Item className="item">
-                        <img src="/images/logo-white.png" style={{width:'80px'}} />
+                        <img src="/images/logo-white.png" style={{width:'70px'}} />
                     </Menu.Item>
 
                     <Menu.Item
