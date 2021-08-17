@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Checkbox, Form } from 'semantic-ui-react'
 
 const signup = () => (
-  <Form>
+  <Form >
     <Form.Field>
       <label>Name</label>
       <input placeholder='Name' />
@@ -23,7 +23,7 @@ const signup = () => (
       <label>Re Enter Password</label>
       <input placeholder='Re Enter Password' />
     </Form.Field>
-    <Form.Field>
+    <Form.Field >
       <Checkbox label='I agree to the Terms and Conditions' />
     </Form.Field>
     <Button type='submit'>Signup</Button>
