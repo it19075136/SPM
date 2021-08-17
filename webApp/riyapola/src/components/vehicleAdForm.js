@@ -39,7 +39,6 @@ export default class vehicleAdForm extends Component {
     render() {
         return (
             <Form className='form-centered'>
-                <Segment raised>
                     <Form.Field required
                         width='16'
                         id='advertisementTitle'
@@ -179,7 +178,6 @@ export default class vehicleAdForm extends Component {
                         control={Button}
                         content='Post Ad'
                     />
-                </Segment>
             </Form>
         )
     }
