@@ -277,7 +277,7 @@ export default class vehicleAdForm extends Component {
                             console.log(this.state)
                         })}
                     />
-                    <Input
+                    <Form.Field
                         action={{
                             color: 'blue',
                             labelPosition: 'right',
