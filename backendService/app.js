@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/userRoutes');
 const vehicleRouter = require('./routes/vehicleRoutes');
+const categoryRouter = require('./routes/categoryRoutes');
 // const documentRouter = require('./routes/documentRoutes');
 
 mongoose.connect(process.env.DB_KEY||'&w=majority', {
@@ -25,6 +26,8 @@ app.use(cors());
 app.use('/user', userRouter);//user routes
 
 app.use('/vehicle', vehicleRouter);//user routes
+
+app.use('/category', categoryRouter);//category routes
 
 // app.use('/document',documentRouter); //document routes
 
