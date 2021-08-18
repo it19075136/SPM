@@ -52,6 +52,7 @@ function deleteCategoryById(id){
             resolve(err);
         })
     })
+    
 }
 
 
