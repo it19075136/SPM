@@ -47,3 +47,10 @@
   margin: 50px 30% 150px 20%;
   padding: 10px;
 }
+
+.image-item{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
