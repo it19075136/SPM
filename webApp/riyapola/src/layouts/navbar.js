@@ -11,7 +11,7 @@ export default class navbar extends Component {
         const { activeItem } = this.state
         return (
             <div>
-                <Menu stackable className="navbar" inverted >
+                <Menu stackable className="navbar" inverted>
                     <Menu.Item className="item">
                         <img src="/images/logo-white.png" style={{width:'70px'}} />
                     </Menu.Item>
