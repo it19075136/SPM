@@ -1,5 +1,15 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, FeedDate } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header } from 'semantic-ui-react'
+
+const categoryOptions = [
+    { key: 'c', text: 'Car', value: 'car' },
+    { key: 's', text: 'SUV', value: 'suv' },
+    { key: 'v', text: 'Van', value: 'van' },
+    { key: 'b', text: 'Bus', value: 'bus' },
+    { key: 'l', text: 'Lorry', value: 'lorry' },
+    { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
+    { key: 'o', text: 'Other', value: 'othe' },
+]
 
 const vehicleMakeOptions = [
     { key: 't', text: 'Toyota', value: 'toyota' },
@@ -29,6 +39,7 @@ const fuelOptions = [
     { key: 'p', text: 'Petrol', value: 'petrol' },
     { key: 'd', text: 'Diesel', value: 'diesel' },
     { key: 'h', text: 'Hybrid', value: 'hybrid' },
+    { key: 'e', text: 'Electric', value: 'electric' },
 ]
 
 const phoneOptions = [
@@ -58,29 +69,32 @@ const validateFields = (e) => {
 export default class vehicleAdForm extends Component {
 
     state = {
-        title : '',
-        description : '',
-        status : '',
-        year : null,
-        make : '',
-        model : '',
-        category : '',
-        bodyType: '',
-        transmission: '',
-        condition : '',
-        engineCapacity: null,
-        fuelType: '',
-        mileage: null,    
-        price: null,
-        negotiable:false,
-        imageUrls:[],
-        userId:null,
-        contactNumbers: []
+        payload: {
+            title: '',
+            description: '',
+            status: 'pending',
+            year: null,
+            make: '',
+            model: '',
+            category: '',
+            bodyType: '',
+            transmission: '',
+            condition: '',
+            engineCapacity: null,
+            fuelType: '',
+            mileage: null,
+            price: null,
+            negotiable: false,
+            imageUrls: [],
+            userId: null,
+            contactNumbers: []
+        },
+        code: ''
     }
 
     handleChange = (e) => {
         console.log(e.target.option);
-        this.setState({ [e.target.name]: e.target.value },() => {
+        this.setState({...this.state, payload: {...this.state.payload,[e.target.name]: e.target.value }}, () => {
             console.log(this.state);
         });
     }
@@ -92,7 +106,7 @@ export default class vehicleAdForm extends Component {
     render() {
 
         return (
-            <Form className='form-centered'>
+            <Form className='form-centered' onSubmit={this.handleSubmit}>
                 <Form.Field required
                     width='16'
                     id='title'
@@ -102,19 +116,22 @@ export default class vehicleAdForm extends Component {
                     placeholder='Add an advertisement title'
                     onChange={this.handleChange}
                 />
-                                <Form.Field required
-                                    name="category"
+                <Form.Field required
+                    id='category'
+                    name="category"
                     width='16'
                     control={Select}
-                    options={vehicleMakeOptions} // get categories
+                    options={categoryOptions} // get categories
                     label={{ children: 'Category', htmlFor: 'category' }}
                     placeholder='Vehicle Category'
                     search
                     searchInput={{ id: 'category' }}
-                    onChange={this.handleChange}
+                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
-                                    name="make"
+                    name="make"
                     width='16'
                     control={Select}
                     options={vehicleMakeOptions}
@@ -122,10 +139,12 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Make'
                     search
                     searchInput={{ id: 'vehicleMake' }}
-                    onChange={this.handleChange}
+                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
-                                    name="model"
+                    name="model"
                     width='16'
                     control={Select}
                     options={vehicleModelOptions}
@@ -133,7 +152,9 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Model'
                     search
                     searchInput={{ id: 'vehicleModel' }}
-                    onChange={this.handleChange}
+                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
                     name='year'
@@ -146,7 +167,7 @@ export default class vehicleAdForm extends Component {
                     searchInput={{ id: 'date' }}
                 />
                 <Form.Field required
-                    name= 'bodyType'
+                    name='bodyType'
                     width='16'
                     control={Select}
                     options={vehicleBodyOptions}
@@ -154,7 +175,9 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Body Type'
                     search
                     searchInput={{ id: 'bodyType' }}
-                    onChange={this.handleChange}
+                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
                     name='transmission'
@@ -165,7 +188,9 @@ export default class vehicleAdForm extends Component {
                     placeholder='Transmission'
                     search
                     searchInput={{ id: 'transmission' }}
-                    onChange={this.handleChange}
+                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Group>
                     <Form.Field required
@@ -175,6 +200,7 @@ export default class vehicleAdForm extends Component {
                         control={Input}
                         label='Engine capacity'
                         placeholder='Engine capacity(cc)'
+                        onChange={this.handleChange}
                     />
                     <Form.Field required
                         name='fuelType'
@@ -184,10 +210,12 @@ export default class vehicleAdForm extends Component {
                         placeholder='Fuel Type'
                         search
                         searchInput={{ id: 'fuelType' }}
-                        onChange={this.handleChange}
+                        onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                            console.log(this.state)
+                        })}
                     />
                 </Form.Group>
-                <Form.Field
+                <Form.Field required
                     name='description'
                     width='16'
                     id='description'
@@ -245,23 +273,33 @@ export default class vehicleAdForm extends Component {
                         options={phoneOptions}
                         label='Code'
                         placeholder='Code'
+                        onChange={(e) => this.setState({ ...this.state, code: e.target.innerText }, () => {
+                            console.log(this.state)
+                        })}
                     />
-                    <Form.Field
+                    <Input
+                        action={{
+                            color: 'blue',
+                            labelPosition: 'right',
+                            icon: 'add',
+                            content: 'Add',
+                            onclick: (e) => this.setState({ ...this.state, payload: {...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers,this.state.code ? this.state.code + '-' + e.target.innerText: e.target.innerText ]}})
+                        }                        
+                        }
                         id='phone'
                         name='phone'
                         control={Input}
                         label='Phone number'
                         placeholder='77-xxxxxxx'
-                        onChange={this.handleChange}
                     />
+                    <ul>
+                        {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
+                            <li>{contact}</li>
+                        }):null}
+                    </ul>
                 </Form.Group>
                 <Form.Field
-                    id='add'
-                    control={Button}
-                    content='Add'
-                />
-                <Form.Field
-                    className='form-submit-btn'
+                    primary
                     id='submit'
                     control={Button}
                     content='Post Ad'
