@@ -97,7 +97,7 @@ export default class sparePartAdForm extends Component {
                 <Divider horizontal>
                     <Header as='h4'>
                         <Icon name='volume control phone' circular />
-                        Contact
+                        Contact Details
                     </Header>
                 </Divider>
 
@@ -111,21 +111,25 @@ export default class sparePartAdForm extends Component {
                     />
                     <Form.Field required >
                         <Input
-                        action={{
-                            color: 'blue',
-                            labelPosition: 'right',
-                            icon: 'plus',
-                            content: 'Add',
-                        }}
-                        actionPosition='right'
-                        placeholder='77-xxxxxxxx'
+                            style={{ top: '23px' }}
+                            action={{
+                                color: 'blue',
+                                labelPosition: 'right',
+                                icon: 'plus',
+                                content: 'Add',
+                            }}
+                            label='Phone Number'
+                            actionPosition='right'
+                            placeholder='77-xxxxxxxx'
                         />
                     </Form.Field>
-                    
-         
-                    
                 </Form.Group>
-
+                <Form.Field
+                    primary
+                    id='submit'
+                    control={Button}
+                    content='Post Ad'
+                />
 
             </Form>
         )
