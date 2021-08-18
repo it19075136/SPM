@@ -7,6 +7,10 @@ const partTypeOption = [
     { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
 ]
 
+const phoneOptions = [
+    { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
+]
+
 export default class sparePartAdForm extends Component {
     state = {}
     handleChange = (e, { value }) => this.setState({ value })
@@ -85,118 +89,44 @@ export default class sparePartAdForm extends Component {
 
                 <Divider horizontal>
                     <Header as='h4'>
-                        <Icon name='photo' />
+                        <Icon name='photo' circular />
                         Photos
                     </Header>
                 </Divider>
 
-                <Form.Field required
-                    width='16'
-                    control={Select}
-                    label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
-                    placeholder='Vehicle Model'
-                    search
-                    searchInput={{ id: 'vehicleModel' }}
-                />
+                <Divider horizontal>
+                    <Header as='h4'>
+                        <Icon name='volume control phone' circular />
+                        Contact
+                    </Header>
+                </Divider>
 
-                <Form.Field required
-                    width='16'
-                    control={Select}
-                    label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
-                    placeholder='Vehicle Make'
-                    search
-                    searchInput={{ id: 'vehicleMake' }}
-                />
-
-                <Form.Field required
-                    width='16'
-                    control={Select}
-                    label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
-                    placeholder='Vehicle Body Type'
-                    search
-                    searchInput={{ id: 'bodyType' }}
-                />
-
-                <Form.Field required
-                    width='16'
-                    control={Select}
-                    label={{ children: 'Transmission', htmlFor: 'transmission' }}
-                    placeholder='Transmission'
-                    search
-                    searchInput={{ id: 'transmission' }}
-                />
-                
-                <Form.Group>
-                    <Form.Field required
-                        id='engineCapacity'
-                        type='number'
-                        control={Input}
-                        label='Engine capacity'
-                        placeholder='Engine capacity(cc)'
-                    />
-                    <Form.Field required
-                        control={Select}
-                        label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
-                        placeholder='Fuel Type'
-                        search
-                        searchInput={{ id: 'fuelType' }}
-                    />
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Field required
-                        id='mileage'
-                        type='number'
-                        control={Input}
-                        label='Mileage'
-                        placeholder='Mileage(Kms)'
-                    />
-                    <Form.Field
-                        id='price'
-                        type='number'
-                        control={Input}
-                        label='Price'
-                        placeholder='Price(Kms)'
-                    />
-                </Form.Group>
-                <Form.Group inline>
-                    <Form.Radio
-                        label='Registered'
-                        value='registered'
-                    />
-                    <Form.Radio
-                        label='Unregistered'
-                        value='unregistered'
-                    />
-                    <Form.Checkbox label='Negotiable' />
-                </Form.Group>
-                <Divider section />
-                <Header as='h3'>Contact Details</Header>
                 <Form.Group>
                     <Form.Field required
                         id='phoneCode'
                         control={Select}
+                        options={phoneOptions}
                         label='Code'
                         placeholder='Code'
                     />
-                    <Form.Field
-                        id='phone'
-                        control={Input}
-                        label='Phone number'
-                        placeholder='77-xxxxxxx'
-                    />
+                    <Form.Field required >
+                        <Input
+                        action={{
+                            color: 'blue',
+                            labelPosition: 'right',
+                            icon: 'plus',
+                            content: 'Add',
+                        }}
+                        actionPosition='right'
+                        placeholder='77-xxxxxxxx'
+                        />
+                    </Form.Field>
+                    
+         
+                    
                 </Form.Group>
-                <Form.Field
-                    id='add'
-                    control={Button}
-                    content='Add'
-                />
-                <Form.Field
-                    className='form-submit-btn'
-                    id='submit'
-                    control={Button}
-                    content='Post Ad'
-                />
+
+
             </Form>
         )
     }
