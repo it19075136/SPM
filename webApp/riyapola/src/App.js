@@ -15,7 +15,6 @@ function App() {
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
         <Route exact path='/signup' component={signup} />
         <Route exact path='/signin' component={signin} />
-        
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
         {/* Add components */}
       </Switch>
