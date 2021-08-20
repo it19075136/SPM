@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const sparePartsSchema = new Schema({
     condition: {
         type: String,
-        required: true,
-        default: 'New'
+        required: true
     },
     category: {
         type: String,
@@ -27,7 +26,7 @@ const sparePartsSchema = new Schema({
     negotiable:{ 
         type: Boolean
     },
-    imageUrls:{
+    images:{
         type: Array,
         required: true
     },
@@ -45,7 +44,7 @@ const sparePartsSchema = new Schema({
     },
     status: {
         type: String,
-        default: 'pending'
+        required: true
     }
 },{
     timestamps: true
