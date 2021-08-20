@@ -28,12 +28,23 @@ function getAllVehicleAds() {
 //updateVehicleAdById() function
 function updateVehicleAdById(id, payload) {
     return new Promise((resolve, reject) => {
-        Vehcile.findByIdAndUpdate(id, {$set: payload}).then((docs) => {
-            resolve(docs);
+        Vehcile.findByIdAndUpdate(id, {$set: payload}).then((doc) => {
+            resolve(doc);
         }).catch((err) => {
             resolve(err);
         });
     })
 }
 
-module.exports = { addVehicleAd,getAllVehicleAds,updateVehicleAdById }
+//getVehicleAdById() function
+function getVehicleAdById(id) {
+    return new Promise((resolve, reject) => {
+        Vehcile.findById(id).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            resolve(err);
+        });
+    })
+}
+
+module.exports = { addVehicleAd,getAllVehicleAds,updateVehicleAdById, getVehicleAdById }

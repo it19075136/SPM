@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 
 const categoryOptions = [
@@ -11,6 +11,17 @@ const categoryOptions = [
     { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
     { key: 'o', text: 'Other', value: 'othe' },
 ]
+
+const locationOptions = [
+    { key: '1', text: 'Kandy', value: 'kandy' },
+    { key: '2', text: 'Colombo', value: 'colombo' },
+    { key: '3', text: 'Malabe', value: 'malabe' },
+    { key: '4', text: 'Kegalle', value: 'kegalle' },
+    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
+    { key: '6', text: 'Jaffna', value: 'jaffna' },
+    { key: '7', text: 'Ampara', value: 'ampara' },
+]
+
 
 const vehicleMakeOptions = [
     { key: 't', text: 'Toyota', value: 'toyota' },
@@ -58,6 +69,7 @@ export default class updateVehicleAdForm extends Component {
             make: '',
             model: '',
             category: '',
+            location: '',
             bodyType: '',
             transmission: '',
             condition: '',
@@ -67,7 +79,7 @@ export default class updateVehicleAdForm extends Component {
             price: null,
             negotiable: false,
             images: [],
-            userId: null,
+            userId: 'test1',
             contactNumbers: []
         },
         code: '',
@@ -76,7 +88,8 @@ export default class updateVehicleAdForm extends Component {
         engineState: true,
         priceState: true,
         mileageState: true,
-        descriptionState: true
+        descriptionState: true,
+        imgModalOpen: false
     }
 
     render() {
@@ -87,11 +100,18 @@ export default class updateVehicleAdForm extends Component {
             });
         }
 
-        // const addPhone = () => {
-        //     this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-        //         console.log(this.state)
-        //     })
-        // }
+        const addPhone = () => {
+            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+                this.setState({ ...this.state, phone: '' })
+            })
+        }
+
+        const deletePhone = (contact) => {
+            console.log(contact);
+            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
+            //     console.log(this.state)
+            // })
+        }
 
         const handleSubmit = (e) => {
             console.log(this.state);
@@ -206,8 +226,21 @@ export default class updateVehicleAdForm extends Component {
                         />
                     </div>
                     &nbsp;
-                    &nbsp;
                     <div>
+                        <Form.Field required
+                            id='location'
+                            name="location"
+                            width='16'
+                            control={Select}
+                            options={locationOptions}
+                            label={{ children: 'location', htmlFor: 'location' }}
+                            placeholder='Select location'
+                            search
+                            searchInput={{ id: 'location' }}
+                            onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
+                                console.log(this.state)
+                            })}
+                        />
                         <div className='form-edit-field'>
                             <Icon
                                 name={this.state.titleState ? 'edit' : 'save'}
@@ -259,8 +292,8 @@ export default class updateVehicleAdForm extends Component {
                                 />
                                 <Form.Checkbox label='Negotiable'
                                     name='negotiable'
-                                    onChange={handleChange}
-                                />
+                                    onChange={() => this.setState({...this.state,payload: {...this.state.payload,negotiable: !this.state.negotiable}})}
+                                    />
                             </Form.Group>
                         </div>
                         <div className='form-edit-field'>
@@ -313,61 +346,121 @@ export default class updateVehicleAdForm extends Component {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div>
-                            <Button color='orange' type='button' onClick={() => console.log('btn clicked')}><Icon name='edit' />Images</Button>
-                            <Button color='orange' type='button' onClick={() => console.log('btn clicked')}><Icon name='edit' />Contact</Button>
+                        <div style={{ marginTop: '26px' }}>
+                            <Modal
+                                closeIcon
+                                open={this.state.imgModalOpen}
+                                trigger={<Button color='orange' type='button'><Icon name='edit' />Images</Button>}
+                                onClose={() => this.setState({ ...this.state, imgModalOpen: false })}
+                                onOpen={() => this.setState({ ...this.state, imgModalOpen: true })}
+                            >
+                                <Header icon='image' content='Update Images' />
+                                <Modal.Content>
+
+                                    <ImageUploading
+                                        multiple
+                                        value={this.state.payload.images}
+                                        onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                                        maxNumber={10}
+                                        dataURLKey="data_url"
+                                    >
+                                        {({
+                                            imageList,
+                                            onImageUpload,
+                                            onImageRemoveAll,
+                                            onImageUpdate,
+                                            onImageRemove,
+                                            isDragging,
+                                            dragProps,
+                                        }) => (
+                                            <div className="upload__image-wrapper">
+                                                <div className='uploader-area'>
+                                                    <Segment
+                                                        className='dnd-image-area'
+                                                        style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                                        textAlign='center'
+                                                        onClick={onImageUpload}
+                                                        {...dragProps}>
+                                                        Click or Drop Images here
+                                                    </Segment>
+                                                    &nbsp;
+                                                    <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
+                                                </div>
+                                                <div className="image-list">
+                                                    {imageList.map((image, index) => (
+                                                        <div key={index} className="image-item">
+                                                            <img src={image['data_url']} alt="" width="100" />
+                                                            <div className="image-item__btn-wrapper">
+                                                                <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
+                                                                <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </ImageUploading>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                    <Button color='green' onClick={() => this.setState({ ...this.state, imgModalOpen: false })}>
+                                        <Icon name='checkmark' /> Done
+                                    </Button>
+                                </Modal.Actions>
+                            </Modal>
+                            <Modal
+                                closeIcon
+                                open={this.state.cntModalOpen}
+                                trigger={<Button color='orange' type='button'><Icon name='edit' />Contact</Button>}
+                                onClose={() => this.setState({ ...this.state, cntModalOpen: false })}
+                                onOpen={() => this.setState({ ...this.state, cntModalOpen: true })}
+                            >
+                                <Header icon='phone' content='Update Contact Details' />
+                                <Modal.Content>
+                                    <Form.Group style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <Form.Field
+                                            id='phoneCode'
+                                            control={Select}
+                                            options={phoneOptions}
+                                            label='Code'
+                                            placeholder='Code'
+                                            onChange={(e) => this.setState({ ...this.state, code: e.target.innerText }, () => {
+                                                console.log(this.state)
+                                            })}
+                                        />
+                                        &nbsp;
+                                        <Form.Field
+                                            action={
+                                                <Button
+                                                    primary
+                                                    name='addPhone'
+                                                    icon='add'
+                                                    type='button'
+                                                    onClick={addPhone}
+                                                />
+                                            }
+                                            id='phone'
+                                            name='phone'
+                                            control={Input}
+                                            label='Phone number'
+                                            value={this.state.phone}
+                                            placeholder='77-xxxxxxx'
+                                            onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
+                                        />
+                                    </Form.Group>
+                                    <ul style={{ display: 'flex', flexDirection: 'column' }}>
+                                        {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
+                                            return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
+                                        }) : null}
+                                    </ul>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                    <Button color='green' onClick={() => this.setState({ ...this.state, cntModalOpen: false })}>
+                                        <Icon name='checkmark' /> Done
+                                    </Button>
+                                </Modal.Actions>
+                            </Modal>
                         </div>
                     </div>
-
-                    {/* <Divider horizontal>
-                <Header as='h4'>
-                    <Icon name='photo' circular />
-                    Photos
-                </Header>
-            </Divider>
-
-            <ImageUploading
-                multiple
-                value={this.state.payload.images}
-                onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
-                maxNumber={10}
-                dataURLKey="data_url"
-            >
-                {({
-                    imageList,
-                    onImageUpload,
-                    onImageRemoveAll,
-                    onImageUpdate,
-                    onImageRemove,
-                    isDragging,
-                    dragProps,
-                }) => (
-                    <div className="upload__image-wrapper">
-                        <Button
-                            type='button'
-                            style={isDragging ? { color: 'red' } : undefined}
-                            onClick={onImageUpload}
-                            {...dragProps}
-                        >
-                            Click or Drop here
-                        </Button>
-                        &nbsp;
-                        <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} >Remove all images</Button>
-                        <div className="image-list">
-                            {imageList.map((image, index) => (
-                                <div key={index} className="image-item">
-                                    <img src={image['data_url']} alt="" width="100" />
-                                    <div className="image-item__btn-wrapper">
-                                        <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
-                                        <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </ImageUploading> 
-*/}
                 </Form>
             </div>
 

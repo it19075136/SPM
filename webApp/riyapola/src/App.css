@@ -82,3 +82,22 @@
   display: flex;
   flex-direction: row;
 }
+.user-form-centered{
+  display: flex;
+  align-items:stretch;
+  flex-direction: column;
+  border: 2px solid #ddd;
+  box-shadow: 5px 5px 10px;
+  width: 50%;
+  margin: 50px 20% 150px 25%;
+  padding: 60px;
+}
+/* .user-form-centered input{
+border-width: 200px;
+}
+.userinput{
+  border-width: 200px;
+} */
+.user-form-centered button{
+  align-self: center;
+}
