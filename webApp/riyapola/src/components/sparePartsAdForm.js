@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid, Checkbox, Icon } from 'semantic-ui-react'
+import ImageUploading from 'react-images-uploading';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -12,16 +13,51 @@ const phoneOptions = [
 ]
 
 export default class sparePartAdForm extends Component {
-    state = {}
-    handleChange = (e, { value }) => this.setState({ value })
+    state = {
+        payload: {
+            condition: '',
+            category: '',
+            title: '',
+            description: '',
+            price: null,
+            negotiable: false,
+            images: [],
+            location: '',
+            userId: null,
+            contactNumbers: [],
+            status: 'pending'
+        },
+        code: '',
+        phone: ''
+    }
+
+    componentDidMount = () => {
+
+    }
 
     render() {
+
+        const addPhone = () => {
+            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+                this.setState({ ...this.state, phone: '' })
+            })
+        }
+
+        const handleChange = (e) => {
+            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
+                console.log(this.state);
+            });
+        }
+
+        const handleSubmit = (e) => {
+            console.log(this.state);
+            e.preventDefault();
+        }
         const { value } = this.state
         return (
-
-            <Form className="form-centered" width="10">
+            <Form className="form-centered">
                 <Header as='h2' color='blue' textAlign='center'>
-                    Add Spare Parts Form
+                    Fill Your Spare part Details
                 </Header>
                 <br />
                 <Form.Group inline>
@@ -30,22 +66,31 @@ export default class sparePartAdForm extends Component {
                         control={Radio}
                         label='Used'
                         value='1'
-                        checked={value === '1'}
-                        onChange={this.handleChange}
+                        name="used"
+                        checked={this.state.payload.condition === 'used'}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'used' } }, () => {
+                            console.log(this.state)
+                        })}
                     />
                     <Form.Field
                         control={Radio}
                         label='New'
                         value='2'
-                        checked={value === '2'}
-                        onChange={this.handleChange}
+                        name="new"
+                        checked={this.state.payload.condition === 'new'}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'new' } }, () => {
+                            console.log(this.state)
+                        })}
                     />
                     <Form.Field
                         control={Radio}
                         label='Recondition'
                         value='3'
-                        checked={value === '3'}
-                        onChange={this.handleChange}
+                        name="recondition"
+                        checked={this.state.payload.condition === 'recondition'}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'recondition' } }, () => {
+                            console.log(this.state)
+                        })}
                     />
                 </Form.Group>
 
@@ -57,35 +102,46 @@ export default class sparePartAdForm extends Component {
                     placeholder='Part or Accessory Type'
                     search
                     searchInput={{ id: 'accessoryType' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })}
                 />
 
                 <Form.Field required
                     width='16'
-                >
-                    <label>Advertisement Title</label>
-                    <input placeholder='Advertisement Title' />
-                </Form.Field>
+                    id='title'
+                    name="title"
+                    control={Input}
+                    label='Advertisement Title'
+                    placeholder='Advertisement title'
+                    onChange={handleChange}
+                />
 
                 <Form.Field required
                     width='16'
                     id='description'
+                    name="description"
                     control={TextArea}
                     label='Description'
                     placeholder='Description'
+                    onChange={handleChange}
                 />
 
                 <Form.Field
                     id='price'
                     width='16'
                     type='number'
+                    name='price'
                     control={Input}
                     label='Price (Rs)'
                     placeholder='Pick a good price'
+                    onChange={handleChange}
                 />
 
-                <Form.Field>
-                    <Checkbox label='Negotiable' />
-                </Form.Field>
+                <Form.Checkbox label="Negotiable"
+                    name='negotiable'
+                    onChange={handleChange}
+                />
 
                 <Divider horizontal>
                     <Header as='h4'>
@@ -93,6 +149,50 @@ export default class sparePartAdForm extends Component {
                         Photos
                     </Header>
                 </Divider>
+
+                <ImageUploading
+                    multiple
+                    value={this.state.payload.images}
+                    onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                    maxNumber={10}
+                    dataURLKey="data_url"
+                >
+                    {({
+                        imageList,
+                        onImageUpload,
+                        onImageRemoveAll,
+                        onImageUpdate,
+                        onImageRemove,
+                        isDragging,
+                        dragProps,
+                    }) => (
+                        <div className="upload__image-wrapper">
+                            <div className='uploader-area'>
+                                <Segment
+                                    className='dnd-image-area'
+                                    style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                    textAlign='center'
+                                    onClick={onImageUpload}
+                                    {...dragProps}>
+                                    Click or Drop Images here
+                                </Segment>
+                                &nbsp;
+                                <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
+                            </div>
+                            <div className="image-list">
+                                {imageList.map((image, index) => (
+                                    <div key={index} className="image-item">
+                                        <img src={image['data_url']} alt="" width="100" />
+                                        <div className="image-item__btn-wrapper">
+                                            <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
+                                            <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </ImageUploading>
 
                 <Divider horizontal>
                     <Header as='h4'>
@@ -108,25 +208,38 @@ export default class sparePartAdForm extends Component {
                         options={phoneOptions}
                         label='Code'
                         placeholder='Code'
+
                     />
-                    <Form.Field required >
-                        <Input
-                            style={{ top: '23px' }}
-                            action={{
-                                color: 'blue',
-                                labelPosition: 'right',
-                                icon: 'plus',
-                                content: 'Add',
-                            }}
-                            label='Phone Number'
-                            actionPosition='right'
-                            placeholder='77-xxxxxxxx'
-                        />
-                    </Form.Field>
+                    <Form.Field
+                        action={
+                            <Button
+                                primary
+                                name='addPhone'
+                                icon='add'
+                                type='button'
+                                onClick={addPhone}
+                            />
+                        }
+                        id='phone'
+                        name='phone'
+                        control={Input}
+                        label='Phone number'
+                        value={this.state.phone}
+                        placeholder='77-xxxxxxx'
+                        onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
+                    />
                 </Form.Group>
+
+                <ul>
+                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
+                        return <div style={{decoration: 'none'}}><Icon name='phone'>{contact.replace('Sri Lanka', '')}</Icon></div>
+                    }): null}
+                </ul>
+
                 <Form.Field
                     primary
                     id='submit'
+                    name="formSubmit"
                     control={Button}
                     content='Post Ad'
                 />
