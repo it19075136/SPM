@@ -45,7 +45,7 @@ export default class footer extends Component {
                         </Grid>
 
                         <Divider inverted section />
-                        <Image centered size='small' src='./images/logo-white.png' />
+                        <Image centered size='small' src='/images/logo-white.png' />
                         <List horizontal inverted divided link size='small'>
                             <List.Item as='a' href='#'>
                                 Site Map
