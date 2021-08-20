@@ -10,6 +10,7 @@ const vehicleSchema  = new Schema ({
         year : {type: Date, required: true},
         make : {type : String, required : true},
         model : {type : String},
+        location: {type : String, required : true},  
         category : {type : String, required : true},
         bodyType : {type : String},
         condition : {type : String, required : true},

@@ -10,6 +10,7 @@ import userProfile from './components/userProfile';
 import Signup from './components/signup';
 import Signin from './components/signin';
 import UserProfile from './components/userProfile';
+import updateVehicleAdForm from './components/updateVehicleAdForm';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <NavBar/>
       <Switch>
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
+        <Route exact path='/vehicleAd/update' component={updateVehicleAdForm} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
