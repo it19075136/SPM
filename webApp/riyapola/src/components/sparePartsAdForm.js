@@ -12,13 +12,33 @@ const phoneOptions = [
 ]
 
 export default class sparePartAdForm extends Component {
-    state = {}
-    handleChange = (e, { value }) => this.setState({ value })
+    state = {
+        payload: {
+            condition: '',
+            category: '',
+            title: '',
+            description: '',
+            price: null,
+            negotiable: false,
+            images: [],
+            location: '',
+            userId: null,
+            contactNumbers: [],
+            status: 'pending' 
+        },
+        code: '',
+        phone: ''
+    }
+
+    componentDidMount = () => {
+
+    }
+
+    // handleChange = (e, { value }) => this.setState({ value })
 
     render() {
         const { value } = this.state
         return (
-
             <Form className="form-centered" width="10">
                 <Header as='h2' color='blue' textAlign='center'>
                     Add Spare Parts Form
