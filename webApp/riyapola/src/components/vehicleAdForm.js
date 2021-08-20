@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
 
@@ -11,6 +11,16 @@ const categoryOptions = [
     { key: 'l', text: 'Lorry', value: 'lorry' },
     { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
     { key: 'o', text: 'Other', value: 'othe' },
+]
+
+const locationOptions = [
+    { key: '1', text: 'Kandy', value: 'kandy' },
+    { key: '2', text: 'Colombo', value: 'colombo' },
+    { key: '3', text: 'Malabe', value: 'malabe' },
+    { key: '4', text: 'Kegalle', value: 'kegalle' },
+    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
+    { key: '6', text: 'Jaffna', value: 'jaffna' },
+    { key: '7', text: 'Ampara', value: 'ampara' },
 ]
 
 const vehicleMakeOptions = [
@@ -79,6 +89,7 @@ export default class vehicleAdForm extends Component {
             make: '',
             model: '',
             category: '',
+            location: '',
             bodyType: '',
             transmission: '',
             condition: '',
@@ -88,12 +99,14 @@ export default class vehicleAdForm extends Component {
             price: null,
             negotiable: false,
             images: [],
-            userId: null,
+            userId: 'test1',
             contactNumbers: []
         },
         code: '',
-        phone: ''
-        }
+        phone: '',
+        success: false,
+        error: false
+    }
 
     componentDidMount = () => {
         // axios.get('http://localhost:5000/category').then((categoryList) => {
@@ -116,18 +129,40 @@ export default class vehicleAdForm extends Component {
 
         const addPhone = () => {
             this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-                this.setState({...this.state,phone: ''})
+                this.setState({ ...this.state, phone: '' })
             })
+        }
+
+        const deletePhone = (contact) => {
+            console.log(contact);
+            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
+            //     console.log(this.state)
+            // })
         }
 
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
+            axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                console.log(res);
+                this.setState({...this.state,success: true}, () => {
+                    setTimeout(() => {
+                        this.setState({...this.state,success: false})
+                    }, 2000);
+                })
+            }).catch((err) => {
+                console.log(err);
+                this.setState({...this.state,error: true}, () => {
+                    setTimeout(() => {
+                        this.setState({...this.state,error: false})
+                    }, 2000);
+                })
+            })
         }
 
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
-                <Header as='h2' style={{color:'#076AE0'}} textAlign='center'>
+                <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
                     Fill Your Vehicle Details
                 </Header>
                 <Form.Field required
@@ -138,6 +173,19 @@ export default class vehicleAdForm extends Component {
                     label='Advertisement Title'
                     placeholder='Add an advertisement title'
                     onChange={handleChange}
+                />
+                <Form.Field required
+                    name="location"
+                    width='16'
+                    control={Select}
+                    options={locationOptions}
+                    label={{ children: 'Location', htmlFor: 'location' }}
+                    placeholder='Select location'
+                    search
+                    searchInput={{ id: 'location' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
                     id='category'
@@ -287,7 +335,7 @@ export default class vehicleAdForm extends Component {
                     />
                     <Form.Checkbox label='Negotiable'
                         name='negotiable'
-                        onChange={handleChange}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, negotiable: !this.state.negotiable } })}
                     />
                 </Form.Group>
                 <Divider horizontal>
@@ -315,16 +363,16 @@ export default class vehicleAdForm extends Component {
                     }) => (
                         <div className="upload__image-wrapper">
                             <div className='uploader-area'>
-                            <Segment
-                                className='dnd-image-area'
-                                style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : {backgroundColor: '#ddd'} }
-                                textAlign='center'
-                                onClick={onImageUpload}
-                                {...dragProps}>
-                                Click or Drop Images here
-                            </Segment>
-                            &nbsp;
-                            <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
+                                <Segment
+                                    className='dnd-image-area'
+                                    style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                    textAlign='center'
+                                    onClick={onImageUpload}
+                                    {...dragProps}>
+                                    Click or Drop Images here
+                                </Segment>
+                                &nbsp;
+                                <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
                             </div>
                             <div className="image-list">
                                 {imageList.map((image, index) => (
@@ -378,10 +426,11 @@ export default class vehicleAdForm extends Component {
                     />
                 </Form.Group>
                 <ul>
-                        {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                            return <div style={{decoration: 'none'}}><Icon name='phone'>{contact.replace('Sri Lanka','')}</Icon></div>
-                        }) : null}
+                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
+                        return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
+                    }) : null}
                 </ul>
+                <br />
                 <Form.Field
                     primary
                     id='submit'
@@ -390,6 +439,20 @@ export default class vehicleAdForm extends Component {
                     control={Button}
                     content='Post Ad'
                 />
+                { this.state.success ? <Message positive>
+                    <Message.Header>Success</Message.Header>
+                    <p>
+                        Your ad successfully submitted for reviewing!
+                    </p>
+                </Message> : null
+                }
+                { this.state.error ? <Message negative>
+                    <Message.Header>Error</Message.Header>
+                    <p>
+                        Action was unsuccessful, please check and try again!
+                    </p>
+                </Message> : null
+                }
             </Form>
         )
     }
