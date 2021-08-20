@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Checkbox, Form } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Icon } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 
 function Signin  () { 
@@ -29,16 +29,18 @@ const submitHandler=()=>{
   return(
   <Form className='form-centered'>
     <Form.Field>
+    <Icon name="user"/>
       <label>Email</label>
       <input placeholder='Email' name="email" onChange={formHandler}/>
     </Form.Field>
     <Form.Field>
+    <Icon name="email"/>
       <label>Password</label>
       <input placeholder='Password' name="password" onChange={formHandler}/>
     </Form.Field>
     <Button type='submit' onClick={submitHandler}>SignIn</Button>
     <GoogleLogin
-    clientId=""
+    clientId="862096495152-812dp0vglkhcqffdtmae9tuhi72oouk2.apps.googleusercontent.com"
     buttonText="Login"
     onSuccess={responseGoogle}
     onFailure={responseGoogle}
