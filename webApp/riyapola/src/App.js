@@ -11,6 +11,7 @@ import Signup from './components/signup';
 import Signin from './components/signin';
 import UserProfile from './components/userProfile';
 import updateVehicleAdForm from './components/updateVehicleAdForm';
+import updateSparePartsAdForm from './components/updateSparePartsAdForm';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
+        <Route exact path='/sparePartsAd/update' component={updateSparePartsAdForm} />
         <Route exact path='/userProfile' component={UserProfile}/>
         {/* Add components */}
       </Switch>
