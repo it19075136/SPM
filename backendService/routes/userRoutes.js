@@ -5,6 +5,8 @@ const jsonwebtoken = require('jsonwebtoken');
 router.post('/add', (req, res) => {
 
     createuser(req.body).then((newUser) => {
+        console.log('newUser',newUser)
+        if (newUser != 'Email Already Exists'){
         const token = jsonwebtoken.sign({
             _id:newUser._id,
             name :newUser.name,
@@ -14,6 +16,10 @@ router.post('/add', (req, res) => {
             wishList:newUser.wishList
         },"jwtSecret")
         res.json(token);
+    }
+    else{
+        res.json('Email Already Exists')
+    }
 
     }).catch((err) => {
         console.log(err);

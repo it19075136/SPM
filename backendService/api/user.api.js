@@ -9,6 +9,7 @@ var nodemailer = require('nodemailer');
      User.findOne({
        email : body.email
      }).then(user => {
+      console.log('user',user)
        if(user){
          resolve('Email Already Exists')
        }else{

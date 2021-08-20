@@ -1,3 +1,17 @@
+// const userResponds =jwt.decode(token);
+// const userDetails ={
+//     _id:userResponds._id,
+//     name :userResponds.name,
+//     email : userResponds.email,
+//     gender : userResponds.gender,
+//     type : userResponds.type,
+//     phoneNumber :userResponds.phoneNumber
+// }
+// user.password = hashPassword.generate(user.password);
+// const item=localStorage.getItem("user");
+//         const decodeItem = jwt.decode(item);
+
+
 // import React, { useState } from 'react'
 // function UserProfile (props){
 //     return (
