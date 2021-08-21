@@ -19,7 +19,7 @@ const vehicleSchema  = new Schema ({
         mileage: {type: String, required : true },    
         price: {type: Number},
         negotiable:{type: Boolean, default: false},
-        imageUrls:{type: Array,required: true},
+        images:{type: Array,required: true},
         userId:{type: String,required: true},
         contactNumbers: {type: Array,required: true}
 },{
