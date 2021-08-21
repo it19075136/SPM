@@ -18,6 +18,7 @@ import ImageUploading from 'react-images-uploading';
 function UserProfile() {
     const item=localStorage.getItem("user");
     const decodeItem = jwt.decode(item);
+    
    
     const [user, setUser] = useState({
         name: decodeItem.name,
@@ -25,7 +26,9 @@ function UserProfile() {
         phoneNumber: decodeItem.phoneNumber
     })
     const  [repassword, setRepassword] = useState("");
-    const  [newPassword, setNewPassword] = useState("");
+    const  [newPassword, setNewPassword] = useState({
+        password:""
+    });
     const  [currentPassword, setCurrentPassword] = useState("");
     const  [iconState, setIconState] = useState({
         name:false,
@@ -54,35 +57,59 @@ function UserProfile() {
     }
     const submitHandler = (e) => {
         // console.log(user, "user");
-        // e.preventDefault();
-        // user.type = "buyerSeller"
-        // user.password = hashPassword.generate(user.password);
-        // axios.post('http://localhost:5000/user/add', user).then(res => {
-        //     const token = res.data;
-        //     console.log(token, "token");
-        //     if (token = 'Email Already Exists') {
-        //         // resolve(res.data);
-        //     }
-        //     else if (token) {
-        //         const userResponds = jwt.decode(token);
-        //         const userDetails = {
-        //             _id: userResponds._id,
-        //             name: userResponds.name,
-        //             email: userResponds.email,
-        //             type: userResponds.type,
-        //             phoneNumber: userResponds.phoneNumber
-        //         }
-        //         console.log('decode token userRespond', userResponds);
-        //         console.log('send details to redux', userDetails)
-        //         localStorage.setItem('user', token);
-        //         // dispatch({type:'ADD_USER',payload:userDetails})
-        //         // resolve(res.data);
-        //     }
-
-        // }).catch(err => {
-        //     console.log(err)
-        //     // reject(err)
-        // })
+        e.preventDefault();
+        // const password = hashPassword.generate(user.password);
+        console.log('in promise in addNewPAssword')
+        axios.post(`http://localhost:5000/user/update/${decodeItem._id}`,user).then((res)=>{
+            console.log('in post');
+            const {token} =res.data;    
+        if(token){
+            localStorage.setItem('user',token);
+            const userResponds = jwt.decode(token);
+            const userDetails ={
+                _id:userResponds._id,
+                name :userResponds.name,
+                email : userResponds.email,
+                type : userResponds.type,
+                phoneNumber :userResponds.phoneNumber
+            }
+            console.log(userDetails);
+            // dispatch({type:'ADD_USER',payload:userDetails});
+            // resolve(userDetails);
+        }
+        }).catch((err)=>{
+            // reject(err)
+        })
+        
+    }
+    const passwordHandler = (e) => {
+        // console.log(user, "user");
+        e.preventDefault();
+         
+        if(newPassword.password === repassword && hashPassword.verify(currentPassword,decodeItem.password) ){
+        console.log('in promise in addNewPAssword')
+        newPassword.password = hashPassword.generate(newPassword.password);
+        axios.post(`http://localhost:5000/user/update/${decodeItem._id}`,newPassword).then((res)=>{
+            console.log('in post');
+            const {token} =res.data;    
+        if(token){
+            localStorage.setItem('user',token);
+            const userResponds = jwt.decode(token);
+            const userDetails ={
+                _id:userResponds._id,
+                name :userResponds.name,
+                email : userResponds.email,
+                type : userResponds.type,
+                phoneNumber :userResponds.phoneNumber
+            }
+            console.log(userDetails);
+            // dispatch({type:'ADD_USER',payload:userDetails});
+            // resolve(userDetails);
+        }
+        }).catch((err)=>{
+            // reject(err)
+        })
+    }
     }
     return (
         <div>
@@ -163,7 +190,7 @@ function UserProfile() {
                        
                       
                     <div>
-                        <Icon name="mail" />
+                        <Icon name="user" />
                         <label>Name</label>
                     </div>
                     <input placeholder='Name' name="Name" onChange={formHandler}  value={user.name} 
@@ -246,7 +273,7 @@ function UserProfile() {
                             <Icon name="key" />
                             <label>New Password</label>
                         </div>
-                        <input placeholder='New Password' name="password" onChange={(e)=>{setNewPassword(e.target.value)}} />
+                        <input placeholder='New Password' name="password" onChange={(e)=>{setNewPassword({password:e.target.value})}} />
                     </Form.Field>
 
                     <Form.Field>
@@ -264,7 +291,7 @@ function UserProfile() {
                             type='submit'
                             className='form-update-btn'
                             control={Button}
-                            onClick={submitHandler}
+                            onClick={passwordHandler}
                             content='Change Password'
                         /><br /><br />
                 </Form>
