@@ -2,7 +2,7 @@ const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsA
 const router = require('express').Router();
 
 //**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'getSparePartById' FUNCTION*/
-router.get(':/id', (req,res) => {
+router.get('/:id', (req,res) => {
     getSparePartById(req.params._id).then((result) => {
         res.json(result);
     }).catch((err) => {
@@ -27,7 +27,7 @@ router.post('/', (req,res) => {
 });
 
 //**PUT METHOD TO UPDATE SPAREPARTS DETAIL BY ID USING 'updateSparePartById' FUNCTION*/
-router.put(':/id', (req,res) => {
+router.put('/:id', (req,res) => {
     updateSparePartById(req.params._id, req.body).then((result) => {
         res.json(result);
     }).catch((err) => {

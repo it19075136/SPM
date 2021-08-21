@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
+import axios from 'axios';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -10,6 +11,16 @@ const categoryOptions = [
     { key: 'l', text: 'Lorry', value: 'lorry' },
     { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
     { key: 'o', text: 'Other', value: 'othe' },
+]
+
+const locationOptions = [
+    { key: '1', text: 'Kandy', value: 'kandy' },
+    { key: '2', text: 'Colombo', value: 'colombo' },
+    { key: '3', text: 'Malabe', value: 'malabe' },
+    { key: '4', text: 'Kegalle', value: 'kegalle' },
+    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
+    { key: '6', text: 'Jaffna', value: 'jaffna' },
+    { key: '7', text: 'Ampara', value: 'ampara' },
 ]
 
 const vehicleMakeOptions = [
@@ -44,7 +55,7 @@ const fuelOptions = [
 ]
 
 const phoneOptions = [
-    { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
+    { key: 'sl', text: 'Sri Lanka (+94)', value: 'Sri Lanka (+94)' }
 ]
 
 const validateFields = (e) => {
@@ -78,6 +89,7 @@ export default class vehicleAdForm extends Component {
             make: '',
             model: '',
             category: '',
+            location: '',
             bodyType: '',
             transmission: '',
             condition: '',
@@ -87,40 +99,72 @@ export default class vehicleAdForm extends Component {
             price: null,
             negotiable: false,
             images: [],
-            userId: null,
+            userId: 'test1',
             contactNumbers: []
         },
         code: '',
         phone: '',
-        btn: ''
+        success: false,
+        error: false
+    }
+
+    componentDidMount = () => {
+        // axios.get('http://localhost:5000/category').then((categoryList) => {
+        //     categoryList.data.map((category) => {
+        //         categoryOptions.push({ key: category._id, text: category.mainName, value: category.mainName });
+        //         category.childCategory.map((child,index) => {
+        //             vehicleMakeOptions.push({ key: category._id||index, text: child.mainName, value: child.mainName });
+        //         })
+        //     })
+        // });
     }
 
     render() {
 
         const handleChange = (e) => {
-            this.setState({...this.state, payload: {...this.state.payload,[e.target.name]: e.target.value }}, () => {
+            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
                 console.log(this.state);
             });
         }
-    
+
         const addPhone = () => {
-            // e.preventDefault();
-            this.setState({...this.state,payload: {...this.state.payload,contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone]}},() => {
-                console.log(this.state)
+            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+                this.setState({ ...this.state, phone: '' })
             })
         }
 
+        const deletePhone = (contact) => {
+            console.log(contact);
+            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
+            //     console.log(this.state)
+            // })
+        }
+
         const handleSubmit = (e) => {
-            console.log(e.target);
-            e.preventDefault();
-            if(e.target.name == 'addPhone')
-                addPhone();
-            else
             console.log(this.state);
+            e.preventDefault();
+            axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                console.log(res);
+                this.setState({...this.state,success: true}, () => {
+                    setTimeout(() => {
+                        this.setState({...this.state,success: false})
+                    }, 2000);
+                })
+            }).catch((err) => {
+                console.log(err);
+                this.setState({...this.state,error: true}, () => {
+                    setTimeout(() => {
+                        this.setState({...this.state,error: false})
+                    }, 2000);
+                })
+            })
         }
 
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
+                <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
+                    Fill Your Vehicle Details
+                </Header>
                 <Form.Field required
                     width='16'
                     id='title'
@@ -129,6 +173,19 @@ export default class vehicleAdForm extends Component {
                     label='Advertisement Title'
                     placeholder='Add an advertisement title'
                     onChange={handleChange}
+                />
+                <Form.Field required
+                    name="location"
+                    width='16'
+                    control={Select}
+                    options={locationOptions}
+                    label={{ children: 'Location', htmlFor: 'location' }}
+                    placeholder='Select location'
+                    search
+                    searchInput={{ id: 'location' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })}
                 />
                 <Form.Field required
                     id='category'
@@ -140,7 +197,7 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Category'
                     search
                     searchInput={{ id: 'category' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, category: e.target.innerText }}, () => {
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
                 />
@@ -153,7 +210,7 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Make'
                     search
                     searchInput={{ id: 'vehicleMake' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, make: e.target.innerText }}, () => {
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
                 />
@@ -166,7 +223,7 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Model'
                     search
                     searchInput={{ id: 'vehicleModel' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, model: e.target.innerText }}, () => {
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
                 />
@@ -190,7 +247,7 @@ export default class vehicleAdForm extends Component {
                     placeholder='Vehicle Body Type'
                     search
                     searchInput={{ id: 'bodyType' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, bodyType: e.target.innerText }}, () => {
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
                 />
@@ -203,7 +260,7 @@ export default class vehicleAdForm extends Component {
                     placeholder='Transmission'
                     search
                     searchInput={{ id: 'transmission' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, transmission: e.target.innerText }}, () => {
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
                 />
@@ -225,7 +282,7 @@ export default class vehicleAdForm extends Component {
                         placeholder='Fuel Type'
                         search
                         searchInput={{ id: 'fuelType' }}
-                        onChange={(e) => this.setState({ ...this.state, payload: {...this.state.payload, fuelType: e.target.innerText }}, () => {
+                        onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
                             console.log(this.state)
                         })}
                     />
@@ -264,7 +321,7 @@ export default class vehicleAdForm extends Component {
                         name='registered'
                         label='Registered'
                         checked={this.state.payload.condition === 'registered'}
-                        onChange={() => this.setState({...this.state,payload: {...this.state.payload, condition: 'registered'}},() => {
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'registered' } }, () => {
                             console.log(this.state)
                         })}
                     />
@@ -272,13 +329,13 @@ export default class vehicleAdForm extends Component {
                         name='unregistered'
                         label='Unregistered'
                         checked={this.state.payload.condition === 'unregistered'}
-                        onChange={() => this.setState({...this.state,payload: {...this.state.payload, condition: 'unregistered'}},() => {
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'unregistered' } }, () => {
                             console.log(this.state)
                         })}
                     />
                     <Form.Checkbox label='Negotiable'
                         name='negotiable'
-                        onChange={handleChange}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, negotiable: !this.state.negotiable } })}
                     />
                 </Form.Group>
                 <Divider horizontal>
@@ -305,16 +362,18 @@ export default class vehicleAdForm extends Component {
                         dragProps,
                     }) => (
                         <div className="upload__image-wrapper">
-                            <Button
-                                type='button'
-                                style={isDragging ? { color: 'red' } : undefined}
-                                onClick={onImageUpload}
-                                {...dragProps}
-                            >
-                                Click or Drop here
-                            </Button>
-                            &nbsp;
-                            <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} >Remove all images</Button>
+                            <div className='uploader-area'>
+                                <Segment
+                                    className='dnd-image-area'
+                                    style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                    textAlign='center'
+                                    onClick={onImageUpload}
+                                    {...dragProps}>
+                                    Click or Drop Images here
+                                </Segment>
+                                &nbsp;
+                                <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
+                            </div>
                             <div className="image-list">
                                 {imageList.map((image, index) => (
                                     <div key={index} className="image-item">
@@ -349,27 +408,29 @@ export default class vehicleAdForm extends Component {
                     />
                     <Form.Field
                         action={
-                            <Button 
-                            primary
-                            name='addPhone' 
-                            icon='add'
-                            type='button'
-                            onclick= {() => this.setState({...this.state, btn: 'addPhone'})}
+                            <Button
+                                primary
+                                name='addPhone'
+                                icon='add'
+                                type='button'
+                                onClick={addPhone}
                             />
                         }
                         id='phone'
                         name='phone'
                         control={Input}
                         label='Phone number'
+                        value={this.state.phone}
                         placeholder='77-xxxxxxx'
-                        onChange={(e) => this.setState({...this.state,phone: e.target.value})}
+                        onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
                     />
-                    <ul>
-                        {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                            <li>{contact}</li>
-                        }):null}
-                    </ul>
                 </Form.Group>
+                <ul>
+                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
+                        return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
+                    }) : null}
+                </ul>
+                <br />
                 <Form.Field
                     primary
                     id='submit'
@@ -377,7 +438,21 @@ export default class vehicleAdForm extends Component {
                     type='submit'
                     control={Button}
                     content='Post Ad'
-                    />
+                />
+                { this.state.success ? <Message positive>
+                    <Message.Header>Success</Message.Header>
+                    <p>
+                        Your ad successfully submitted for reviewing!
+                    </p>
+                </Message> : null
+                }
+                { this.state.error ? <Message negative>
+                    <Message.Header>Error</Message.Header>
+                    <p>
+                        Action was unsuccessful, please check and try again!
+                    </p>
+                </Message> : null
+                }
             </Form>
         )
     }

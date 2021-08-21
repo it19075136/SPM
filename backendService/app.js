@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const userRouter = require('./routes/userRoutes');
 const vehicleRouter = require('./routes/vehicleRoutes');
 const categoryRouter = require('./routes/categoryRoutes');
+const sparePartsRouter = require('./routes/sparePartsRoutes');
 // const documentRouter = require('./routes/documentRoutes');
 
 mongoose.connect(process.env.DB_KEY||'&w=majority', {
@@ -28,6 +29,8 @@ app.use('/user', userRouter);//user routes
 app.use('/vehicle', vehicleRouter);//user routes
 
 app.use('/category', categoryRouter);//category routes
+
+app.use('/spareparts', sparePartsRouter);//spare parts routes
 
 // app.use('/document',documentRouter); //document routes
 

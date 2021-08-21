@@ -10,6 +10,7 @@ const vehicleSchema  = new Schema ({
         year : {type: Date, required: true},
         make : {type : String, required : true},
         model : {type : String},
+        location: {type : String, required : true},  
         category : {type : String, required : true},
         bodyType : {type : String},
         condition : {type : String, required : true},
@@ -18,7 +19,7 @@ const vehicleSchema  = new Schema ({
         mileage: {type: String, required : true },    
         price: {type: Number},
         negotiable:{type: Boolean, default: false},
-        imageUrls:{type: Array,required: true},
+        images:{type: Array,required: true},
         userId:{type: String,required: true},
         contactNumbers: {type: Array,required: true}
 },{
