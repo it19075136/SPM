@@ -48,9 +48,43 @@
   padding: 10px;
 }
 
+.form-centered-category{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  border: 2px solid #ddd;
+  box-shadow: 5px 5px 10px;
+  width: 60%;
+  margin: 50px 10% 50px 10%;
+  padding: 10px;
+}
+
+.main-form-wrapper{
+  display: flex;
+  flex-direction: row;
+  margin: 30px;
+  justify-content: space-around;
+}
+
 .image-item{
   margin-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+}
+
+.category-name-input{
+  width: 350px;
+}
+
+.category-description-input{
+  width: 350px;
+}
+
+.add-category-button{
+  margin: 10px 10px 20px 0px !important;
+}
+
+.main-label-text{
+  margin-bottom: 20px !important;
 }
