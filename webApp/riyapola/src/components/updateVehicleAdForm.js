@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Message, Dimmer, Loader, Image } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
+import axios from 'axios';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -58,6 +59,14 @@ const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
 ]
 
+const yearOptions = [
+    { key: 'l', text: '2000', value: '2000' },
+    { key: '2', text: '2001', value: '2001' },
+    { key: '3', text: '2002', value: '2002' },
+    { key: '4', text: '2003', value: '2003' },
+    { key: '5', text: '2004', value: '2004' }
+]
+
 export default class updateVehicleAdForm extends Component {
 
     state = {
@@ -89,7 +98,22 @@ export default class updateVehicleAdForm extends Component {
         priceState: true,
         mileageState: true,
         descriptionState: true,
-        imgModalOpen: false
+        imgModalOpen: false,
+        success: false,
+        error: false,
+        loading: true,
+        actionWaiting: false
+    }
+
+    componentDidMount = () => {
+        axios.get(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`).then((res) => {
+            console.log(res);
+            this.setState({ ...this.state, payload: res.data, loading: false }, () => {
+                console.log(this.state)
+            })
+        }).catch((err) => {
+            alert('Please check your network connection and try again')
+        })
     }
 
     render() {
@@ -116,6 +140,25 @@ export default class updateVehicleAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
+            this.setState({ ...this.state, actionWaiting: true },() => {
+            axios.put(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`, this.state.payload).then((res) => {
+                console.log(res);
+                this.setState({ ...this.state, success: true }, () => {
+                    setTimeout(() => {
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
+                    }, 2000);
+                })
+            }).catch((err) => {
+                console.log(err);
+                this.setState({ ...this.state, error: true }, () => {
+                    setTimeout(() => {
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
+                        window.location.reload(false);
+                    }, 2000);
+                })
+                
+            })
+        })
         }
 
         return (
@@ -123,8 +166,12 @@ export default class updateVehicleAdForm extends Component {
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
                     Update Your Vehicle Details
                 </Header>
-                <Form className='update-form-content' onSubmit={handleSubmit}>
-
+                {this.state.loading ? <Segment>
+                    <Dimmer active inverted>
+                        <Loader>Loading</Loader>
+                    </Dimmer>
+                    <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+                </Segment> : <Form className='update-form-content' onSubmit={handleSubmit}>
                     <div>
                         <Form.Field required
                             id='category'
@@ -132,8 +179,9 @@ export default class updateVehicleAdForm extends Component {
                             width='16'
                             control={Select}
                             options={categoryOptions} // get categories
+                            value={this.state.payload.category}
                             label={{ children: 'Category', htmlFor: 'category' }}
-                            placeholder='Vehicle Category'
+                            placeholder={this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Vehicle Category'}
                             search
                             searchInput={{ id: 'category' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
@@ -145,8 +193,9 @@ export default class updateVehicleAdForm extends Component {
                             width='16'
                             control={Select}
                             options={vehicleMakeOptions}
+                            value={this.state.payload.make}
                             label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
-                            placeholder='Vehicle Make'
+                            placeholder={this.state.payload.make ? this.state.payload.make : 'Vehicle Make'}
                             search
                             searchInput={{ id: 'vehicleMake' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText } }, () => {
@@ -157,9 +206,10 @@ export default class updateVehicleAdForm extends Component {
                             name="model"
                             width='16'
                             control={Select}
+                            value={this.state.payload.model}
                             options={vehicleModelOptions}
                             label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
-                            placeholder='Vehicle Model'
+                            placeholder={this.state.payload.model ? this.state.payload.model : 'Vehicle Model'}
                             search
                             searchInput={{ id: 'vehicleModel' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
@@ -169,21 +219,24 @@ export default class updateVehicleAdForm extends Component {
                         <Form.Field required
                             name='year'
                             width='16'
-                            control={Input}
-                            type='date'
-                            label={{ children: 'Registered year', htmlFor: 'date' }}
-                            placeholder='Registered year'
+                            control={Select}
+                            options={yearOptions}
+                            value={this.state.payload.year}
+                            label={{ children: 'Registered year', htmlFor: 'year' }}
+                            placeholder={this.state.payload.year ? this.state.payload.year : 'Manufacture Date'}
                             search
-                            searchInput={{ id: 'date' }}
-                            onChange={handleChange}
-                        />
+                            searchInput={{ id: 'year' }}
+                            onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText } }, () => {
+                                console.log(this.state)
+                            })} />
                         <Form.Field required
                             name='bodyType'
                             width='16'
                             control={Select}
                             options={vehicleBodyOptions}
+                            value={this.state.payload.bodyType}
                             label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
-                            placeholder='Vehicle Body Type'
+                            placeholder={this.state.payload.bodyType ? this.state.payload.bodyType : 'Vehicle Body Type'}
                             search
                             searchInput={{ id: 'bodyType' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
@@ -195,8 +248,9 @@ export default class updateVehicleAdForm extends Component {
                             width='16'
                             control={Select}
                             options={transmissionOptions}
+                            value={this.state.payload.transmission}
                             label={{ children: 'Transmission', htmlFor: 'transmission' }}
-                            placeholder='Transmission'
+                            placeholder={this.state.payload.transmission ? this.state.payload.transmission : 'Transmission'}
                             search
                             searchInput={{ id: 'transmission' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
@@ -208,7 +262,8 @@ export default class updateVehicleAdForm extends Component {
                             control={Select}
                             options={fuelOptions}
                             label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
-                            placeholder='Fuel Type'
+                            value={this.state.payload.fuelType}
+                            placeholder={this.state.payload.fuelType ? this.state.payload.fuelType : 'Fuel Type'}
                             search
                             searchInput={{ id: 'fuelType' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
@@ -222,7 +277,8 @@ export default class updateVehicleAdForm extends Component {
                             type='submit'
                             className='form-update-btn'
                             control={Button}
-                            content='Post Ad'
+                            content={this.state.actionWaiting ? 'Please wait.. '||<Loader active inline /> : 'Update Ad'}
+                            disabled={this.state.actionWaiting}
                         />
                     </div>
                     &nbsp;
@@ -233,8 +289,9 @@ export default class updateVehicleAdForm extends Component {
                             width='16'
                             control={Select}
                             options={locationOptions}
+                            value={this.state.payload.location}
                             label={{ children: 'location', htmlFor: 'location' }}
-                            placeholder='Select location'
+                            placeholder={this.state.payload.location ? this.state.payload.location : 'Select location'}
                             search
                             searchInput={{ id: 'location' }}
                             onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
@@ -242,75 +299,93 @@ export default class updateVehicleAdForm extends Component {
                             })}
                         />
                         <div className='form-edit-field'>
-                            <Icon
-                                name={this.state.titleState ? 'edit' : 'save'}
-                                onClick={() => this.setState({ ...this.state, titleState: !this.state.titleState })}
-                            />
-                            <Form.Field required
-                                width='16'
-                                id='title'
-                                name="title"
-                                control={Input}
-                                label='Advertisement Title'
-                                placeholder='Add an advertisement title'
-                                disabled={this.state.titleState ? this.state.titleState : false}
-                                onChange={handleChange}
-                            />
+                            <Form.Field>
+                                <div>
+                                    <Icon
+                                        name={this.state.titleState ? 'edit' : 'save'}
+                                        onClick={() => this.setState({ ...this.state, titleState: !this.state.titleState })}
+                                    />
+                                    <label>Advertisement Title</label>
+                                </div>
+                                <input
+                                    required
+                                    width='16'
+                                    id='title'
+                                    value={this.state.payload.title}
+                                    name="title"
+                                    placeholder='Add an advertisement title'
+                                    disabled={this.state.titleState ? this.state.titleState : false}
+                                    onChange={handleChange}
+                                />
+                            </Form.Field>
                         </div>
+                        <br />
                         <div className='form-edit-field'>
-                            <Icon
-                                name={this.state.engineState ? 'edit' : 'save'}
-                                onClick={() => this.setState({ ...this.state, engineState: !this.state.engineState })}
-                            />
-                            <Form.Field required
-                                id='engineCapacity'
-                                name='engineCapacity'
-                                type='number'
-                                control={Input}
-                                label='Engine capacity'
-                                placeholder='Engine capacity(cc)'
-                                disabled={this.state.engineState ? this.state.engineState : false}
-                                onChange={handleChange}
-                            />
+                            <Form.Field>
+                                <div>
+                                    <Icon
+                                        name={this.state.engineState ? 'edit' : 'save'}
+                                        onClick={() => this.setState({ ...this.state, engineState: !this.state.engineState })}
+                                    />
+                                    <label>Engine capacity</label>
+                                </div>
+                                <input required
+                                    id='engineCapacity'
+                                    name='engineCapacity'
+                                    value={this.state.payload.engineCapacity}
+                                    type='number'
+                                    placeholder='Engine capacity(cc)'
+                                    disabled={this.state.engineState ? this.state.engineState : false}
+                                    onChange={handleChange}
+                                />
+                            </Form.Field>
                         </div>
+                        <br />
                         <div className='form-edit-field'>
-                            <Icon
-                                name={this.state.priceState ? 'edit' : 'save'}
-                                onClick={() => this.setState({ ...this.state, priceState: !this.state.priceState })}
-                            />
-                            <Form.Group grouped>
-                                <Form.Field
+                            <Form.Field>
+                                <div>
+                                    <Icon
+                                        name={this.state.priceState ? 'edit' : 'save'}
+                                        onClick={() => this.setState({ ...this.state, priceState: !this.state.priceState })}
+                                    />
+                                    <label>Price(Rs.)</label>
+                                </div>
+                                <input
                                     name='price'
                                     id='price'
-                                    inline={false}
                                     type='number'
-                                    control={Input}
-                                    label='Price(Rs.)'
+                                    value={this.state.payload.price}
                                     placeholder='Price(Rs)'
                                     disabled={this.state.priceState ? this.state.priceState : false}
                                     onChange={handleChange}
                                 />
                                 <Form.Checkbox label='Negotiable'
                                     name='negotiable'
-                                    onChange={() => this.setState({...this.state,payload: {...this.state.payload,negotiable: !this.state.negotiable}})}
-                                    />
-                            </Form.Group>
+                                    checked={this.state.payload.negotiable}
+                                    onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, negotiable: !this.state.negotiable } })}
+                                />
+                            </Form.Field>
                         </div>
+                        <br />
                         <div className='form-edit-field'>
-                            <Icon
-                                name={this.state.mileageState ? 'edit' : 'save'}
-                                onClick={() => this.setState({ ...this.state, mileageState: !this.state.mileageState })}
-                            />
-                            <Form.Field required
-                                name='mileage'
-                                id='mileage'
-                                type='number'
-                                control={Input}
-                                label='Mileage'
-                                placeholder='Mileage(Kms)'
-                                disabled={this.state.mileageState ? this.state.mileageState : false}
-                                onChange={handleChange}
-                            />
+                            <Form.Field>
+                                <div>
+                                    <Icon
+                                        name={this.state.mileageState ? 'edit' : 'save'}
+                                        onClick={() => this.setState({ ...this.state, mileageState: !this.state.mileageState })}
+                                    />
+                                    <label>Mileage</label>
+                                </div>
+                                <input required
+                                    name='mileage'
+                                    id='mileage'
+                                    type='number'
+                                    value={this.state.payload.mileage}
+                                    placeholder='Mileage(Kms)'
+                                    disabled={this.state.mileageState ? this.state.mileageState : false}
+                                    onChange={handleChange}
+                                />
+                            </Form.Field>
                         </div>
                         <Form.Group inline>
                             <Form.Radio
@@ -339,6 +414,7 @@ export default class updateVehicleAdForm extends Component {
                                 name='description'
                                 width='16'
                                 id='description'
+                                value={this.state.payload.description}
                                 control={TextArea}
                                 label='Description'
                                 placeholder='Description'
@@ -346,7 +422,7 @@ export default class updateVehicleAdForm extends Component {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ marginTop: '26px' }}>
+                        <div style={{ marginTop: '20px' }}>
                             <Modal
                                 closeIcon
                                 open={this.state.imgModalOpen}
@@ -462,6 +538,20 @@ export default class updateVehicleAdForm extends Component {
                         </div>
                     </div>
                 </Form>
+                }{this.state.success ? <Message positive>
+                    <Message.Header>Success</Message.Header>
+                    <p>
+                        Your ad successfully submitted for reviewing!
+                    </p>
+                </Message> : null
+                }
+                {this.state.error ? <Message negative>
+                    <Message.Header>Error</Message.Header>
+                    <p>
+                        Action was unsuccessful, please check and try again!
+                    </p>
+                </Message> : null
+                }
             </div>
 
         )
