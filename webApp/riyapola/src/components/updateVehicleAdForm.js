@@ -112,7 +112,9 @@ export default class updateVehicleAdForm extends Component {
                 console.log(this.state)
             })
         }).catch((err) => {
-            alert('Please check your network connection and try again')
+            this.setState({ ...this.state, loading: false }, () => {
+            alert('Please check your network connection and refresh the page')
+            });
         })
     }
 
@@ -166,12 +168,7 @@ export default class updateVehicleAdForm extends Component {
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
                     Update Your Vehicle Details
                 </Header>
-                {this.state.loading ? <Segment>
-                    <Dimmer active inverted>
-                        <Loader>Loading</Loader>
-                    </Dimmer>
-                    <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
-                </Segment> : <Form className='update-form-content' onSubmit={handleSubmit}>
+                <Form className='update-form-content' onSubmit={handleSubmit} loading={this.state.loading}>
                     <div>
                         <Form.Field required
                             id='category'
@@ -270,6 +267,7 @@ export default class updateVehicleAdForm extends Component {
                                 console.log(this.state)
                             })}
                         />
+                        <Form.Group>
                         <Form.Field
                             primary
                             id='submit'
@@ -277,9 +275,11 @@ export default class updateVehicleAdForm extends Component {
                             type='submit'
                             className='form-update-btn'
                             control={Button}
-                            content={this.state.actionWaiting ? 'Please wait.. '||<Loader active inline /> : 'Update Ad'}
+                            content={this.state.actionWaiting ? 'Please wait..': 'Update Ad'}
                             disabled={this.state.actionWaiting}
                         />
+                        {this.state.actionWaiting ? <Loader active inline /> : null }
+                        </Form.Group>
                     </div>
                     &nbsp;
                     <div>
@@ -422,7 +422,7 @@ export default class updateVehicleAdForm extends Component {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ marginTop: '20px' }}>
+                        <div style={{ marginTop: '18px' }}>
                             <Modal
                                 closeIcon
                                 open={this.state.imgModalOpen}
@@ -538,7 +538,7 @@ export default class updateVehicleAdForm extends Component {
                         </div>
                     </div>
                 </Form>
-                }{this.state.success ? <Message positive>
+                {this.state.success ? <Message positive>
                     <Message.Header>Success</Message.Header>
                     <p>
                         Your ad successfully submitted for reviewing!
