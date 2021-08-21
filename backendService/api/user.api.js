@@ -63,12 +63,17 @@ var nodemailer = require('nodemailer');
 
    return new Promise((resolve, reject) => {
      User.findByIdAndUpdate(body._id).then((user) => {
-      //  (user.name = body.name),
-      //    (user.email = body.email),
-         (user.password = body.password)
+       (body.name ? user.name = body.name : user.name =  user.name ),
+       (body.email ? user.email = body.email : user.email =  user.email ),
+        //  (user.email = body.email),
+        //  (user.password = body.password)
         //  (user.gender = body.gender),
         //  (user.type = body.type),
-        //  (user.phoneNumber = Number(body.phoneNumber));
+        (body.type ? user.type = body.type : user.type =  user.type ),
+        (body.wishList ? user.wishList = body.wishList : user.wishList =  user.wishList ),
+        (body.phoneNumber ? user.phoneNumber = body.phoneNumber : user.phoneNumber =  user.phoneNumber ),
+        (body.password ? user.password = body.password : user.password =  user.password ),
+        //  (user.phoneNumber = Number(body.phoneNumber))
 
        user
          .save()
