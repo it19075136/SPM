@@ -8,7 +8,7 @@ function addVehicleAd(payload) {
         newVehicleAd.save().then((newVehicle) => {
             resolve(newVehicle);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
 
     })
@@ -20,7 +20,7 @@ function getAllVehicleAds() {
         Vehcile.find().then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
     })
 }
@@ -31,7 +31,7 @@ function updateVehicleAdById(id, payload) {
         Vehcile.findByIdAndUpdate(id, {$set: payload}).then((doc) => {
             resolve(doc);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         });
     })
 }
@@ -42,7 +42,7 @@ function getVehicleAdById(id) {
         Vehcile.findById(id).then((doc) => {
             resolve(doc);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         });
     })
 }

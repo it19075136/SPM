@@ -4,29 +4,41 @@ const { addVehicleAd, updateVehicleAdById, getAllVehicleAds,getVehicleAdById } =
 router.post('/',(req,res) => {
 
     addVehicleAd(req.body).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result); 
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+    
 });
 
 router.put('/:id',(req,res) => {
 
     updateVehicleAdById(req.params.id,req.body).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+
 });
 
 router.get('/',(req,res) => {
 
     getAllVehicleAds().then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+
 })
 
 router.get('/:id',(req,res) => {
 
     getVehicleAdById(req.params.id).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+
 })
 
 module.exports = router;
