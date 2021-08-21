@@ -101,3 +101,34 @@ border-width: 200px;
 .user-form-centered button{
   align-self: center;
 }
+.user-profile-form-centered{
+  display: flex;
+  align-items:stretch;
+  flex-direction: column;
+  border: 2px solid #ddd;
+  box-shadow: 5px 5px 10px;
+  width: 35%;
+  margin: 150px 10% 150px 5%;
+  padding: 60px;
+  /* align-self: unset; */
+}
+.user-profile-form-centered button{
+  align-self: center;
+}
+.user-profile-password-form-centered{
+  display: flex;
+  align-items:stretch;
+  flex-direction: column;
+  border: 2px solid #ddd;
+  box-shadow: 5px 5px 10px;
+  width: 35%;
+  margin: 150px 10% 150px 5%;
+  padding: 60px;
+  /* align-self: unset; */
+}
+.user-profile-form--centered button{
+  align-self: center;
+}
+/* .updateProfile{
+ float: right;
+} */
