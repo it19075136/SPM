@@ -73,6 +73,7 @@ var nodemailer = require('nodemailer');
         (body.wishList ? user.wishList = body.wishList : user.wishList =  user.wishList ),
         (body.phoneNumber ? user.phoneNumber = body.phoneNumber : user.phoneNumber =  user.phoneNumber ),
         (body.password ? user.password = body.password : user.password =  user.password ),
+        (body.image ? user.image = body.image : user.image =  user.image )
         //  (user.phoneNumber = Number(body.phoneNumber))
 
        user
