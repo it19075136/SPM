@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid, Checkbox, Icon } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid, Checkbox, Icon, Message } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
 
@@ -29,12 +29,14 @@ export default class sparePartAdForm extends Component {
             negotiable: false,
             images: [],
             location: '',
-            userId: null,
+            userId: 'u1',
             contactNumbers: [],
             status: 'pending'
         },
         code: '',
-        phone: ''
+        phone: '',
+        success: false,
+        error: false
     }
 
     componentDidMount = () => {
@@ -58,11 +60,25 @@ export default class sparePartAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            axios.post()
+            axios.post('http://localhost:5000/spareparts', this.state.payload).then((res) => {
+                console.log(res);
+                this.setState({...this.state, success: true},() => {
+                    setTimeout(() => {
+                        this.setState({...this.state, success: false})
+                    }, 2000)
+                })
+            }).catch((err) => {
+                console.log(err);
+                this.setState({...this.state, error: true}, () => {
+                    setTimeout(() => {
+                        this.setState({...this.state, error: false})
+                    }, 2000);
+                })
+            })
         }
-        const { value } = this.state
+
         return (
-            <Form className="form-centered">
+            <Form className="form-centered" onSubmit={handleSubmit}>
                 <Header as='h2' color='blue' textAlign='center'>
                     Fill Your Spare part Details
                 </Header>
@@ -265,6 +281,21 @@ export default class sparePartAdForm extends Component {
                     control={Button}
                     content='Post Ad'
                 />
+
+                {this.state.success ? <Message positive>
+                    <Message.Header>Success</Message.Header>
+                    <p>
+                        Your ad successfully submitted for reviewing!
+                    </p>
+                </Message>: null
+                }
+                {this.state.error ? <Message negative>
+                    <Message.Header>Error</Message.Header>
+                    <p>
+                        Action was unsuccessful, please check and try again!
+                    </p>
+                </Message>: null
+                }
 
             </Form>
         )
