@@ -66,26 +66,6 @@ const yearOptions = [
     { key: '5', text: '2004', value: '2004' }
 ]
 
-const validateFields = (e) => {
-    switch (e.target.name) {
-        case 'advertisementTitle':
-            return e.target.value ? {
-                content: 'Please enter a valid title',
-                pointing: 'below',
-            } : false;
-        case '2':
-            return e.target.value ? {
-
-            } : true;
-        case '3':
-            return e.target.value ? false : true;
-        case '4':
-            return e.target.value ? false : true;
-        default:
-            break;
-    }
-}
-
 export default class vehicleAdForm extends Component {
 
     state = {
@@ -93,7 +73,7 @@ export default class vehicleAdForm extends Component {
             title: '',
             description: '',
             status: 'pending',
-            year: null,
+            year: '',
             make: '',
             model: '',
             category: '',
@@ -114,7 +94,18 @@ export default class vehicleAdForm extends Component {
         phone: '',
         success: false,
         error: false,
-        actionWaiting: false
+        actionWaiting: false,
+        // validation: {
+        //     year: false,
+        //     make: false,
+        //     model: false,
+        //     category: false,
+        //     location: false,
+        //     bodyType: false,
+        //     transmission: false,
+        //     fuelType: false,
+        //     mileage: false
+        // }
     }
 
     componentDidMount = () => {
@@ -127,6 +118,45 @@ export default class vehicleAdForm extends Component {
         //     })
         // });
     }
+
+    // validateFields(payload) {
+
+    //     let success = true;
+
+    //     return new Promise((resolve, reject) => {
+    //         if (payload.year == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, year: true } })
+    //             success = false;
+    //         }
+    //         if (payload.make == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, make: true } })
+    //             success = false;
+    //         } if (payload.model == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, model: true } })
+    //             success = false;
+    //         } if (payload.category == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, category: true } })
+    //             success = false;
+    //         } if (payload.location == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, location: true } })
+    //             success = false;
+    //         } if (payload.bodyType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, bodyType: true } })
+    //             success = false;
+    //         } if (payload.transmission == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, transmission: true } })
+    //             success = false;
+    //         } if (payload.condition == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, condition: true } })
+    //             success = false;
+    //         } if (payload.fuelType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, fuelType: true } })
+    //             success = false;
+    //         }
+    //         resolve(success);
+    //     });
+
+    // }
 
     render() {
 
@@ -190,6 +220,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={locationOptions}
+                    error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Select location'
                     search
@@ -206,6 +237,7 @@ export default class vehicleAdForm extends Component {
                     options={categoryOptions} // get categories
                     label={{ children: 'Category', htmlFor: 'category' }}
                     placeholder='Vehicle Category'
+                    error={this.state.payload.category == ''}
                     search
                     searchInput={{ id: 'category' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
@@ -217,6 +249,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={vehicleMakeOptions}
+                    error={this.state.payload.make == ''}
                     label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                     placeholder='Vehicle Make'
                     search
@@ -232,6 +265,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleModelOptions}
                     label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
                     placeholder='Vehicle Model'
+                    error={this.state.payload.model == ''}
                     search
                     searchInput={{ id: 'vehicleModel' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
@@ -245,6 +279,7 @@ export default class vehicleAdForm extends Component {
                     options={yearOptions}
                     value={this.state.payload.year}
                     label={{ children: 'Registered year', htmlFor: 'year' }}
+                    error={this.state.payload.year == ''}
                     placeholder='Manufacture Date'
                     search
                     searchInput={{ id: 'year' }}
@@ -258,6 +293,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleBodyOptions}
                     label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
                     placeholder='Vehicle Body Type'
+                    error={this.state.payload.bodyType == ''}
                     search
                     searchInput={{ id: 'bodyType' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
@@ -271,6 +307,7 @@ export default class vehicleAdForm extends Component {
                     options={transmissionOptions}
                     label={{ children: 'Transmission', htmlFor: 'transmission' }}
                     placeholder='Transmission'
+                    error={this.state.payload.transmission == ''}
                     search
                     searchInput={{ id: 'transmission' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
@@ -293,6 +330,7 @@ export default class vehicleAdForm extends Component {
                         options={fuelOptions}
                         label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
                         placeholder='Fuel Type'
+                        error={this.state.payload.fuelType == ''}
                         search
                         searchInput={{ id: 'fuelType' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
@@ -451,7 +489,7 @@ export default class vehicleAdForm extends Component {
                         name="formSubmit"
                         type='submit'
                         control={Button}
-                        content={this.state.actionWaiting ? 'Please wait..': 'Post Ad'}
+                        content={this.state.actionWaiting ? 'Please wait..' : 'Post Ad'}
                         disabled={this.state.actionWaiting}
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
