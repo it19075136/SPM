@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Checkbox, Form, Icon } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Header, Icon } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 import axios from "axios"
 import hashPassword from 'password-hash'
@@ -77,6 +77,9 @@ function Signup () {
   return(
  
   <Form className="user-form-centered">
+      <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
+                    Sign Up
+                </Header>
     <Form.Field>
     <div>
     <Icon name="user"/>
@@ -110,20 +113,27 @@ function Signup () {
     <Icon name="key"/>
       <label>Re Enter Password</label>
       </div>
-      <input placeholder='Re Enter Password'name="Repassword" onChange={(e)=>{setRepassword(e.value)}}/>
+      <input placeholder='Re Enter Password'name="Repassword" onChange={(e)=>{setRepassword(e.target.value)}}/>
     </Form.Field>
     <Form.Field >
       <Checkbox label='I agree to the Terms and Conditions' />
     </Form.Field>
-    <Button type='submit' onClick={submitHandler}>Signup</Button><br/><br/>
+    <Button type='submit' onClick={submitHandler}>Signup</Button>
+    <Header as="h4"  textAlign='center' >
+    OR
+</Header>
     <GoogleLogin
     clientId="862096495152-812dp0vglkhcqffdtmae9tuhi72oouk2.apps.googleusercontent.com"
-    buttonText="Signup"
+    buttonText="Sign up with Google"
     onSuccess={responseGoogle}
     onFailure={responseGoogle}
     cookiePolicy={'single_host_origin'}
 
     />
+    
+    <Header as="h4"  textAlign='center' >
+    Have an account? <a href="/signin" style={{ color: '#076AE0' }}>  Login Here</a>
+</Header>
   </Form>
 )
 }

@@ -91,15 +91,16 @@ var nodemailer = require('nodemailer');
     console.log(user);
     console.log('in getUsetByEmailAndPassword');
      User.findOne({email:user.email}).then((res)=>{
-      //  if(passwordHash.verify(user.password,res.password)){
+      //  if(passwordHash.verify(user.password,res.password)){sandungwp@gmail.com
       //   console.log('in findone if');
+      console.log('getUsetByEmailAndPassword in then res',res);
       console.log('in findone');
          resolve(res);
       //  }
        
      }).catch((err)=>{
       console.log('in getUsetByEmailAndPassword err');
-       reject(err);
+       resolve(err);
      })
    })
  }
