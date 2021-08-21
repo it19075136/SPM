@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
 
@@ -58,6 +58,14 @@ const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: 'Sri Lanka (+94)' }
 ]
 
+const yearOptions = [
+    { key: 'l', text: '2000', value: '2000' },
+    { key: '2', text: '2001', value: '2001' },
+    { key: '3', text: '2002', value: '2002' },
+    { key: '4', text: '2003', value: '2003' },
+    { key: '5', text: '2004', value: '2004' }
+]
+
 const validateFields = (e) => {
     switch (e.target.name) {
         case 'advertisementTitle':
@@ -105,7 +113,8 @@ export default class vehicleAdForm extends Component {
         code: '',
         phone: '',
         success: false,
-        error: false
+        error: false,
+        actionWaiting: false
     }
 
     componentDidMount = () => {
@@ -143,19 +152,21 @@ export default class vehicleAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
-                console.log(res);
-                this.setState({...this.state,success: true}, () => {
-                    setTimeout(() => {
-                        this.setState({...this.state,success: false})
-                    }, 2000);
-                })
-            }).catch((err) => {
-                console.log(err);
-                this.setState({...this.state,error: true}, () => {
-                    setTimeout(() => {
-                        this.setState({...this.state,error: false})
-                    }, 2000);
+            this.setState({ ...this.state, actionWaiting: true }, () => {
+                axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                    console.log(res);
+                    this.setState({ ...this.state, success: true }, () => {
+                        setTimeout(() => {
+                            this.setState({ ...this.state, success: false, actionWaiting: false })
+                        }, 2000);
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        setTimeout(() => {
+                            this.setState({ ...this.state, error: false, actionWaiting: false })
+                        }, 2000);
+                    })
                 })
             })
         }
@@ -230,14 +241,16 @@ export default class vehicleAdForm extends Component {
                 <Form.Field required
                     name='year'
                     width='16'
-                    control={Input}
-                    type='date'
-                    label={{ children: 'Registered year', htmlFor: 'date' }}
-                    placeholder='Registered year'
+                    control={Select}
+                    options={yearOptions}
+                    value={this.state.payload.year}
+                    label={{ children: 'Registered year', htmlFor: 'year' }}
+                    placeholder='Manufacture Date'
                     search
-                    searchInput={{ id: 'date' }}
-                    onChange={handleChange}
-                />
+                    searchInput={{ id: 'year' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })} />
                 <Form.Field required
                     name='bodyType'
                     width='16'
@@ -437,16 +450,17 @@ export default class vehicleAdForm extends Component {
                     name="formSubmit"
                     type='submit'
                     control={Button}
-                    content='Post Ad'
+                    content={this.state.actionWaiting ? 'Please wait.. ' || <Loader active inline /> : 'Publish Ad'}
+                    disabled={this.state.actionWaiting}
                 />
-                { this.state.success ? <Message positive>
+                {this.state.success ? <Message positive>
                     <Message.Header>Success</Message.Header>
                     <p>
                         Your ad successfully submitted for reviewing!
                     </p>
                 </Message> : null
                 }
-                { this.state.error ? <Message negative>
+                {this.state.error ? <Message negative>
                     <Message.Header>Error</Message.Header>
                     <p>
                         Action was unsuccessful, please check and try again!
