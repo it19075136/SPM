@@ -147,7 +147,7 @@ export default class updateSparePartsAdForm extends Component {
                         control={Select}
                         options={partTypeOption}
                         label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
-                        placeholder='Part or Accessory Type'
+                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Part or Accessory Type'}
                         value={this.state.payload.category}
                         search
                         searchInput={{ id: 'accessoryType' }}
@@ -231,7 +231,7 @@ export default class updateSparePartsAdForm extends Component {
                         options={locationOption}
                         value={this.state.payload.location}
                         label={{ children: 'Location', htmlFor: 'location' }}
-                        placeholder='Your Location'
+                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.location ? this.state.payload.location : 'Your Location'}
                         search
                         searchInput={{ id: 'location' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
