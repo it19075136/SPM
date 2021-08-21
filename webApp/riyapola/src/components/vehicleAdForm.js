@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
 
@@ -58,25 +58,13 @@ const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: 'Sri Lanka (+94)' }
 ]
 
-const validateFields = (e) => {
-    switch (e.target.name) {
-        case 'advertisementTitle':
-            return e.target.value ? {
-                content: 'Please enter a valid title',
-                pointing: 'below',
-            } : false;
-        case '2':
-            return e.target.value ? {
-
-            } : true;
-        case '3':
-            return e.target.value ? false : true;
-        case '4':
-            return e.target.value ? false : true;
-        default:
-            break;
-    }
-}
+const yearOptions = [
+    { key: 'l', text: '2000', value: '2000' },
+    { key: '2', text: '2001', value: '2001' },
+    { key: '3', text: '2002', value: '2002' },
+    { key: '4', text: '2003', value: '2003' },
+    { key: '5', text: '2004', value: '2004' }
+]
 
 export default class vehicleAdForm extends Component {
 
@@ -85,7 +73,7 @@ export default class vehicleAdForm extends Component {
             title: '',
             description: '',
             status: 'pending',
-            year: null,
+            year: '',
             make: '',
             model: '',
             category: '',
@@ -105,7 +93,19 @@ export default class vehicleAdForm extends Component {
         code: '',
         phone: '',
         success: false,
-        error: false
+        error: false,
+        actionWaiting: false,
+        // validation: {
+        //     year: false,
+        //     make: false,
+        //     model: false,
+        //     category: false,
+        //     location: false,
+        //     bodyType: false,
+        //     transmission: false,
+        //     fuelType: false,
+        //     mileage: false
+        // }
     }
 
     componentDidMount = () => {
@@ -118,6 +118,45 @@ export default class vehicleAdForm extends Component {
         //     })
         // });
     }
+
+    // validateFields(payload) {
+
+    //     let success = true;
+
+    //     return new Promise((resolve, reject) => {
+    //         if (payload.year == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, year: true } })
+    //             success = false;
+    //         }
+    //         if (payload.make == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, make: true } })
+    //             success = false;
+    //         } if (payload.model == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, model: true } })
+    //             success = false;
+    //         } if (payload.category == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, category: true } })
+    //             success = false;
+    //         } if (payload.location == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, location: true } })
+    //             success = false;
+    //         } if (payload.bodyType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, bodyType: true } })
+    //             success = false;
+    //         } if (payload.transmission == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, transmission: true } })
+    //             success = false;
+    //         } if (payload.condition == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, condition: true } })
+    //             success = false;
+    //         } if (payload.fuelType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, fuelType: true } })
+    //             success = false;
+    //         }
+    //         resolve(success);
+    //     });
+
+    // }
 
     render() {
 
@@ -143,19 +182,21 @@ export default class vehicleAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
-                console.log(res);
-                this.setState({...this.state,success: true}, () => {
-                    setTimeout(() => {
-                        this.setState({...this.state,success: false})
-                    }, 2000);
-                })
-            }).catch((err) => {
-                console.log(err);
-                this.setState({...this.state,error: true}, () => {
-                    setTimeout(() => {
-                        this.setState({...this.state,error: false})
-                    }, 2000);
+            this.setState({ ...this.state, actionWaiting: true }, () => {
+                axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                    console.log(res);
+                    this.setState({ ...this.state, success: true }, () => {
+                        setTimeout(() => {
+                            this.setState({ ...this.state, success: false, actionWaiting: false })
+                        }, 2000);
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        setTimeout(() => {
+                            this.setState({ ...this.state, error: false, actionWaiting: false })
+                        }, 2000);
+                    })
                 })
             })
         }
@@ -179,6 +220,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={locationOptions}
+                    error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Select location'
                     search
@@ -195,6 +237,7 @@ export default class vehicleAdForm extends Component {
                     options={categoryOptions} // get categories
                     label={{ children: 'Category', htmlFor: 'category' }}
                     placeholder='Vehicle Category'
+                    error={this.state.payload.category == ''}
                     search
                     searchInput={{ id: 'category' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
@@ -206,6 +249,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={vehicleMakeOptions}
+                    error={this.state.payload.make == ''}
                     label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                     placeholder='Vehicle Make'
                     search
@@ -221,6 +265,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleModelOptions}
                     label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
                     placeholder='Vehicle Model'
+                    error={this.state.payload.model == ''}
                     search
                     searchInput={{ id: 'vehicleModel' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
@@ -230,14 +275,17 @@ export default class vehicleAdForm extends Component {
                 <Form.Field required
                     name='year'
                     width='16'
-                    control={Input}
-                    type='date'
-                    label={{ children: 'Registered year', htmlFor: 'date' }}
-                    placeholder='Registered year'
+                    control={Select}
+                    options={yearOptions}
+                    value={this.state.payload.year}
+                    label={{ children: 'Registered year', htmlFor: 'year' }}
+                    error={this.state.payload.year == ''}
+                    placeholder='Manufacture Date'
                     search
-                    searchInput={{ id: 'date' }}
-                    onChange={handleChange}
-                />
+                    searchInput={{ id: 'year' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })} />
                 <Form.Field required
                     name='bodyType'
                     width='16'
@@ -245,6 +293,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleBodyOptions}
                     label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
                     placeholder='Vehicle Body Type'
+                    error={this.state.payload.bodyType == ''}
                     search
                     searchInput={{ id: 'bodyType' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
@@ -258,6 +307,7 @@ export default class vehicleAdForm extends Component {
                     options={transmissionOptions}
                     label={{ children: 'Transmission', htmlFor: 'transmission' }}
                     placeholder='Transmission'
+                    error={this.state.payload.transmission == ''}
                     search
                     searchInput={{ id: 'transmission' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
@@ -280,6 +330,7 @@ export default class vehicleAdForm extends Component {
                         options={fuelOptions}
                         label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
                         placeholder='Fuel Type'
+                        error={this.state.payload.fuelType == ''}
                         search
                         searchInput={{ id: 'fuelType' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
@@ -431,22 +482,26 @@ export default class vehicleAdForm extends Component {
                     }) : null}
                 </ul>
                 <br />
-                <Form.Field
-                    primary
-                    id='submit'
-                    name="formSubmit"
-                    type='submit'
-                    control={Button}
-                    content='Post Ad'
-                />
-                { this.state.success ? <Message positive>
+                <Form.Group>
+                    <Form.Field
+                        primary
+                        id='submit'
+                        name="formSubmit"
+                        type='submit'
+                        control={Button}
+                        content={this.state.actionWaiting ? 'Please wait..' : 'Post Ad'}
+                        disabled={this.state.actionWaiting}
+                    />
+                    {this.state.actionWaiting ? <Loader active inline /> : null}
+                </Form.Group>
+                {this.state.success ? <Message positive>
                     <Message.Header>Success</Message.Header>
                     <p>
                         Your ad successfully submitted for reviewing!
                     </p>
                 </Message> : null
                 }
-                { this.state.error ? <Message negative>
+                {this.state.error ? <Message negative>
                     <Message.Header>Error</Message.Header>
                     <p>
                         Action was unsuccessful, please check and try again!
