@@ -26,10 +26,8 @@ router.post('/', (req,res) => {
 
 //**PUT METHOD TO UPDATE SPAREPARTS DETAIL BY ID USING 'updateSparePartById' FUNCTION*/
 router.put('/:id', (req,res) => {
-    updateSparePartById(req.params._id, req.body).then((result) => {
-        res.json(result);
-    }).catch((err) => {
-        console.log(err);
+    updateSparePartById(req.params.id,req.body).then((result) => {
+        result._id ? res.json(result) : res.status(400).json(result);
     })
 });
 

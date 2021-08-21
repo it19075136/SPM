@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height        : 40vmin;
   pointer-events: none;
 }
 
@@ -15,13 +15,13 @@
 
 .App-header {
   background-color: white;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height      : 100vh;
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  justify-content : center;
+  font-size       : calc(10px + 2vmin);
+  color           : white;
 }
 
 .App-link {
@@ -32,144 +32,159 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-.form-centered{
-  display: flex;
-  align-items: flex-start;
+.form-centered {
+  display       : flex;
+  align-items   : flex-start;
   flex-direction: column;
-  border: 2px solid #ddd;
-  box-shadow: 5px 5px 10px;
-  width: fit-content;
-  margin: 50px 20% 150px 32%;
-  padding: 60px;
+  border        : 2px solid #ddd;
+  box-shadow    : 5px 5px 10px;
+  width         : fit-content;
+  margin        : 50px 20% 150px 32%;
+  padding       : 60px;
 }
 
-.form-centered-category{
-  display: flex;
-  align-items: flex-start;
+.form-centered-category {
+  display       : flex;
+  align-items   : flex-start;
   flex-direction: column;
-  border: 2px solid #ddd;
-  box-shadow: 5px 5px 10px;
-  width: 60%;
-  margin: 50px 10% 50px 10%;
-  padding: 10px;
+  border        : 2px solid #ddd;
+  box-shadow    : 5px 5px 10px;
+  width         : 60%;
+  margin        : 50px 10% 50px 10%;
+  padding       : 10px;
 }
 
-.main-form-wrapper{
-  display: flex;
-  flex-direction: row;
-  margin: 30px;
+.main-form-wrapper {
+  display        : flex;
+  flex-direction : row;
+  margin         : 30px;
   justify-content: space-around;
 }
 
-.image-item{
+.image-item {
   margin-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  border-radius: 20%;
 }
 
-.category-name-input{
+.image-item .img-content{
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+}
+.category-name-input {
   width: 350px;
 }
 
-.category-description-input{
+.category-description-input {
   width: 350px;
 }
 
-.add-category-button{
+.add-category-button {
   margin: 10px 10px 20px 0px !important;
 }
 
-.main-label-text{
+.main-label-text {
   margin-bottom: 20px !important;
 }
-.dnd-image-area{
-  width: 200px;
-  height: 100px;
-  display: flex;
+
+.dnd-image-area {
+  width          : 200px;
+  height         : 100px;
+  display        : flex;
   justify-content: center;
-  align-items: center;
-  padding: 10px;
+  align-items    : center;
+  padding        : 10px;
 }
 
-.uploader-area{
-  display: flex;
+.uploader-area {
+  display       : flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items   : flex-start;
 }
 
-.update-form-content{
-  display: flex;
-  align-items: flex-start;
+.update-form-content {
+  display        : flex;
+  align-items    : flex-start;
   justify-content: center;
-  flex-direction: row;
-  width: fit-content;
+  flex-direction : row;
+  width          : fit-content;
 }
 
-.form-edit-field{
-  display: flex;
+.form-edit-field {
+  display       : flex;
   flex-direction: row;
 }
-.user-form-centered{
-  display: flex;
-  align-items:stretch;
+
+.user-form-centered {
+  display       : flex;
+  align-items   : stretch;
   flex-direction: column;
-  border: 2px solid #ddd;
-  box-shadow: 5px 5px 10px;
-  width: 50%;
-  margin: 50px 20% 150px 25%;
-  padding: 60px;
+  border        : 2px solid #ddd;
+  box-shadow    : 5px 5px 10px;
+  width         : 50%;
+  margin        : 50px 20% 150px 25%;
+  padding       : 60px;
 }
+
+
 /* .user-form-centered input{
 border-width: 200px;
 }
 .userinput{
   border-width: 200px;
 } */
-.user-form-centered button{
+.user-form-centered button {
   align-self: center;
 }
-.user-profile-form-centered{
-  display: flex;
-  align-items:stretch;
+
+.user-profile-form-centered {
+  display       : flex;
+  align-items   : stretch;
   flex-direction: column;
-  border: 2px solid #ddd;
-  box-shadow: 5px 5px 10px;
-  width: 100%;
-  
-  padding: 60px;
+  border        : 2px solid #ddd;
+  box-shadow    : 5px 5px 10px;
+  width         : 500px;
+  padding      : 60px;
   /* align-self: unset; */
+  right: 250px;
+  margin-top: 80px;
 }
-.user-profile-form-centered button{
+
+.user-profile-form-centered button {
   align-self: center;
 }
-.user-profile-password-form-centered{
-  display: flex;
-  align-items:stretch;
+
+.user-profile-password-form-centered {
+  display       : flex;
+  align-items   : stretch;
   flex-direction: column;
-  border: 2px solid #ddd;
-  box-shadow: 5px 5px 10px;
-  margin-left: 50px;
-  margin-top: 100px;
-  width: 100%;
-  /* margin: 150px 10% 150px 5%; */
-  padding: 60px;
-  /* align-self: unset; */
+  border        : 2px solid #ddd;
+  box-shadow    : 5px 5px 10px;
+  margin-left   : 50px;
+  margin-top    : 240px;
+  width         : 100%;
+  left          : 40px;
+  /* margin     : 150px 10% 150px 5%; */
+  padding       : 60px;
+  /* align-self : unset; */
 }
-.user-profile-form--centered button{
+
+.user-profile-form--centered button {
   align-self: center;
 }
-/* .updateProfile{
- float: right;
-} */
-.profile-main{
-  display: flex;
+
+.profile-main {
+  display       : flex;
   flex-direction: row;
-  align-items: flex-start;
-  margin: 50px 10% 150px 25%;
+  align-items   : flex-start;
+  margin        : 50px 10% 150px 25%;
 }

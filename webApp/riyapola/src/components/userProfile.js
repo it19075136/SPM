@@ -107,7 +107,7 @@ function UserProfile() {
                         email: userResponds.email,
                         type: userResponds.type,
                         phoneNumber: userResponds.phoneNumber,
-                        password:userResponds.password
+                        password: userResponds.password
                     }
                     console.log(userDetails);
                     // dispatch({type:'ADD_USER',payload:userDetails});
@@ -121,97 +121,103 @@ function UserProfile() {
     return (
         <div className="profile-main">
             <div>
-            <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
-                User Profile
-            </Header>
-            <Form className='user-profile-form-centered'>
-                {user.image.map((image, index) => (
-                    <div key={index} className="image-item">
-                        <img src={image['data_url']} alt="" width="100" />
-                    </div>
-                ))}
-                <Modal
-                    closeIcon
-                    open={imagestate.imgModalOpen}
-                    trigger={<Button color='orange' type='button'><Icon name='edit' />Images</Button>}
-                    onClose={() => setImagestate({ ...imagestate, imgModalOpen: false })}
-                    onOpen={() => setImagestate({ ...imagestate, imgModalOpen: true })}
-                >
-                    <Header icon='image' content='Update Images' />
-                    <Modal.Content>
+                <Header as='h2' icon textAlign='center' style={{marginRight: '-300px', color: '#076AE0'}}>
+                    <Icon name='user' circular />
+                    <Header.Content>User Profile</Header.Content>
+                </Header>
+                <Form className='user-profile-form-centered'>
+                    {user.image.map((image, index) => (
+                        <div key={index} className="image-item">
+                            <img src={image['data_url']} alt="" width="100" className="img-content" />
+                        </div>
+                    ))}
+                    <Modal
+                        closeIcon
+                        open={imagestate.imgModalOpen}
+                        trigger={<Button color='blue' type='button'><Icon name='camera' />Profile Image</Button>}
+                        onClose={() => setImagestate({ ...imagestate, imgModalOpen: false })}
+                        onOpen={() => setImagestate({ ...imagestate, imgModalOpen: true })}
+                    >
+                        <Header icon='image' content='Update Images' />
+                        <Modal.Content>
 
-                        <ImageUploading
-                            multiple
-                            value={user.image}
-                            onChange={(imageList, addUpdateIndex) => setUser({ ...user, image: imageList })}
-                            maxNumber={2}
-                            dataURLKey="data_url"
-                        >
-                            {({
-                                imageList,
-                                onImageUpload,
-                                onImageRemoveAll,
-                                onImageUpdate,
-                                onImageRemove,
-                                isDragging,
-                                dragProps,
-                            }) => (
-                                <div className="upload__image-wrapper">
-                                    <div className='uploader-area'>
-                                        <Segment
-                                            className='dnd-image-area'
-                                            style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
-                                            textAlign='center'
-                                            onClick={onImageUpload}
-                                            {...dragProps}>
-                                            Click or Drop Images here
-                                        </Segment>
-                                        &nbsp;
-                                        <Button color='red' type='button' disabled={user.image.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove  image</Button>
-                                    </div>
-                                    <div className="image-list">
-                                        {imageList.map((image, index) => (
-                                            <div key={index} className="image-item">
-                                                <img src={image['data_url']} alt="" width="100" />
-                                                <div className="image-item__btn-wrapper">
-                                                    <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
-                                                    <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
+                            <ImageUploading
+                                multiple
+                                value={user.image}
+                                onChange={(imageList, addUpdateIndex) => setUser({ ...user, image: imageList })}
+                                maxNumber={2}
+                                dataURLKey="data_url"
+                            >
+                                {({
+                                    imageList,
+                                    onImageUpload,
+                                    onImageRemoveAll,
+                                    onImageUpdate,
+                                    onImageRemove,
+                                    isDragging,
+                                    dragProps,
+                                }) => (
+                                    <div className="upload__image-wrapper">
+                                        <div className='uploader-area'>
+                                            <Segment
+                                                className='dnd-image-area'
+                                                style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                                textAlign='center'
+                                                onClick={onImageUpload}
+                                                {...dragProps}>
+                                                Click or Drop Images here
+                                            </Segment>
+                                            &nbsp;
+                                            <Button color='red' type='button' disabled={user.image.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove  image</Button>
+                                        </div>
+                                        <div className="image-list">
+                                            {imageList.map((image, index) => (
+                                                <div key={index} className="image-item">
+                                                    <img src={image['data_url']} alt="" width="100" />
+                                                    <div className="image-item__btn-wrapper">
+                                                        <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
+                                                        <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </ImageUploading>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='green' onClick={() => setImagestate({ ...imagestate, imgModalOpen: false })}>
-                            <Icon name='checkmark' /> Done
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-                {/* <div >
+                                )}
+                            </ImageUploading>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button color='green' onClick={() => setImagestate({ ...imagestate, imgModalOpen: false })}>
+                                <Icon name='checkmark' /> Done
+                            </Button>
+                        </Modal.Actions>
+                    </Modal>
+                    <br />
+                    {/* <div >
                             <div>
                                  Change Photo
                                 <Button color='orange' type='button'><Icon name='edit' />Images</Button>
                                  <input type="file" name="file"  />
                             </div>
                         </div> */}
-                <Form.Field>
-                    <div>
-                        <Icon name="user" />
-                        <label>Name</label>
-                    </div>
-                    <input placeholder='Name' name="name" onChange={formHandler} value={user.name}
-                        // contentEditable={iconState.name ? true:false}  
-                        disabled={iconState.name ? false : true}
-                    />
-                    <Icon
-                        name={iconState.name ? 'save' : 'edit'}
-                        // name={'edit'}
-                        onClick={() => setIconState({ ...iconState, name: !iconState.name })}
-                    />
-                    {/* <div className='form-edit-field'>
+                    <Form.Field>
+                        <div>
+                            <Icon name="user" />
+                            <label>Name</label>
+                        </div>
+                        <div className='form-edit-field'>
+                            <Icon
+                                name={iconState.name ? 'save' : 'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, name: !iconState.name })}
+                            />
+                            <input placeholder='Name' name="name" onChange={formHandler} value={user.name}
+                                // contentEditable={iconState.name ? true:false}  
+                                disabled={iconState.name ? false : true}
+                            />
+                        </div>
+
+
+                        {/* <div className='form-edit-field'>
                             <Icon
                                 name={this.iconState.name ?  'save':'edit'}
                                 // name={'edit'}
@@ -229,47 +235,54 @@ function UserProfile() {
                                 // onChange={handleChange}
                             />
                         </div> */}
-                    <div>
-                        <Icon name="mail" />
-                        <label>Email</label>
-                    </div>
-                    <input placeholder='Email' name="email" onChange={formHandler} value={user.email}
-                        disabled={iconState.email ? false : true}
-                    />
-                    <Icon
-                        name={iconState.email ? 'save' : 'edit'}
-                        // name={'edit'}
-                        onClick={() => setIconState({ ...iconState, email: !iconState.email })}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <div>
-                        <Icon name="key" />
-                        <label>phoneNumber</label>
-                    </div>
-                    <input placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} value={user.phoneNumber}
-                        disabled={iconState.phoneNumber ? false : true}
-                    />
-                    <Icon
-                        name={iconState.phoneNumber ? 'save' : 'edit'}
-                        // name={'edit'}
-                        onClick={() => setIconState({ ...iconState, phoneNumber: !iconState.phoneNumber })}
-                    />
-                </Form.Field>
-                {/* <Button type='submit' onClick={submitHandler}>Update Profile</Button><br /><br /> */}
-                <Form.Field
-                    primary
-                    id='submit'
-                    name="formSubmit"
-                    type='submit'
-                    className='form-update-btn'
-                    control={Button}
-                    onClick={submitHandler}
-                    content='Update Profile'
-                /><br /><br />
-            </Form>
+                        <div>
+                            <Icon name="mail" />
+                            <label>Email</label>
+                        </div>
+                        <div className='form-edit-field'>
+                            <Icon
+                                name={iconState.email ? 'save' : 'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, email: !iconState.email })}
+                            />
+                            <input placeholder='Email' name="email" onChange={formHandler} value={user.email}
+                                disabled={iconState.email ? false : true}
+                            />
+                        </div>
+
+                    </Form.Field>
+                    <Form.Field>
+                        <div>
+                            <Icon name="key" />
+                            <label>phoneNumber</label>
+                        </div>
+                        <div className='form-edit-field'>
+                            <Icon
+                                name={iconState.phoneNumber ? 'save' : 'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, phoneNumber: !iconState.phoneNumber })}
+                            />
+                            <input placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} value={user.phoneNumber}
+                                disabled={iconState.phoneNumber ? false : true}
+                            />
+                        </div>
+
+
+                    </Form.Field>
+                    {/* <Button type='submit' onClick={submitHandler}>Update Profile</Button><br /><br /> */}
+                    <Form.Field
+                        primary
+                        id='submit'
+                        name="formSubmit"
+                        type='submit'
+                        className='form-update-btn'
+                        control={Button}
+                        onClick={submitHandler}
+                        content='Update Profile'
+                    /><br /><br />
+                </Form>
             </div>
-            <Divider vertical/>
+            {/* <Divider vertical /> */}
             <div className="updateProfile">
                 <Form className='user-profile-password-form-centered'>
                     <Form.Field>
