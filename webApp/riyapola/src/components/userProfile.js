@@ -122,7 +122,7 @@ function UserProfile() {
         <div className="profile-main">
             <div>
             <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
-                Update Your  Details
+                User Profile
             </Header>
             <Form className='user-profile-form-centered'>
                 {user.image.map((image, index) => (
@@ -277,14 +277,14 @@ function UserProfile() {
                             <Icon name="key" />
                             <label>Current Password</label>
                         </div>
-                        <input placeholder='Current Password' name="password" onChange={(e) => { setCurrentPassword(e.target.value) }} />
+                        <input placeholder='Current Password' name="password" type="password" onChange={(e) => { setCurrentPassword(e.target.value) }} />
                     </Form.Field>
                     <Form.Field>
                         <div>
                             <Icon name="key" />
                             <label>New Password</label>
                         </div>
-                        <input placeholder='New Password' name="password" onChange={(e) => { setNewPassword({ password: e.target.value }) }} />
+                        <input placeholder='New Password' name="password" type="password" onChange={(e) => { setNewPassword({ password: e.target.value }) }} />
                     </Form.Field>
 
                     <Form.Field>
@@ -292,7 +292,7 @@ function UserProfile() {
                             <Icon name="key" />
                             <label>confirm Password</label>
                         </div>
-                        <input placeholder='confirm Password' name="password" onChange={(e) => { setRepassword(e.target.value) }} />
+                        <input placeholder='confirm Password' name="password" type="password" onChange={(e) => { setRepassword(e.target.value) }} />
                     </Form.Field>
                     {/* <Button type='submit' onClick={submitHandler}>Change Password</Button><br /><br /> */}
                     <Form.Field

@@ -65,6 +65,7 @@ function Signup () {
             console.log('decode token userRespond',userResponds);
             console.log('send details to redux',userDetails)
             localStorage.setItem('user',token);
+            window.location.href = '/'
             // dispatch({type:'ADD_USER',payload:userDetails})
             // resolve(res.data);
         }
@@ -78,42 +79,42 @@ function Signup () {
  
   <Form className="user-form-centered">
       <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
-                    Sign Up
+      <Icon name="signup"/>   Sign Up
                 </Header>
-    <Form.Field>
+    <Form.Field >
     <div>
     <Icon name="user"/>
-      <label>Name</label>
+      <label >Name<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input placeholder='Name'name="name" onChange={formHandler} />
     </Form.Field>
     <Form.Field>
     <div>
     <Icon name="mail"/>
-      <label>Email</label>
+      <label>Email<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input placeholder='Email' name="email" onChange={formHandler} />
     </Form.Field>
     <Form.Field>
     <div>
     <Icon name="phone"/>
-      <label>phoneNumber</label>
+      <label>phoneNumber<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input className="userinput" placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} />
     </Form.Field>
     <Form.Field>
     <div>
     <Icon name="key"/>
-      <label>Password</label>
+      <label>Password<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
-      <input placeholder='Password' name="password" onChange={formHandler} />
+      <input placeholder='Password' name="password" type="password" onChange={formHandler} />
     </Form.Field>
     <Form.Field>
     <div>
     <Icon name="key"/>
-      <label>Re Enter Password</label>
+      <label>Re Enter Password<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
-      <input placeholder='Re Enter Password'name="Repassword" onChange={(e)=>{setRepassword(e.target.value)}}/>
+      <input placeholder='Re Enter Password'name="Repassword" type="password" onChange={(e)=>{setRepassword(e.target.value)}}/>
     </Form.Field>
     <Form.Field >
       <Checkbox label='I agree to the Terms and Conditions' />
@@ -128,7 +129,6 @@ function Signup () {
     onSuccess={responseGoogle}
     onFailure={responseGoogle}
     cookiePolicy={'single_host_origin'}
-
     />
     
     <Header as="h4"  textAlign='center' >

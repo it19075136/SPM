@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Menu, Button, Header, Icon, Modal } from 'semantic-ui-react';
 import './style.css';
+import jwt from 'jsonwebtoken'
 
 export default class navbar extends Component {
     state = {
@@ -16,12 +17,17 @@ export default class navbar extends Component {
             case 'sign-in':
                 window.location.href = '/signin'
                 break;
+            case 'sign-out':
+                localStorage.removeItem("user");
+                window.location.href = '/signin'
             default:
                 break;
         }
     }
 
     render() {
+        const userItem = localStorage.getItem("user");
+    const user = jwt.decode(userItem);
         const { activeItem } = this.state
         return (
             <div>
@@ -47,7 +53,16 @@ export default class navbar extends Component {
                     >
                         Testimonials
                     </Menu.Item>
-
+                 {user ? <Menu.Item
+                        className="item"
+                        name='sign-out'
+                        position='right'
+                        active={activeItem === 'sign-out'}
+                        onClick={this.handleItemClick}
+                    >
+                        Sign-out
+                    </Menu.Item> : 
+                    
                     <Menu.Item
                         className="item"
                         name='sign-in'
@@ -57,6 +72,8 @@ export default class navbar extends Component {
                     >
                         Sign-in
                     </Menu.Item>
+                    }
+                    
                     <Menu.Item
                         className="item"
                         style={{ color: 'orange' }}
