@@ -5,8 +5,8 @@ function addSparePartAd(payload) {
     return new Promise((resolve, reject) => {
         const newSparePart = new spareParts(payload);
 
-        spareParts.save().then((sparepart) => {
-            resolve(newSparePart);
+        newSparePart.save().then((sparepart) => {
+            resolve(sparepart);
         }).catch((err) => {
             resolve(err);
         })
