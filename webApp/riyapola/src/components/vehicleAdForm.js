@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
 
@@ -158,25 +158,20 @@ export default class vehicleAdForm extends Component {
 
     // }
 
+    addPhone = () =>
+        this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+            this.setState({ ...this.state, phone: '' })
+        })
+
+    deletePhone = () =>
+        this.setState((prevState) => ({ ...this.state, payload: { ...this.state.payload, contactNumbers: prevState.payload.contactNumbers.slice(0, -1) } }))
+
     render() {
 
         const handleChange = (e) => {
             this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
                 console.log(this.state);
             });
-        }
-
-        const addPhone = () => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-                this.setState({ ...this.state, phone: '' })
-            })
-        }
-
-        const deletePhone = (contact) => {
-            console.log(contact);
-            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
-            //     console.log(this.state)
-            // })
         }
 
         const handleSubmit = (e) => {
@@ -459,13 +454,22 @@ export default class vehicleAdForm extends Component {
                     />
                     <Form.Field
                         action={
-                            <Button
-                                primary
-                                name='addPhone'
-                                icon='add'
-                                type='button'
-                                onClick={addPhone}
-                            />
+                            <Button.Group style={{ marginLeft: '0px' }}>
+                                <Button
+                                    primary
+                                    type='button'
+                                    disabled={this.state.phone == ''}
+                                    icon='plus'
+                                    onClick={this.addPhone}
+                                />
+                                <Button
+                                    color='red'
+                                    type='button'
+                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                    icon='trash'
+                                    onClick={this.deletePhone}
+                                />
+                            </Button.Group>
                         }
                         id='phone'
                         name='phone'
@@ -476,12 +480,20 @@ export default class vehicleAdForm extends Component {
                         onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
                     />
                 </Form.Group>
-                <ul>
-                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                        return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
-                    }) : null}
-                </ul>
-                <br />
+                <Transition.Group
+                    as={List}
+                    duration={200}
+                    divided
+                    size='huge'
+                    verticalAlign='middle'
+                >
+                    {this.state.payload.contactNumbers.map((item) => (
+                        <List.Item key={item}>
+                            <Icon name='call' />
+                            <List.Content header={item} />
+                        </List.Item>
+                    ))}
+                </Transition.Group>
                 <Form.Group>
                     <Form.Field
                         primary
