@@ -444,15 +444,18 @@ export default class vehicleAdForm extends Component {
                     }) : null}
                 </ul>
                 <br />
-                <Form.Field
-                    primary
-                    id='submit'
-                    name="formSubmit"
-                    type='submit'
-                    control={Button}
-                    content={this.state.actionWaiting ? 'Please wait.. ' || <Loader active inline /> : 'Publish Ad'}
-                    disabled={this.state.actionWaiting}
-                />
+                <Form.Group>
+                    <Form.Field
+                        primary
+                        id='submit'
+                        name="formSubmit"
+                        type='submit'
+                        control={Button}
+                        content={this.state.actionWaiting ? 'Please wait..': 'Post Ad'}
+                        disabled={this.state.actionWaiting}
+                    />
+                    {this.state.actionWaiting ? <Loader active inline /> : null}
+                </Form.Group>
                 {this.state.success ? <Message positive>
                     <Message.Header>Success</Message.Header>
                     <p>
