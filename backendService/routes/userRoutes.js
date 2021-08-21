@@ -57,7 +57,7 @@ router.post('/getUser',(req,res)=>{
             email : user.email,
             type : user.type,
             phoneNumber :user.phoneNumber,
-            wishList:newUser.wishList
+            wishList:user.wishList
         },"jwtSecret")
         const password = user.password;
         console.log('in router get');
@@ -91,7 +91,7 @@ router.post('/update/:id', (req, res) => {
                 email : user.email,
                 type : user.type,
                 phoneNumber :user.phoneNumber,
-                wishList:newUser.wishList
+                wishList:user.wishList
             },"jwtSecret")
             res.json(
                 {token}
