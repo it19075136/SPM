@@ -1,3 +1,284 @@
+import React, { useState } from 'react'
+import { Button, Checkbox, Form, Header, Icon, Modal, Segment } from 'semantic-ui-react'
+import GoogleLogin from 'react-google-login'
+import axios from "axios"
+import hashPassword from 'password-hash'
+import jwt from 'jsonwebtoken'
+import ImageUploading from 'react-images-uploading';
+
+// constructor(props){
+//   super(props);
+//   this.state={
+//      name :"" ,
+//       email :"" ,
+//       phoneNumber:"",
+//       type:"buyerSeller"
+//   }
+// }
+function UserProfile() {
+    const item=localStorage.getItem("user");
+    const decodeItem = jwt.decode(item);
+   
+    const [user, setUser] = useState({
+        name: decodeItem.name,
+        email: decodeItem.email,
+        phoneNumber: decodeItem.phoneNumber
+    })
+    const  [repassword, setRepassword] = useState("");
+    const  [newPassword, setNewPassword] = useState("");
+    const  [currentPassword, setCurrentPassword] = useState("");
+    const  [iconState, setIconState] = useState({
+        name:false,
+        email:false,
+        phoneNumber:false
+    });
+    // setUser(decodeItem);
+    // const [repassword, setRepassword] = useState("");
+    // const responseGoogle = (response) => {
+    //     setUser({
+    //         name: response.name,
+    //         email: response.email,
+    //         phoneNumber: response.phoneNumber,
+    //         // type:"buyerSeller"
+    //     })
+    // }
+    const formHandler = (e) => {
+        // setUser({
+        //   ...this.user,
+        //   [e.target.name]:e.target.value
+        // })
+        setUser(prevState => ({
+            ...prevState,
+            [e.target.name]: e.target.value
+        }));
+    }
+    const submitHandler = (e) => {
+        // console.log(user, "user");
+        // e.preventDefault();
+        // user.type = "buyerSeller"
+        // user.password = hashPassword.generate(user.password);
+        // axios.post('http://localhost:5000/user/add', user).then(res => {
+        //     const token = res.data;
+        //     console.log(token, "token");
+        //     if (token = 'Email Already Exists') {
+        //         // resolve(res.data);
+        //     }
+        //     else if (token) {
+        //         const userResponds = jwt.decode(token);
+        //         const userDetails = {
+        //             _id: userResponds._id,
+        //             name: userResponds.name,
+        //             email: userResponds.email,
+        //             type: userResponds.type,
+        //             phoneNumber: userResponds.phoneNumber
+        //         }
+        //         console.log('decode token userRespond', userResponds);
+        //         console.log('send details to redux', userDetails)
+        //         localStorage.setItem('user', token);
+        //         // dispatch({type:'ADD_USER',payload:userDetails})
+        //         // resolve(res.data);
+        //     }
+
+        // }).catch(err => {
+        //     console.log(err)
+        //     // reject(err)
+        // })
+    }
+    return (
+        <div>
+             <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
+                    Update Your  Details
+                </Header>
+            <Form className='user-profile-form-centered'>
+            {/* <Modal
+                                closeIcon
+                                open={this.state.imgModalOpen}
+                                trigger={<Button color='orange' type='button'><Icon name='edit' />Images</Button>}
+                                onClose={() => this.setState({ ...this.state, imgModalOpen: false })}
+                                onOpen={() => this.setState({ ...this.state, imgModalOpen: true })}
+                            >
+                                <Header icon='image' content='Update Images' />
+                                <Modal.Content>
+
+                                    <ImageUploading
+                                        multiple
+                                        value={this.state.payload.images}
+                                        onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                                        maxNumber={10}
+                                        dataURLKey="data_url"
+                                    >
+                                        {({
+                                            imageList,
+                                            onImageUpload,
+                                            onImageRemoveAll,
+                                            onImageUpdate,
+                                            onImageRemove,
+                                            isDragging,
+                                            dragProps,
+                                        }) => (
+                                            <div className="upload__image-wrapper">
+                                                <div className='uploader-area'>
+                                                    <Segment
+                                                        className='dnd-image-area'
+                                                        style={isDragging ? { backgroundColor: '#076AE0', color: 'white' } : { backgroundColor: '#ddd' }}
+                                                        textAlign='center'
+                                                        onClick={onImageUpload}
+                                                        {...dragProps}>
+                                                        Click or Drop Images here
+                                                    </Segment>
+                                                    &nbsp;
+                                                    <Button color='red' type='button' disabled={this.state.payload.images.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove all images</Button>
+                                                </div>
+                                                <div className="image-list">
+                                                    {imageList.map((image, index) => (
+                                                        <div key={index} className="image-item">
+                                                            <img src={image['data_url']} alt="" width="100" />
+                                                            <div className="image-item__btn-wrapper">
+                                                                <Button color='grey' size='mini' type='button' icon='pencil' onClick={() => onImageUpdate(index)} />
+                                                                <Button color='red' size='mini' type='button' icon='trash' onClick={() => onImageRemove(index)} />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </ImageUploading>
+                                </Modal.Content>
+                                <Modal.Actions>
+                                    <Button color='green' onClick={() => this.setState({ ...this.state, imgModalOpen: false })}>
+                                        <Icon name='checkmark' /> Done
+                                    </Button>
+                                </Modal.Actions>
+                            </Modal> */}
+                 {/* <div >
+                            <div>
+                                 Change Photo
+                                <Button color='orange' type='button'><Icon name='edit' />Images</Button>
+                                 <input type="file" name="file"  />
+                            </div>
+                        </div> */}
+                <Form.Field>
+                        
+
+                       
+                      
+                    <div>
+                        <Icon name="mail" />
+                        <label>Name</label>
+                    </div>
+                    <input placeholder='Name' name="Name" onChange={formHandler}  value={user.name} 
+                    // contentEditable={iconState.name ? true:false}  
+                    disabled={iconState.name ? false:true}  
+                    />
+                    <Icon
+                                name={iconState.name ?  'save':'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, name: !iconState.name })}
+                            />
+                    {/* <div className='form-edit-field'>
+                            <Icon
+                                name={this.iconState.name ?  'save':'edit'}
+                                // name={'edit'}
+                                onClick={() => this.setIconState({ ...this.iconState, name: !this.iconState.name })}
+                            />
+                            <Form.Field required
+                                width='16'
+                                id='title'
+                                name="title"
+                                // control={Input}
+                                label='Advertisement Title'
+                                placeholder='Add an advertisement title'
+                                editeble
+                                disabled={this.state.titleState ? this.state.titleState : false}
+                                // onChange={handleChange}
+                            />
+                        </div> */}
+                    <div>
+                        <Icon name="mail" />
+                        <label>Email</label>
+                    </div>
+                    <input placeholder='Email' name="email" onChange={formHandler} value={user.email} 
+                    disabled={iconState.email ? false:true} 
+                    />
+                    <Icon
+                                name={iconState.email ?  'save':'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, email: !iconState.email })}
+                            />
+                </Form.Field>
+                <Form.Field>
+                    <div>
+                        <Icon name="key" />
+                        <label>phoneNumber</label>
+                    </div>
+                    <input placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} value={user.phoneNumber}
+                    disabled={iconState.phoneNumber ? false:true} 
+                    />
+                    <Icon
+                                name={iconState.phoneNumber ?  'save':'edit'}
+                                // name={'edit'}
+                                onClick={() => setIconState({ ...iconState, phoneNumber: !iconState.phoneNumber })}
+                            />
+                </Form.Field>
+                {/* <Button type='submit' onClick={submitHandler}>Update Profile</Button><br /><br /> */}
+                <Form.Field
+                            primary
+                            id='submit'
+                            name="formSubmit"
+                            type='submit'
+                            className='form-update-btn'
+                            control={Button}
+                            onClick={submitHandler}
+                            content='Update Profile'
+                        /><br /><br />
+            </Form>
+            <div className="updateProfile">
+                <Form className='user-profile-password-form-centered'>
+                    <Form.Field>
+                        <div>
+                            <Icon name="key" />
+                            <label>Current Password</label>
+                        </div>
+                        <input placeholder='Current Password' name="password" onChange={(e)=>{setCurrentPassword(e.target.value)}} />
+                    </Form.Field>
+                    <Form.Field>
+                        <div>
+                            <Icon name="key" />
+                            <label>New Password</label>
+                        </div>
+                        <input placeholder='New Password' name="password" onChange={(e)=>{setNewPassword(e.target.value)}} />
+                    </Form.Field>
+
+                    <Form.Field>
+                        <div>
+                            <Icon name="key" />
+                            <label>confirm Password</label>
+                        </div>
+                        <input placeholder='confirm Password' name="password" onChange={(e)=>{setRepassword(e.target.value)}} />
+                    </Form.Field>
+                    {/* <Button type='submit' onClick={submitHandler}>Change Password</Button><br /><br /> */}
+                    <Form.Field
+                            primary
+                            id='submit'
+                            name="formSubmit"
+                            type='submit'
+                            className='form-update-btn'
+                            control={Button}
+                            onClick={submitHandler}
+                            content='Change Password'
+                        /><br /><br />
+                </Form>
+            </div>
+        </div>
+    )
+}
+
+export default UserProfile
+
+
+
+
+
 // const userResponds =jwt.decode(token);
 // const userDetails ={
 //     _id:userResponds._id,
