@@ -3,10 +3,8 @@ const router = require('express').Router();
 
 //**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'getSparePartById' FUNCTION*/
 router.get('/:id', (req,res) => {
-    getSparePartById(req.params._id).then((result) => {
-        res.json(result);
-    }).catch((err) => {
-        console.log(err);
+    getSparePartById(req.params.id).then((result) => {
+        result._id ? res.json(result) : res.status(400).json(result);
     })
 });
 
