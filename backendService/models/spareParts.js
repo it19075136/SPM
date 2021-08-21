@@ -24,7 +24,8 @@ const sparePartsSchema = new Schema({
         type: Number
     },
     negotiable:{ 
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     images:{
         type: Array,
