@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid, Checkbox, Icon } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
+import axios from 'axios';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -37,7 +38,7 @@ export default class sparePartAdForm extends Component {
     }
 
     componentDidMount = () => {
-
+        
     }
 
     render() {
@@ -57,6 +58,7 @@ export default class sparePartAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
+            axios.post()
         }
         const { value } = this.state
         return (

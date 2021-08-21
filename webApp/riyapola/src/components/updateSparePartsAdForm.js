@@ -56,7 +56,7 @@ export default class updateSparePartsAdForm extends Component {
         return (
             <div className="form-centered">
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
-                    Update Your Spare Parts Details
+                    Update Your Spare parts Details
                 </Header>
                 <Form onSubmit={handleSubmit}>
                     <Form.Group inline >
@@ -106,7 +106,9 @@ export default class updateSparePartsAdForm extends Component {
                         })}
                     />
 
+                    <label>Advertisement Title</label>
                     <div className='form-edit-field'>
+
                         <Icon
                             name={this.state.titleState ? 'edit' : 'save'}
                             onClick={() => this.setState({ ...this.state, titleState: !this.state.titleState })}
@@ -116,13 +118,14 @@ export default class updateSparePartsAdForm extends Component {
                             id='title'
                             name="title"
                             control={Input}
-                            label='Advertisement Title'
+                            // label='Advertisement Title'
                             placeholder='Add an advertisement title'
                             disabled={this.state.titleState ? this.state.titleState : false}
                             onChange={handleChange}
                         />
                     </div>
 
+                    <label >Description</label>
                     <div className='form-edit-field'>
                         <Icon
                             name={this.state.descriptionState ? 'edit' : 'save'}
@@ -133,36 +136,38 @@ export default class updateSparePartsAdForm extends Component {
                             width='16'
                             id='description'
                             control={TextArea}
-                            label='Description'
+                            // label='Description'
                             placeholder='Description'
                             disabled={this.state.descriptionState ? this.state.descriptionState : false}
                             onChange={handleChange}
                         />
                     </div>
 
+                    <label >Price(Rs.)</label>
                     <div className='form-edit-field'>
                         <Icon
                             name={this.state.priceState ? 'edit' : 'save'}
                             onClick={() => this.setState({ ...this.state, priceState: !this.state.priceState })}
                         />
-                        <Form.Group grouped>
-                            <Form.Field
-                                name='price'
-                                id='price'
-                                inline={false}
-                                type='number'
-                                control={Input}
-                                label='Price(Rs.)'
-                                placeholder='Price(Rs)'
-                                disabled={this.state.priceState ? this.state.priceState : false}
-                                onChange={handleChange}
-                            />
-                            <Form.Checkbox label='Negotiable'
-                                name='negotiable'
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
+
+                        <Form.Field
+                            width='16'
+                            name='price'
+                            id='price'
+                            inline={false}
+                            type='number'
+                            control={Input}
+                            // label='Price(Rs.)'
+                            placeholder='Price(Rs)'
+                            disabled={this.state.priceState ? this.state.priceState : false}
+                            onChange={handleChange}
+                        />
                     </div>
+
+                    <Form.Checkbox label='Negotiable'
+                        name='negotiable'
+                        onChange={handleChange}
+                    />
 
                     <Form.Field required
                         width='16'
