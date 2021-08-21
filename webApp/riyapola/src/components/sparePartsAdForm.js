@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Grid, Checkbox, Icon } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
+import axios from 'axios';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -8,6 +9,11 @@ const partTypeOption = [
     { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
 ]
 
+const locationOption = [
+    { key: 'c', text: 'Colombo', value: 'colombo' },
+    { key: 'k', text: 'Kandy', value: 'kandy' },
+    { key: 'm', text: 'Matara', value: 'matara' },
+]
 const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
 ]
@@ -32,7 +38,7 @@ export default class sparePartAdForm extends Component {
     }
 
     componentDidMount = () => {
-
+        
     }
 
     render() {
@@ -52,6 +58,7 @@ export default class sparePartAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
+            axios.post()
         }
         const { value } = this.state
         return (
@@ -62,7 +69,7 @@ export default class sparePartAdForm extends Component {
                 <br />
                 <Form.Group inline>
                     <label>Category</label>
-                    <Form.Field
+                    <Form.Field required
                         control={Radio}
                         label='Used'
                         value='1'
@@ -72,7 +79,7 @@ export default class sparePartAdForm extends Component {
                             console.log(this.state)
                         })}
                     />
-                    <Form.Field
+                    <Form.Field required
                         control={Radio}
                         label='New'
                         value='2'
@@ -82,7 +89,7 @@ export default class sparePartAdForm extends Component {
                             console.log(this.state)
                         })}
                     />
-                    <Form.Field
+                    <Form.Field required
                         control={Radio}
                         label='Recondition'
                         value='3'
@@ -141,6 +148,21 @@ export default class sparePartAdForm extends Component {
                 <Form.Checkbox label="Negotiable"
                     name='negotiable'
                     onChange={handleChange}
+                />
+
+                <Form.Field required
+                    width='16'
+                    name="location"
+                    id="location"
+                    control={Select}
+                    options={locationOption}
+                    label={{ children: 'Location', htmlFor: 'location' }}
+                    placeholder='Your Location'
+                    search
+                    searchInput={{ id: 'location' }}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
+                        console.log(this.state)
+                    })}
                 />
 
                 <Divider horizontal>
@@ -232,8 +254,8 @@ export default class sparePartAdForm extends Component {
 
                 <ul>
                     {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                        return <div style={{decoration: 'none'}}><Icon name='phone'>{contact.replace('Sri Lanka', '')}</Icon></div>
-                    }): null}
+                        return <div style={{ decoration: 'none' }}><Icon name='phone'>{contact.replace('Sri Lanka', '')}</Icon></div>
+                    }) : null}
                 </ul>
 
                 <Form.Field
