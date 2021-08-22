@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Checkbox, Form, Header, Icon } from 'semantic-ui-react'
-import GoogleLogin from 'react-google-login'
+import GoogleLogin, { GoogleLogout } from 'react-google-login'
 import axios from "axios"
 import hashPassword from 'password-hash'
 import jwt from 'jsonwebtoken'
@@ -25,11 +25,25 @@ function Signup () {
   const  [repassword, setRepassword] = useState("");
   const responseGoogle =(response)=>{
     setUser({
-      name:response.name,
-      email:response.email,
-      phoneNumber:response.phoneNumber,
+      ...user,
+      name:response.profileObj.name,
+      email:response.profileObj.email,
+      phoneNumber:response.profileObj.phoneNumber,
+      image:[response.profileObj.imageUrl]
       // type:"buyerSeller"
     })
+    console.log('user',response.profileObj.name)
+    console.log('user',user)
+    console.log('response',response)
+    const login = {
+      login:true
+    }
+    localStorage.setItem('login',login);
+    // while(user){
+
+    // }
+    // window.location.href = '/'
+
   }
   const formHandler =(e)=>{
     // setUser({
@@ -124,12 +138,13 @@ function Signup () {
     OR
 </Header>
     <GoogleLogin
-    clientId="862096495152-812dp0vglkhcqffdtmae9tuhi72oouk2.apps.googleusercontent.com"
+    clientId="433588545715-a0rf1qdeefuafa8kn13lh9g2v810v9ri.apps.googleusercontent.com"
     buttonText="Sign up with Google"
     onSuccess={responseGoogle}
-    onFailure={responseGoogle}
+    onFailure={()=>console.log('err')}
     cookiePolicy={'single_host_origin'}
     />
+    
     
     <Header as="h4"  textAlign='center' >
     Have an account? <a href="/signin" style={{ color: '#076AE0' }}>  Login Here</a>

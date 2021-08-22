@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Menu, Button, Header, Icon, Modal } from 'semantic-ui-react';
 import './style.css';
+import  { GoogleLogout } from 'react-google-login'
 import jwt from 'jsonwebtoken'
 
 export default class navbar extends Component {
@@ -20,6 +21,11 @@ export default class navbar extends Component {
             case 'sign-out':
                 localStorage.removeItem("user");
                 window.location.href = '/signin'
+            case 'sign-out-google':
+                const login = {
+                    login:false
+                  }
+                  localStorage.setItem('login',login);
             default:
                 break;
         }
@@ -27,7 +33,9 @@ export default class navbar extends Component {
 
     render() {
         const userItem = localStorage.getItem("user");
-    const user = jwt.decode(userItem);
+        const user = jwt.decode(userItem);
+        const loginItem = localStorage.getItem("login");
+        const login = jwt.decode(loginItem)
         const { activeItem } = this.state
         return (
             <div>
@@ -53,7 +61,19 @@ export default class navbar extends Component {
                     >
                         Testimonials
                     </Menu.Item>
-                 {user ? <Menu.Item
+                    {user ?
+                    //  (login ?
+                    // <Menu.Item
+                    //  className="item"
+                    //  name='sign-out'
+                    //  position='right'
+                    //  active={activeItem === 'sign-out-google'}
+                    //  onClick={this.handleItemClick}
+                    // > 
+                   
+                    // </Menu.Item>
+                    // :
+                     <Menu.Item
                         className="item"
                         name='sign-out'
                         position='right'
@@ -61,19 +81,21 @@ export default class navbar extends Component {
                         onClick={this.handleItemClick}
                     >
                         Sign-out
-                    </Menu.Item> : 
-                    
-                    <Menu.Item
-                        className="item"
-                        name='sign-in'
-                        position='right'
-                        active={activeItem === 'sign-in'}
-                        onClick={this.handleItemClick}
-                    >
-                        Sign-in
                     </Menu.Item>
+                    // ) 
+                    :
+
+                        <Menu.Item
+                            className="item"
+                            name='sign-in'
+                            position='right'
+                            active={activeItem === 'sign-in'}
+                            onClick={this.handleItemClick}
+                        >
+                            Sign-in
+                        </Menu.Item>
                     }
-                    
+
                     <Menu.Item
                         className="item"
                         style={{ color: 'orange' }}

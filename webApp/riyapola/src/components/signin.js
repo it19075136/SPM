@@ -14,6 +14,10 @@ const responseGoogle =(response)=>{
 setUser({
  email:response.email,
 })
+const login = {
+  login:true
+}
+localStorage.setItem('login',login);
 }
 const formHandler =(e)=>{
 // setUser({
@@ -70,7 +74,7 @@ const submitHandler=(e)=>{
         })
 }
 const forgetPasswordHandler =(e)=>{
-  window.location.href = '/'
+  window.location.href = '/forgetPassword'
 }
   return(
     <div>
@@ -101,7 +105,7 @@ const forgetPasswordHandler =(e)=>{
     OR
 </Header>
     <GoogleLogin
-    clientId="862096495152-812dp0vglkhcqffdtmae9tuhi72oouk2.apps.googleusercontent.com"
+    clientId="433588545715-a0rf1qdeefuafa8kn13lh9g2v810v9ri.apps.googleusercontent.com"
     buttonText=" Sign in with Google"
     onSuccess={responseGoogle}
     onFailure={responseGoogle}
