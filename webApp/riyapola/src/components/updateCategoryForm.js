@@ -1,14 +1,23 @@
 import React, { Component } from "react";
-import { Button, Checkbox, Form, Label, Radio, Dropdown, Icon } from "semantic-ui-react";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Label,
+  Dropdown,
+  Icon,
+  Radio,
+} from "semantic-ui-react";
 import axios from "axios";
 import "../App.css";
 import ImageUploading from "react-images-uploading";
+
 export default class AddCategoryForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      manualMake:'',
-      vehicleNames : '',
+      manualMake: "",
+      vehicleNames: "",
       vehicleMake: [],
       type: "Vehicles",
       images: [],
@@ -30,34 +39,103 @@ export default class AddCategoryForm extends Component {
     this.onChangeImage = this.onChangeImage.bind(this);
     this.handleChangeType = this.handleChangeType.bind(this);
     this.handleChangeNames = this.handleChangeNames.bind(this);
-    this.handleManualMake= this.handleManualMake.bind(this);
-    this.handleSubmitManualMake= this.handleSubmitManualMake.bind(this);
+    this.handleManualMake = this.handleManualMake.bind(this);
+    this.handleSubmitManualMake = this.handleSubmitManualMake.bind(this);
     this.handleImportAllMake = this.handleImportAllMake.bind(this);
-    this.handleImportRemoveAllMake= this.handleImportRemoveAllMake.bind(this);
-
+    this.handleImportRemoveAllMake = this.handleImportRemoveAllMake.bind(this);
   }
 
-  componentDidMount(){
-    axios.get('https://private-anon-7d56ba085d-carsapi1.apiary-mock.com/manufacturers').then((res) => {
+  handleImportRemoveAllMake() {
+    this.setState({
+      vehicleMake: [],
+    });
+  }
+
+  handleImportAllMake() {
+    const { vehicleNames } = this.state;
+    let vehicleMake = Array.from(
+      new Set([...this.state.vehicleMake, ...vehicleNames])
+    );
+    this.setState({
+      vehicleMake: vehicleMake,
+    });
+  }
+
+  handleSubmitManualMake() {
+    const { manualMake } = this.state;
+    let vehicleMake = Array.from(
+      new Set([...this.state.vehicleMake, manualMake])
+    );
+    this.setState({
+      vehicleMake: vehicleMake,
+    });
+  }
+
+  handleManualMake(e) {
+    this.setState({
+      manualMake: e.target.value,
+    });
+  }
+
+  handleChangeNames(e) {
+    let vehicleMake = Array.from(
+      new Set([...this.state.vehicleMake, e.target.textContent])
+    );
+    this.setState({
+      vehicleMake: vehicleMake,
+    });
+  }
+
+  handleChangeType(value) {
+    this.setState({
+      type: value,
+    });
+  }
+  componentDidMount() {
+    //61220bf507a21c39c4825002
+    axios
+      .get(`http://localhost:5000/category/61220bf507a21c39c4825002`)
+      .then((res) => {
+        console.log("res: ", res.data);
         this.setState({
-          vehicleNames : res.data.map((el) => {
-              return el.name
-          })
-        })
-    })
+          images: res.data.images,
+          mainName: res.data.mainName,
+          mainDescription: res.data.mainDescription,
+          type: res.data.type,
+          vehicleMake: res.data.make,
+        });
+      });
+
+    axios
+      .get(
+        "https://private-anon-7d56ba085d-carsapi1.apiary-mock.com/manufacturers"
+      )
+      .then((res) => {
+        this.setState({
+          vehicleNames: res.data.map((el) => {
+            return el.name;
+          }),
+        });
+      });
   }
 
   childCategoryUi() {
-    const {vehicleNames, vehicleMake, manualMake, type} = this.state;
-    const stateOptions = vehicleNames ? vehicleNames.map((name, index) => ({
-      key: index,
-      text: name,
-      value: name,
-    })) : null ;
+    const { vehicleNames, vehicleMake, manualMake, type } = this.state;
+    const stateOptions = vehicleNames
+      ? vehicleNames.map((name, index) => ({
+          key: index,
+          text: name,
+          value: name,
+        }))
+      : null;
 
-    return(
+    return (
       <Form>
-         {type == "Spare Parts" ? <div className="spare-part-label">This part is optional for the Spare Parts</div> : null}
+        {type == "Spare Parts" ? (
+          <div className="spare-part-label">
+            This part is optional for the Spare Parts
+          </div>
+        ) : null}
         <Form.Field className="category-name-input">
           <label>Manually Add a Vehicle Make</label>
           <input
@@ -65,9 +143,13 @@ export default class AddCategoryForm extends Component {
             value={manualMake}
             onChange={this.handleManualMake}
           />
-          <Button onClick={this.handleSubmitManualMake}  className="make-buttons-sub-category" color="green">Add Make</Button>
-
-
+          <Button
+            onClick={this.handleSubmitManualMake}
+            className="make-buttons-sub-category"
+            color="green"
+          >
+            Add Make
+          </Button>
         </Form.Field>
 
         <Dropdown
@@ -77,73 +159,48 @@ export default class AddCategoryForm extends Component {
           options={stateOptions}
           onChange={this.handleChangeNames}
         />
-         <Button onClick={this.handleImportAllMake} className="make-buttons-sub-category" color="blue">Select All</Button>
-          <Button onClick={this.handleImportRemoveAllMake} className="make-buttons-sub-category" color="red">Remove All</Button>
+        <Button
+          onClick={this.handleImportAllMake}
+          className="make-buttons-sub-category"
+          color="blue"
+        >
+          Select All
+        </Button>
+        <Button
+          onClick={this.handleImportRemoveAllMake}
+          className="make-buttons-sub-category"
+          color="red"
+        >
+          Remove All
+        </Button>
 
         <div className="make-table-custom">
-        {vehicleMake
-          ? vehicleMake.map((el, index) => {
-              return (
-                <div className="vehicle-make-labels">
-                  <Label color="teal">
-                    {el}
-                    <Icon
-                      key={index}
-                      name="delete"
-                      onClick={this.handleVehicleMakeRemove.bind(this, index)}
-                    />
-                  </Label>
-                  <br></br>
-                </div>
-              );
-            })
-          : null}
+          {vehicleMake
+            ? vehicleMake.map((el, index) => {
+                return (
+                  <div className="vehicle-make-labels">
+                    <Label color="teal">
+                      {el}
+                      <Icon
+                        key={index}
+                        name="delete"
+                        onClick={this.handleVehicleMakeRemove.bind(this, index)}
+                      />
+                    </Label>
+                    <br></br>
+                  </div>
+                );
+              })
+            : null}
         </div>
       </Form>
     );
   }
 
-  handleImportRemoveAllMake(){
-    this.setState({
-      vehicleMake : []
-    })
-  }
-
-  
-  handleImportAllMake(){
-    const {vehicleNames} = this.state;
-
-    let vehicleMake =   Array.from(new Set([...this.state.vehicleMake, ...vehicleNames])); 
-    this.setState({
-      vehicleMake : vehicleMake
-    })
-  }
-
-  handleSubmitManualMake(){
-    const {manualMake} = this.state;
-    let vehicleMake =   Array.from(new Set([...this.state.vehicleMake, manualMake])); 
-    this.setState({
-      vehicleMake : vehicleMake
-    })
-  }
-
-  handleManualMake(e){
-    this.setState({
-      manualMake : e.target.value
-    })
-  }
-
-  handleVehicleMakeRemove(i){
+  handleVehicleMakeRemove(i) {
     let vehicleMake = [...this.state.vehicleMake];
     vehicleMake.splice(i, 1);
     this.setState({ vehicleMake });
-  }
-
-  handleChangeNames(e){
-    let vehicleMake =   Array.from(new Set([...this.state.vehicleMake, e.target.textContent])); 
-    this.setState({
-      vehicleMake : vehicleMake
-    })
   }
 
   handleMainName(e) {
@@ -186,72 +243,63 @@ export default class AddCategoryForm extends Component {
     this.setState({ childCategory });
   }
 
-  handleSubmit() {
-    let category = this.state;
-
-    let finalValues =  {
-      images : category.images,
-      mainDescription : category.mainDescription,
-      mainName : category.mainName,
-      type : category.type,
-      make : category.vehicleMake
-    }
-    console.log('finalValues: ', finalValues);
-    
-    if(this.state.type == 'Vehicles' && finalValues.make.length == 0){
-      alert('Vehcle make cannot be empty')
-    }else{
-      if (
-        !(finalValues.mainName.trim() == "" || finalValues.mainDescription.trim() == "")
-      ) {
-        axios.post("http://localhost:5000/category", finalValues).then(() => {
-          alert("Category Added Successfully");
-          this.setState({
-            images: [],
-            mainName: "",
-            mainDescription: "",
-            vehicleMake: [],
-            type: "Vehicles",
-            manualMake:''
-          });
-        });
-      } else {
-        alert("Main category fields cannot be empty");
-      }
-    }
-
-
-  }
-
   onChangeImage(imageList, addUpdateIndex) {
     this.setState({
       images: imageList,
     });
   }
 
-  handleChangeType(value) {
-    this.setState({
-      type : value 
-    })
+  handleSubmit() {
+    const { childCategory, mainName, mainDescription, images } = this.state;
+    let category = this.state;
+
+    let finalValues = {
+      images: category.images,
+      mainDescription: category.mainDescription,
+      mainName: category.mainName,
+      type: category.type,
+      make: category.vehicleMake,
+    };
+
+    if (this.state.type == "Vehicles" && finalValues.make.length == 0) {
+      alert("Vehcle make cannot be empty");
+    } else {
+      if (
+        !(
+          finalValues.mainName.trim() == "" ||
+          finalValues.mainDescription.trim() == ""
+        )
+      ) {
+        axios
+          .put(
+            "http://localhost:5000/category/61220bf507a21c39c4825002",
+            finalValues
+          )
+          .then(() => {
+            alert("Category Updated Successfully");
+          });
+      } else {
+        alert("Main category fields cannot be empty");
+      }
+    }
   }
 
   render() {
-    const { mainName, mainDescription, images , vehicleNames, vehicleMake } = this.state;
+    const { childCategory, mainName, mainDescription, images } = this.state;
+    console.log("this.state: ", this.state);
 
     return (
       <div>
         <div className="main-form-wrapper">
           <Form>
-            <Form.Field>
-              {`Selected Value : ${this.state.type}`}
-            </Form.Field>
+            <Form.Field>{`Selected Value : ${this.state.type}`}</Form.Field>
             <Form.Field>
               <Radio
                 label="Vehicles"
                 name="radioGroup"
                 value="Vehicles"
                 checked={this.state.type === "Vehicles"}
-                onChange={() => this.handleChangeType('Vehicles')}
+                onChange={() => this.handleChangeType("Vehicles")}
               />
             </Form.Field>
             <Form.Field>
@@ -260,11 +308,13 @@ export default class AddCategoryForm extends Component {
                 name="radioGroup"
                 value="Spare Parts"
                 checked={this.state.type === "Spare Parts"}
-                onChange={() => this.handleChangeType('Spare Parts')}
+                onChange={() => this.handleChangeType("Spare Parts")}
               />
             </Form.Field>
 
-            <Label className="main-label-text">Main Category</Label>
+            <Label className="main-label-text" color="black">
+              Main Category
+            </Label>
             <Form.Field className="category-name-input">
               <label>Name</label>
               <input
@@ -287,16 +337,8 @@ export default class AddCategoryForm extends Component {
               onClick={this.handleSubmit}
               color="blue"
             >
-              Add Category
+              Update Category
             </Button>
-            {/* <Button
-              type="submit"
-              className="add-category-button"
-              onClick={this.addClick}
-              color="green"
-            >
-              Add Child Category
-            </Button> */}
 
             <ImageUploading
               multiple
@@ -357,7 +399,9 @@ export default class AddCategoryForm extends Component {
           </Form>
 
           <div>
-            {/* <Label className="main-label-text">Child Category</Label> */}
+            <Label className="main-label-text" color="black">
+              Child Category
+            </Label>
             {this.childCategoryUi()}
           </div>
         </div>
