@@ -13,6 +13,7 @@ import UserProfile from './components/userProfile';
 import AddCategoryForm from './components/addCategoryForm';
 import updateVehicleAdForm from './components/updateVehicleAdForm';
 import updateSparePartsAdForm from './components/updateSparePartsAdForm';
+import updateCategoryForm from './components/updateCategoryForm';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route exact path='/sparePartsAd/update/:id' component={updateSparePartsAdForm} />
         <Route exact path='/userProfile' component={UserProfile}/>
         <Route exact path='/category/add' component={AddCategoryForm} />
+        <Route exact path='/category/update' component={updateCategoryForm} />
         {/* Add components */}
       </Switch>
       <Footer/>
