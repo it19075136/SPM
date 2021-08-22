@@ -8,7 +8,8 @@ const userSchema  = new Schema ({
         password : {type : String, required : true},
         type : {type : String , required :true},
         phoneNumber : {type : String, required : true},
-        wishList:{type:Array}
+        wishList:{type:Array},
+        image:{type: Array}
 
 },{
     timestamps:true

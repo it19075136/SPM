@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Message, Dimmer, Loader, Image } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Message, List, Loader, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -112,9 +114,19 @@ export default class updateVehicleAdForm extends Component {
                 console.log(this.state)
             })
         }).catch((err) => {
-            alert('Please check your network connection and try again')
+            this.setState({ ...this.state, loading: false }, () => {
+                alert('Please check your network connection and refresh the page')
+            });
         })
     }
+
+    addPhone = () =>
+        this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+            this.setState({ ...this.state, phone: '' })
+        })
+
+    deletePhone = () =>
+        this.setState((prevState) => ({ ...this.state, payload: { ...this.state.payload, contactNumbers: prevState.payload.contactNumbers.slice(0, -1) } }))
 
     render() {
 
@@ -124,54 +136,63 @@ export default class updateVehicleAdForm extends Component {
             });
         }
 
-        const addPhone = () => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-                this.setState({ ...this.state, phone: '' })
-            })
-        }
-
-        const deletePhone = (contact) => {
-            console.log(contact);
-            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
-            //     console.log(this.state)
-            // })
-        }
-
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            this.setState({ ...this.state, actionWaiting: true },() => {
-            axios.put(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`, this.state.payload).then((res) => {
-                console.log(res);
-                this.setState({ ...this.state, success: true }, () => {
-                    setTimeout(() => {
-                        this.setState({ ...this.state, success: false, actionWaiting: false })
-                    }, 2000);
+            this.setState({ ...this.state, actionWaiting: true }, () => {
+                axios.put(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`, this.state.payload).then((res) => {
+                    console.log(res);
+                    this.setState({ ...this.state, success: true }, () => {
+                        notify();
+                        setTimeout(() => {
+                            this.setState({ ...this.state, success: false, actionWaiting: false })
+                        }, 2000);
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        notify();
+                        setTimeout(() => {
+                            this.setState({ ...this.state, error: false, actionWaiting: false })
+                            window.location.reload(false);
+                        }, 2000);
+                    })
+
                 })
-            }).catch((err) => {
-                console.log(err);
-                this.setState({ ...this.state, error: true }, () => {
-                    setTimeout(() => {
-                        this.setState({ ...this.state, error: false, actionWaiting: false })
-                        window.location.reload(false);
-                    }, 2000);
-                })
-                
             })
-        })
         }
+
+        const handleImageDrop = (imageList,addUpdateIndex) => {
+            console.log(imageList)
+            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size/(1000*1024) < 5 :true) }},() => {
+                return imageList.length > imageList.filter((img,index )=> img.file ? img.file.size/(1000*1024) < 5:true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published'):null
+            })
+        }
+
+        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : null
 
         return (
             <div className='form-centered'>
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
                     Update Your Vehicle Details
                 </Header>
-                {this.state.loading ? <Segment>
-                    <Dimmer active inverted>
-                        <Loader>Loading</Loader>
-                    </Dimmer>
-                    <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
-                </Segment> : <Form className='update-form-content' onSubmit={handleSubmit}>
+                <Form className='update-form-content' onSubmit={handleSubmit} loading={this.state.loading}>
                     <div>
                         <Form.Field required
                             id='category'
@@ -270,16 +291,19 @@ export default class updateVehicleAdForm extends Component {
                                 console.log(this.state)
                             })}
                         />
-                        <Form.Field
-                            primary
-                            id='submit'
-                            name="formSubmit"
-                            type='submit'
-                            className='form-update-btn'
-                            control={Button}
-                            content={this.state.actionWaiting ? 'Please wait.. '||<Loader active inline /> : 'Update Ad'}
-                            disabled={this.state.actionWaiting}
-                        />
+                        <Form.Group>
+                            <Form.Field
+                                primary
+                                id='submit'
+                                name="formSubmit"
+                                type='submit'
+                                className='form-update-btn'
+                                control={Button}
+                                content={this.state.actionWaiting ? 'Please wait..' : 'Update Ad'}
+                                disabled={this.state.actionWaiting}
+                            />
+                            {this.state.actionWaiting ? <Loader active inline /> : null}
+                        </Form.Group>
                     </div>
                     &nbsp;
                     <div>
@@ -422,7 +446,7 @@ export default class updateVehicleAdForm extends Component {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ marginTop: '20px' }}>
+                        <div style={{ marginTop: '18px' }}>
                             <Modal
                                 closeIcon
                                 open={this.state.imgModalOpen}
@@ -436,7 +460,7 @@ export default class updateVehicleAdForm extends Component {
                                     <ImageUploading
                                         multiple
                                         value={this.state.payload.images}
-                                        onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                                        onChange={handleImageDrop}
                                         maxNumber={10}
                                         dataURLKey="data_url"
                                     >
@@ -506,13 +530,22 @@ export default class updateVehicleAdForm extends Component {
                                         &nbsp;
                                         <Form.Field
                                             action={
-                                                <Button
-                                                    primary
-                                                    name='addPhone'
-                                                    icon='add'
-                                                    type='button'
-                                                    onClick={addPhone}
-                                                />
+                                                <Button.Group style={{ marginLeft: '0px' }}>
+                                                    <Button
+                                                        primary
+                                                        type='button'
+                                                        disabled={this.state.phone == ''}
+                                                        icon='plus'
+                                                        onClick={this.addPhone}
+                                                    />
+                                                    <Button
+                                                        color='red'
+                                                        type='button'
+                                                        disabled={this.state.payload.contactNumbers.length === 0}
+                                                        icon='trash'
+                                                        onClick={this.deletePhone}
+                                                    />
+                                                </Button.Group>
                                             }
                                             id='phone'
                                             name='phone'
@@ -523,11 +556,20 @@ export default class updateVehicleAdForm extends Component {
                                             onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
                                         />
                                     </Form.Group>
-                                    <ul style={{ display: 'flex', flexDirection: 'column' }}>
-                                        {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                                            return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
-                                        }) : null}
-                                    </ul>
+                                    <Transition.Group
+                                        as={List}
+                                        duration={200}
+                                        divided
+                                        size='huge'
+                                        verticalAlign='middle'
+                                    >
+                                        {this.state.payload.contactNumbers.map((item) => (
+                                            <List.Item key={item}>
+                                                <Icon name='call' />
+                                                <List.Content header={item} />
+                                            </List.Item>
+                                        ))}
+                                    </Transition.Group>
                                 </Modal.Content>
                                 <Modal.Actions>
                                     <Button color='green' onClick={() => this.setState({ ...this.state, cntModalOpen: false })}>
@@ -538,20 +580,7 @@ export default class updateVehicleAdForm extends Component {
                         </div>
                     </div>
                 </Form>
-                }{this.state.success ? <Message positive>
-                    <Message.Header>Success</Message.Header>
-                    <p>
-                        Your ad successfully submitted for reviewing!
-                    </p>
-                </Message> : null
-                }
-                {this.state.error ? <Message negative>
-                    <Message.Header>Error</Message.Header>
-                    <p>
-                        Action was unsuccessful, please check and try again!
-                    </p>
-                </Message> : null
-                }
+                <ToastContainer />
             </div>
 
         )

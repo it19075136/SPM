@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Radio, Modal } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Radio, Modal, Loader } from 'semantic-ui-react';
 import ImageUploading from 'react-images-uploading';
 
 const partTypeOption = [
@@ -48,7 +48,7 @@ export default class updateSparePartsAdForm extends Component {
     }
 
     componentDidMount = () => {
-        axios.get(`http://localhost:5000/spareparts/${window.location.pathname.replace('sparePartsAd/update/', '')}`).then((res) => {
+        axios.get(`http://localhost:5000/spareparts/${window.location.pathname.replace('/sparePartsAd/update/', '')}`).then((res) => {
             console.log(res);
             this.setState({ ...this.state, payload: res.data, loading: false }, () => {
                 console.log(this.state)
@@ -63,22 +63,23 @@ export default class updateSparePartsAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            this.setState({ ...this.state, actionWaiting: true }, () => {
+            this.setState({ ...this.state, actionWaiting: true },() => {
                 axios.put(`http://localhost:5000/spareparts/${window.location.pathname.replace('/sparePartsAd/update/', '')}`, this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         setTimeout(() => {
                             this.setState({ ...this.state, success: false, actionWaiting: false })
-                        }, 2000)
-                    }).catch((err) => {
-                        console.log(err);
-                        this.setState({ ...this.state, error: true }, () => {
-                            setTimeout(() => {
-                                this.setState({ ...this.state, error: false, actionWaiting: false })
-                                window.location.reload(false);
-                            }, 2000)
-                        })
+                        }, 2000);
                     })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        setTimeout(() => {
+                            this.setState({ ...this.state, error: false, actionWaiting: false })
+                            window.location.reload(false);
+                        }, 2000);
+                    })
+                    
                 })
             })
         }
@@ -146,7 +147,7 @@ export default class updateSparePartsAdForm extends Component {
                         control={Select}
                         options={partTypeOption}
                         label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
-                        placeholder='Part or Accessory Type'
+                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Part or Accessory Type'}
                         value={this.state.payload.category}
                         search
                         searchInput={{ id: 'accessoryType' }}
@@ -165,6 +166,7 @@ export default class updateSparePartsAdForm extends Component {
                         <Form.Field required
                             width='16'
                             id='title'
+                            value={this.state.payload.title}
                             name="title"
                             control={Input}
                             // label='Advertisement Title'
@@ -185,6 +187,7 @@ export default class updateSparePartsAdForm extends Component {
                             width='16'
                             id='description'
                             control={TextArea}
+                            value={this.state.payload.description}
                             // label='Description'
                             placeholder='Description'
                             disabled={this.state.descriptionState ? this.state.descriptionState : false}
@@ -205,6 +208,7 @@ export default class updateSparePartsAdForm extends Component {
                             id='price'
                             inline={false}
                             type='number'
+                            value={this.state.payload.price}
                             control={Input}
                             // label='Price(Rs.)'
                             placeholder='Price(Rs)'
@@ -215,7 +219,8 @@ export default class updateSparePartsAdForm extends Component {
 
                     <Form.Checkbox label='Negotiable'
                         name='negotiable'
-                        onChange={handleChange}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, negotiable: !this.state.negotiable } })}
+                        checked={this.state.payload.negotiable}
                     />
 
                     <Form.Field required
@@ -224,8 +229,9 @@ export default class updateSparePartsAdForm extends Component {
                         id="location"
                         control={Select}
                         options={locationOption}
+                        value={this.state.payload.location}
                         label={{ children: 'Location', htmlFor: 'location' }}
-                        placeholder='Your Location'
+                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.location ? this.state.payload.location : 'Your Location'}
                         search
                         searchInput={{ id: 'location' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
@@ -346,6 +352,21 @@ export default class updateSparePartsAdForm extends Component {
                             </Modal.Actions>
                         </Modal>
                     </div>
+                    <br/><br/>
+                    <Form.Group>
+                        <Form.Field
+                            primary
+                            id='submit'
+                            name="formSubmit"
+                            type='submit'
+                            className='form-update-btn'
+                            control={Button}
+                            content={this.state.actionWaiting ? 'Please wait..': 'Update Ad'}
+                            disabled={this.state.actionWaiting}
+                        />
+                        {this.state.actionWaiting ? <Loader active inline /> : null }
+                    </Form.Group>
+                
                 </Form>
             </div>
         )

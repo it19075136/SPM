@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader } from 'semantic-ui-react'
+import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -66,26 +68,6 @@ const yearOptions = [
     { key: '5', text: '2004', value: '2004' }
 ]
 
-const validateFields = (e) => {
-    switch (e.target.name) {
-        case 'advertisementTitle':
-            return e.target.value ? {
-                content: 'Please enter a valid title',
-                pointing: 'below',
-            } : false;
-        case '2':
-            return e.target.value ? {
-
-            } : true;
-        case '3':
-            return e.target.value ? false : true;
-        case '4':
-            return e.target.value ? false : true;
-        default:
-            break;
-    }
-}
-
 export default class vehicleAdForm extends Component {
 
     state = {
@@ -93,14 +75,14 @@ export default class vehicleAdForm extends Component {
             title: '',
             description: '',
             status: 'pending',
-            year: null,
+            year: '',
             make: '',
             model: '',
             category: '',
             location: '',
             bodyType: '',
             transmission: '',
-            condition: '',
+            condition: 'registered',
             engineCapacity: null,
             fuelType: '',
             mileage: null,
@@ -114,7 +96,18 @@ export default class vehicleAdForm extends Component {
         phone: '',
         success: false,
         error: false,
-        actionWaiting: false
+        actionWaiting: false,
+        // validation: {
+        //     year: false,
+        //     make: false,
+        //     model: false,
+        //     category: false,
+        //     location: false,
+        //     bodyType: false,
+        //     transmission: false,
+        //     fuelType: false,
+        //     mileage: false
+        // }
     }
 
     componentDidMount = () => {
@@ -128,25 +121,59 @@ export default class vehicleAdForm extends Component {
         // });
     }
 
+    // validateFields(payload) {
+
+    //     let success = true;
+
+    //     return new Promise((resolve, reject) => {
+    //         if (payload.year == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, year: true } })
+    //             success = false;
+    //         }
+    //         if (payload.make == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, make: true } })
+    //             success = false;
+    //         } if (payload.model == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, model: true } })
+    //             success = false;
+    //         } if (payload.category == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, category: true } })
+    //             success = false;
+    //         } if (payload.location == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, location: true } })
+    //             success = false;
+    //         } if (payload.bodyType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, bodyType: true } })
+    //             success = false;
+    //         } if (payload.transmission == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, transmission: true } })
+    //             success = false;
+    //         } if (payload.condition == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, condition: true } })
+    //             success = false;
+    //         } if (payload.fuelType == '') {
+    //             this.setState({ ...this.state, validation: { ...this.state.validation, fuelType: true } })
+    //             success = false;
+    //         }
+    //         resolve(success);
+    //     });
+
+    // }
+
+    addPhone = () =>
+        this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+            this.setState({ ...this.state, phone: '' })
+        })
+
+    deletePhone = () =>
+        this.setState((prevState) => ({ ...this.state, payload: { ...this.state.payload, contactNumbers: prevState.payload.contactNumbers.slice(0, -1) } }))
+
     render() {
 
         const handleChange = (e) => {
             this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
                 console.log(this.state);
             });
-        }
-
-        const addPhone = () => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-                this.setState({ ...this.state, phone: '' })
-            })
-        }
-
-        const deletePhone = (contact) => {
-            console.log(contact);
-            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
-            //     console.log(this.state)
-            // })
         }
 
         const handleSubmit = (e) => {
@@ -156,6 +183,7 @@ export default class vehicleAdForm extends Component {
                 axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, success: false, actionWaiting: false })
                         }, 2000);
@@ -163,6 +191,7 @@ export default class vehicleAdForm extends Component {
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, error: false, actionWaiting: false })
                         }, 2000);
@@ -170,6 +199,30 @@ export default class vehicleAdForm extends Component {
                 })
             })
         }
+
+        const handleImageDrop = (imageList, addUpdateIndex) => {
+            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size / (1000 * 1024) < 5 : true) } }, () => {
+                return imageList.length > imageList.filter((img, index) => img.file ? img.file.size / (1000 * 1024) < 5 : true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published') : null
+            })
+        }
+
+        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : null
 
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
@@ -190,6 +243,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={locationOptions}
+                    error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Select location'
                     search
@@ -206,6 +260,7 @@ export default class vehicleAdForm extends Component {
                     options={categoryOptions} // get categories
                     label={{ children: 'Category', htmlFor: 'category' }}
                     placeholder='Vehicle Category'
+                    error={this.state.payload.category == ''}
                     search
                     searchInput={{ id: 'category' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
@@ -217,6 +272,7 @@ export default class vehicleAdForm extends Component {
                     width='16'
                     control={Select}
                     options={vehicleMakeOptions}
+                    error={this.state.payload.make == ''}
                     label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                     placeholder='Vehicle Make'
                     search
@@ -232,6 +288,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleModelOptions}
                     label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
                     placeholder='Vehicle Model'
+                    error={this.state.payload.model == ''}
                     search
                     searchInput={{ id: 'vehicleModel' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
@@ -245,6 +302,7 @@ export default class vehicleAdForm extends Component {
                     options={yearOptions}
                     value={this.state.payload.year}
                     label={{ children: 'Registered year', htmlFor: 'year' }}
+                    error={this.state.payload.year == ''}
                     placeholder='Manufacture Date'
                     search
                     searchInput={{ id: 'year' }}
@@ -258,6 +316,7 @@ export default class vehicleAdForm extends Component {
                     options={vehicleBodyOptions}
                     label={{ children: 'Vehicle Body Type', htmlFor: 'bodyType' }}
                     placeholder='Vehicle Body Type'
+                    error={this.state.payload.bodyType == ''}
                     search
                     searchInput={{ id: 'bodyType' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
@@ -271,6 +330,7 @@ export default class vehicleAdForm extends Component {
                     options={transmissionOptions}
                     label={{ children: 'Transmission', htmlFor: 'transmission' }}
                     placeholder='Transmission'
+                    error={this.state.payload.transmission == ''}
                     search
                     searchInput={{ id: 'transmission' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
@@ -293,6 +353,7 @@ export default class vehicleAdForm extends Component {
                         options={fuelOptions}
                         label={{ children: 'Fuel Type', htmlFor: 'fuelType' }}
                         placeholder='Fuel Type'
+                        error={this.state.payload.fuelType == ''}
                         search
                         searchInput={{ id: 'fuelType' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
@@ -361,7 +422,7 @@ export default class vehicleAdForm extends Component {
                 <ImageUploading
                     multiple
                     value={this.state.payload.images}
-                    onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                    onChange={handleImageDrop}
                     maxNumber={10}
                     dataURLKey="data_url"
                 >
@@ -421,13 +482,22 @@ export default class vehicleAdForm extends Component {
                     />
                     <Form.Field
                         action={
-                            <Button
-                                primary
-                                name='addPhone'
-                                icon='add'
-                                type='button'
-                                onClick={addPhone}
-                            />
+                            <Button.Group style={{ marginLeft: '0px' }}>
+                                <Button
+                                    primary
+                                    type='button'
+                                    disabled={this.state.phone == ''}
+                                    icon='plus'
+                                    onClick={this.addPhone}
+                                />
+                                <Button
+                                    color='red'
+                                    type='button'
+                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                    icon='trash'
+                                    onClick={this.deletePhone}
+                                />
+                            </Button.Group>
                         }
                         id='phone'
                         name='phone'
@@ -438,35 +508,33 @@ export default class vehicleAdForm extends Component {
                         onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
                     />
                 </Form.Group>
-                <ul>
-                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                        return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
-                    }) : null}
-                </ul>
-                <br />
-                <Form.Field
-                    primary
-                    id='submit'
-                    name="formSubmit"
-                    type='submit'
-                    control={Button}
-                    content={this.state.actionWaiting ? 'Please wait.. ' || <Loader active inline /> : 'Publish Ad'}
-                    disabled={this.state.actionWaiting}
-                />
-                {this.state.success ? <Message positive>
-                    <Message.Header>Success</Message.Header>
-                    <p>
-                        Your ad successfully submitted for reviewing!
-                    </p>
-                </Message> : null
-                }
-                {this.state.error ? <Message negative>
-                    <Message.Header>Error</Message.Header>
-                    <p>
-                        Action was unsuccessful, please check and try again!
-                    </p>
-                </Message> : null
-                }
+                <Transition.Group
+                    as={List}
+                    duration={200}
+                    divided
+                    size='huge'
+                    verticalAlign='middle'
+                >
+                    {this.state.payload.contactNumbers.map((item) => (
+                        <List.Item key={item}>
+                            <Icon name='call' />
+                            <List.Content header={item} />
+                        </List.Item>
+                    ))}
+                </Transition.Group>
+                <Form.Group>
+                    <Form.Field
+                        primary
+                        id='submit'
+                        name="formSubmit"
+                        type='submit'
+                        control={Button}
+                        content={this.state.actionWaiting ? 'Please wait..' : 'Post Ad'}
+                        disabled={this.state.actionWaiting}
+                    />
+                    {this.state.actionWaiting ? <Loader active inline /> : null}
+                </Form.Group>
+                <ToastContainer />
             </Form>
         )
     }

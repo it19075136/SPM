@@ -1,14 +1,14 @@
-const Vehcile = require('../models/vehicleModel');
+const Vehicle = require('../models/vehicleModel');
 
 //addVehicleAd() function
 function addVehicleAd(payload) {
     return new Promise((resolve, reject) => {
-        const newVehicleAd = new Vehcile(payload);
+        const newVehicleAd = new Vehicle(payload);
 
         newVehicleAd.save().then((newVehicle) => {
             resolve(newVehicle);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
 
     })
@@ -17,10 +17,10 @@ function addVehicleAd(payload) {
 //getAllVehicleAds() function
 function getAllVehicleAds() {
     return new Promise((resolve, reject) => {
-        Vehcile.find().then((docs) => {
+        Vehicle.find().then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
     })
 }
@@ -28,10 +28,10 @@ function getAllVehicleAds() {
 //updateVehicleAdById() function
 function updateVehicleAdById(id, payload) {
     return new Promise((resolve, reject) => {
-        Vehcile.findByIdAndUpdate(id, {$set: payload}).then((doc) => {
+        Vehicle.findByIdAndUpdate(id, {$set: payload}).then((doc) => {
             resolve(doc);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         });
     })
 }
@@ -39,10 +39,10 @@ function updateVehicleAdById(id, payload) {
 //getVehicleAdById() function
 function getVehicleAdById(id) {
     return new Promise((resolve, reject) => {
-        Vehcile.findById(id).then((doc) => {
+        Vehicle.findById(id).then((doc) => {
             resolve(doc);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         });
     })
 }
