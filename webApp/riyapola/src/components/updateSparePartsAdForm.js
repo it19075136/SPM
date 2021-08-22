@@ -1,7 +1,9 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Radio, Modal, Loader } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button, Select, Header, Icon, Segment, Radio, Modal, Transition, List} from 'semantic-ui-react';
 import ImageUploading from 'react-images-uploading';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -54,19 +56,32 @@ export default class updateSparePartsAdForm extends Component {
                 console.log(this.state)
             })
         }).catch((err) => {
-            alert('Please check your network connection and try again')
+            this.setState({ ...this.state, loading: false }, () => {
+                alert('Please check your network connection and refresh the page');
+            });
         })
     }
+
+    addPhone = () => {
+        this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
+            this.setState({ ...this.state, phone: '' })
+        })
+    }
+
+    deletePhone = () =>
+        this.setState((prevState) => ({ ...this.state, payload: { ...this.state.payload, contactNumbers: prevState.payload.contactNumbers.slice(0, -1) } }))
+
 
     render() {
 
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            this.setState({ ...this.state, actionWaiting: true },() => {
+            this.setState({ ...this.state, actionWaiting: true }, () => {
                 axios.put(`http://localhost:5000/spareparts/${window.location.pathname.replace('/sparePartsAd/update/', '')}`, this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, success: false, actionWaiting: false })
                         }, 2000);
@@ -74,22 +89,24 @@ export default class updateSparePartsAdForm extends Component {
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, error: false, actionWaiting: false })
                             window.location.reload(false);
                         }, 2000);
                     })
-                    
+
                 })
             })
         }
 
-        const deletePhone = (contact) => {
-            console.log(contact);
-            // this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: this.state.payload.contactNumbers.filter(contact) } }, () => {
-            //     console.log(this.state)
-            // })
+        const handleImageDrop = (imageList, addUpdateIndex) => {
+            console.log(imageList)
+            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size / (1000 * 1024) < 5 : true) } }, () => {
+                return imageList.length > imageList.filter((img, index) => img.file ? img.file.size / (1000 * 1024) < 5 : true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published') : null
+            })
         }
+
 
         const handleChange = (e) => {
             this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
@@ -97,11 +114,24 @@ export default class updateSparePartsAdForm extends Component {
             });
         }
 
-        const addPhone = () => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
-                this.setState({ ...this.state, phone: '' })
-            })
-        }
+        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : null
+
 
         return (
             <div className="form-centered">
@@ -147,7 +177,7 @@ export default class updateSparePartsAdForm extends Component {
                         control={Select}
                         options={partTypeOption}
                         label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
-                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Part or Accessory Type'}
+                        placeholder={this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Part or Accessory Type'}
                         value={this.state.payload.category}
                         search
                         searchInput={{ id: 'accessoryType' }}
@@ -231,7 +261,7 @@ export default class updateSparePartsAdForm extends Component {
                         options={locationOption}
                         value={this.state.payload.location}
                         label={{ children: 'Location', htmlFor: 'location' }}
-                        placeholder= {this.state.loading ? 'Please wait...' : this.state.payload.location ? this.state.payload.location : 'Your Location'}
+                        placeholder={this.state.loading ? 'Please wait...' : this.state.payload.location ? this.state.payload.location : 'Your Location'}
                         search
                         searchInput={{ id: 'location' }}
                         onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
@@ -322,13 +352,22 @@ export default class updateSparePartsAdForm extends Component {
                                     &nbsp;
                                     <Form.Field
                                         action={
-                                            <Button
-                                                primary
-                                                name='addPhone'
-                                                icon='add'
-                                                type='button'
-                                                onClick={addPhone}
-                                            />
+                                            <Button.Group style={{ marginLeft: '0px' }}>
+                                                <Button
+                                                    primary
+                                                    type='button'
+                                                    disabled={this.state.phone == ''}
+                                                    icon='plus'
+                                                    onClick={this.addPhone}
+                                                />
+                                                <Button
+                                                    color='red'
+                                                    type='button'
+                                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                                    icon='trash'
+                                                    onClick={this.deletePhone}
+                                                />
+                                            </Button.Group>
                                         }
                                         id='phone'
                                         name='phone'
@@ -339,11 +378,20 @@ export default class updateSparePartsAdForm extends Component {
                                         onChange={(e) => this.setState({ ...this.state, phone: e.target.value })}
                                     />
                                 </Form.Group>
-                                <ul style={{ display: 'flex', flexDirection: 'column' }}>
-                                    {this.state.payload.contactNumbers.length > 0 ? this.state.payload.contactNumbers.map(contact => {
-                                        return <div style={{ decoration: 'none', display: 'flex', flexDirection: 'row', marginTop: '30px' }}><Icon name='phone'><h4>{contact.replace('Sri Lanka', '')}</h4></Icon><Icon name='delete' onClick={deletePhone} color='red' /></div>
-                                    }) : null}
-                                </ul>
+                                <Transition.Group
+                                    as={List}
+                                    duration={200}
+                                    divided
+                                    size='huge'
+                                    verticalAlign='middle'
+                                >
+                                    {this.state.payload.contactNumbers.map((item) => (
+                                        <List.Item key={item}>
+                                            <Icon name='call' />
+                                            <List.Content header={item} />
+                                        </List.Item>
+                                    ))}
+                                </Transition.Group>
                             </Modal.Content>
                             <Modal.Actions>
                                 <Button color='green' onClick={() => this.setState({ ...this.state, cntModalOpen: false })}>
@@ -352,7 +400,7 @@ export default class updateSparePartsAdForm extends Component {
                             </Modal.Actions>
                         </Modal>
                     </div>
-                    <br/><br/>
+                    <br /><br />
                     <Form.Group>
                         <Form.Field
                             primary
@@ -361,13 +409,12 @@ export default class updateSparePartsAdForm extends Component {
                             type='submit'
                             className='form-update-btn'
                             control={Button}
-                            content={this.state.actionWaiting ? 'Please wait..': 'Update Ad'}
+                            content={this.state.actionWaiting ? 'Please wait..' : 'Update Ad'}
                             disabled={this.state.actionWaiting}
                         />
-                        {this.state.actionWaiting ? <Loader active inline /> : null }
                     </Form.Group>
-                
                 </Form>
+                <ToastContainer />
             </div>
         )
     }
