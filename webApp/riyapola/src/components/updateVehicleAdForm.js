@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Message, List, Loader, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -141,6 +143,7 @@ export default class updateVehicleAdForm extends Component {
                 axios.put(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`, this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, success: false, actionWaiting: false })
                         }, 2000);
@@ -148,6 +151,7 @@ export default class updateVehicleAdForm extends Component {
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
+                        notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, error: false, actionWaiting: false })
                             window.location.reload(false);
@@ -164,6 +168,24 @@ export default class updateVehicleAdForm extends Component {
                 return imageList.length > imageList.filter((img,index )=> img.file ? img.file.size/(1000*1024) < 5:true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published'):null
             })
         }
+
+        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        }) : null
 
         return (
             <div className='form-centered'>
@@ -558,20 +580,7 @@ export default class updateVehicleAdForm extends Component {
                         </div>
                     </div>
                 </Form>
-                {this.state.success ? <Message positive>
-                    <Message.Header>Success</Message.Header>
-                    <p>
-                        Your ad successfully submitted for reviewing!
-                    </p>
-                </Message> : null
-                }
-                {this.state.error ? <Message negative>
-                    <Message.Header>Error</Message.Header>
-                    <p>
-                        Action was unsuccessful, please check and try again!
-                    </p>
-                </Message> : null
-                }
+                <ToastContainer />
             </div>
 
         )
