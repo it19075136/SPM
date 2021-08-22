@@ -196,6 +196,13 @@ export default class vehicleAdForm extends Component {
             })
         }
 
+        const handleImageDrop = (imageList,addUpdateIndex) => {
+            console.log(imageList)
+            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size/(1000*1024) < 5 :true) }},() => {
+                return imageList.length > imageList.filter((img,index )=> img.file ? img.file.size/(1000*1024) < 5:true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published'):null
+            })
+        }
+        
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
@@ -394,7 +401,7 @@ export default class vehicleAdForm extends Component {
                 <ImageUploading
                     multiple
                     value={this.state.payload.images}
-                    onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                    onChange={handleImageDrop}
                     maxNumber={10}
                     dataURLKey="data_url"
                 >
