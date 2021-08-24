@@ -19,6 +19,7 @@ var nodemailer = require('nodemailer');
           resolve(user);
         })
         .catch((err) => {
+          console.log('in catch')
           reject(err);
         });
        } 
@@ -79,6 +80,7 @@ var nodemailer = require('nodemailer');
        user
          .save()
          .then((user) => {
+           console.log('user',user)
           console.log('in then');
            resolve(user);
          })

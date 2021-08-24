@@ -11,8 +11,11 @@ function ForgetPassword  () {
 })
 const [forgetPassword, setForgetPassword] = useState({
     reEnterPassword:"",
-    OTP:""
+    OTP:0
 })
+const item = localStorage.getItem("updatePasswordDetails");
+const OTPDetails = jwt.decode(item);
+
 const formHandler =(e)=>{
 // setUser({
 //   ...this.user,
@@ -34,29 +37,32 @@ const submitHandler=(e)=>{
     e.preventDefault();
     const password = passwordHash.generate(user.password);
     console.log('in promise in addNewPAssword')
-    axios.post(`http://localhost:5000/user/update/${user._id}`,{password}).then((res)=>{
-        console.log('in post');
-        const {token} =res.data;    
-    if(token){
-        localStorage.setItem('user',token);
-        const userResponds = jwt.decode(token);
-        const userDetails ={
-            _id:userResponds._id,
-            name :userResponds.name,
-            email : userResponds.email,
-            type : userResponds.type,
-            phoneNumber :userResponds.phoneNumber,
-            password:userResponds.password,
-            wishList:userResponds.userResponds,
-            image:userResponds.image
-        }
-        console.log(userDetails);
-        // dispatch({type:'ADD_USER',payload:userDetails});
-        // resolve(userDetails);
-    }
-    }).catch((err)=>{
-        // reject(err)
-    })
+
+        if(passwordHash.verify(forgetPassword.reEnterPassword,password) && OTPDetails.code == forgetPassword.OTP){
+                axios.post(`http://localhost:5000/user/update/${user._id}`,{password}).then((res)=>{
+                    console.log('in post');
+                    const {token} =res.data;    
+                if(token){
+                    localStorage.setItem('user',token);
+                    const userResponds = jwt.decode(token);
+                    const userDetails ={
+                        _id:userResponds._id,
+                        name :userResponds.name,
+                        email : userResponds.email,
+                        type : userResponds.type,
+                        phoneNumber :userResponds.phoneNumber,
+                        password:userResponds.password,
+                        wishList:userResponds.userResponds,
+                        image:userResponds.image
+                    }
+                    console.log(userDetails);
+                    // dispatch({type:'ADD_USER',payload:userDetails});
+                    // resolve(userDetails);
+                }
+                }).catch((err)=>{
+                    // reject(err)
+                })
+            }
 }
   return(
     <div>

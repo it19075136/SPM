@@ -76,9 +76,13 @@ function UserProfile() {
                     name: userResponds.name,
                     email: userResponds.email,
                     type: userResponds.type,
-                    phoneNumber: userResponds.phoneNumber
+                    phoneNumber: userResponds.phoneNumber,
+                    wishList:userResponds.wishList,
+                    image:userResponds.image,
+                    password:userResponds.password
                 }
                 console.log(userDetails);
+                
                 // dispatch({type:'ADD_USER',payload:userDetails});
                 // resolve(userDetails);
             }
