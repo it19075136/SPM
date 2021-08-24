@@ -181,6 +181,44 @@ border-width: 200px;
 .user-profile-form--centered button {
   align-self: center;
 }
+/* .updateProfile{
+ float: right;
+} */
+
+.category-image-upload{
+  width: 200px;
+  height: 200px;
+  margin: 10px 0px 10px 0px;
+  border: 1px solid black;
+  border-radius: 50% ;
+}
+
+.image-buttons-category{
+margin: 0px 10px 0px 10px !important;
+}
+
+.vehicle-make-labels{
+  margin: 20px 0px 5px 0px;
+}
+
+.make-table-custom{
+  margin-top: 10px;
+  width: 200px;
+  max-height: 300px;
+  min-height: 300px;
+  border: 1px solid cadetblue;
+  padding-left: 30px;
+  overflow: auto;
+}
+
+.spare-part-label{
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.make-buttons-sub-category{
+  margin: 10px 10px 10px 10px !important;
+}
 
 .profile-main {
   display       : flex;
