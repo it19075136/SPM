@@ -114,7 +114,7 @@ export default class updateSparePartsAdForm extends Component {
             });
         }
 
-        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+        const notify = () => this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -122,7 +122,7 @@ export default class updateSparePartsAdForm extends Component {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+        }) : this.state.error ? toast.error('❌ Action was unsuccessful, please check and try again!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -414,7 +414,7 @@ export default class updateSparePartsAdForm extends Component {
                         />
                     </Form.Group>
                 </Form>
-                <ToastContainer />
+                <ToastContainer style={{fontSize: '20px'}} />
             </div>
         )
     }
