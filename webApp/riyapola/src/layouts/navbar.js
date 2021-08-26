@@ -61,24 +61,26 @@ export default class navbar extends Component {
                     >
                         Testimonials
                     </Menu.Item>
+                    {user ?                       <Menu.Item
+                        className="item"
+                        name='My Profile'
+                        position='right'
+                        // active={activeItem === 'sign-out'}
+                        onClick={()=>{
+                            const login = {
+                                login:false
+                              }
+                              localStorage.setItem('login',login);
+                              localStorage.removeItem("user");
+                              window.location.href = '/userProfile'
+                        }}
+                    ></Menu.Item>:null}
                     {user ?
-                    //  (login ?
-                    // <Menu.Item
-                    //  className="item"
-                    //  name='sign-out'
-                    //  position='right'
-                    //  active={activeItem === 'sign-out-google'}
-                    //  onClick={this.handleItemClick}
-                    // > 
-                   
-                    // </Menu.Item>
-                    // :
                     ( login ?(
                     
                     <Menu.Item
                         className="item"
                         name='sign-out'
-                        position='right'
                         // active={activeItem === 'sign-out'}
                         onClick={()=>{
                             const login = {
@@ -109,7 +111,6 @@ export default class navbar extends Component {
                     (<Menu.Item
                         className="item"
                         name='sign-out'
-                        position='right'
                         active={activeItem === 'sign-out'}
                         onClick={this.handleItemClick}
                     >

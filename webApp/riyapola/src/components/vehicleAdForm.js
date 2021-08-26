@@ -206,7 +206,7 @@ export default class vehicleAdForm extends Component {
             })
         }
 
-        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+        const notify = () => this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -214,7 +214,7 @@ export default class vehicleAdForm extends Component {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+        }) : this.state.error ? toast.error('❌ Action was unsuccessful, please check and try again!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -534,7 +534,7 @@ export default class vehicleAdForm extends Component {
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
                 </Form.Group>
-                <ToastContainer />
+                <ToastContainer style={{fontSize: '20px' }} />
             </Form>
         )
     }
