@@ -13,7 +13,9 @@ router.post('/add', (req, res) => {
             email : newUser.email,
             type : newUser.type,
             phoneNumber :newUser.phoneNumber,
-            wishList:newUser.wishList
+            wishList:newUser.wishList,
+            password:newUser.password,
+            image:newUser.image
         },"jwtSecret")
         res.json(token);
     }

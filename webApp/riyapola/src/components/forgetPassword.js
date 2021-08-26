@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import { Button, Checkbox, Form, Header, Icon } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 import axios from "axios"
 import passwordHash from 'password-hash'
 import jwt from 'jsonwebtoken'
-function ForgetPassword  () { 
-  const [user, setUser] = useState({
-     password:""
+export default class forgetPassword extends Component { 
+//   const [user, setUser] = useState({
+//      password:""
    
-})
-const [forgetPassword, setForgetPassword] = useState({
-    reEnterPassword:"",
-    OTP:0
-})
+// })
+// const [forgetPassword, setForgetPassword] = useState({
+//     reEnterPassword:"",
+//     OTP:0
+// })
+state={
+  user:{
+    password:"",
+    _id:""
+  },
+  reEnterPassword:"",
+  OTP:0
+}
+render() {
 const item = localStorage.getItem("updatePasswordDetails");
 const OTPDetails = jwt.decode(item);
 
@@ -21,25 +30,44 @@ const formHandler =(e)=>{
 //   ...this.user,
 //   [e.target.name]:e.target.value
 // })
-setUser(prevState => ({
- ...prevState,
- [e.target.name]:e.target.value
-}));
+// setUser(prevState => ({
+//  ...prevState,
+//  [e.target.name]:e.target.value
+// }));
+this.setState({
+  ...this.state,
+  user:{
+    ...this.state.user,
+    [e.target.name]:e.target.value
+  }
+})
 }
 const forgetPasswordHandle=(e)=>{
-    setForgetPassword({
-        ...forgetPassword,
-        [e.target.name]:e.target.value
+    // setForgetPassword({
+    //     ...forgetPassword,
+    //     [e.target.name]:e.target.value
+    // })
+    this.setState({
+      ...this.state,
+      reEnterPassword:e.target.value
     })
 }
 const submitHandler=(e)=>{
-  console.log(user,"user");
+  // console.log(user,"user");
     e.preventDefault();
-    const password = passwordHash.generate(user.password);
+    // const password = passwordHash.generate(user.password);
+     const password = passwordHash.generate(this.state.user.password);
+    this.setState({
+      ...this.state,
+      user:{
+        ...this.state.user,
+        password:passwordHash.generate(this.state.user.password)
+      }
+    })
     console.log('in promise in addNewPAssword')
 
         if(passwordHash.verify(forgetPassword.reEnterPassword,password) && OTPDetails.code == forgetPassword.OTP){
-                axios.post(`http://localhost:5000/user/update/${user._id}`,{password}).then((res)=>{
+                axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password}).then((res)=>{
                     console.log('in post');
                     const {token} =res.data;    
                 if(token){
@@ -97,5 +125,4 @@ const submitHandler=(e)=>{
 </div>
 )
 }
-
-export default ForgetPassword
+}
