@@ -91,7 +91,7 @@ export default class sparePartAdForm extends Component {
             })
         }
 
-        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+        const notify = () => this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -99,7 +99,7 @@ export default class sparePartAdForm extends Component {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+        }) : this.state.error ? toast.error('❌ Action was unsuccessful, please check and try again!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -113,7 +113,7 @@ export default class sparePartAdForm extends Component {
         return (
             <Form className="form-centered" onSubmit={handleSubmit}>
                 <Header as='h2' color='blue' textAlign='center'>
-                    Fill Your Spare part Details
+                    Fill Your Spare Parts Details
                 </Header>
                 <br />
                 <Form.Group inline>
@@ -156,6 +156,7 @@ export default class sparePartAdForm extends Component {
                     options={partTypeOption}
                     label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
                     placeholder='Part or Accessory Type'
+                    error={this.state.payload.category == ''}
                     search
                     searchInput={{ id: 'accessoryType' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
@@ -205,6 +206,7 @@ export default class sparePartAdForm extends Component {
                     id="location"
                     control={Select}
                     options={locationOption}
+                    error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Your Location'
                     search
@@ -340,7 +342,7 @@ export default class sparePartAdForm extends Component {
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
                 </Form.Group>
-                <ToastContainer />
+                <ToastContainer style={{fontSize: '20px'}} />
 
             </Form>
         )
