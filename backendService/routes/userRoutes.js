@@ -3,7 +3,7 @@ const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,get
 const jsonwebtoken = require('jsonwebtoken');
 //add user
 router.post('/add', (req, res) => {
-
+    console.log('req.body',req.body)
     createuser(req.body).then((newUser) => {
         console.log('newUser',newUser)
         if (newUser != 'Email Already Exists'){
@@ -94,7 +94,8 @@ router.post('/update/:id', (req, res) => {
                 type : user.type,
                 phoneNumber :user.phoneNumber,
                 wishList:user.wishList,
-                image:user.image
+                image:user.image,
+                password:user.password
             },"jwtSecret")
             res.json(
                 {token}

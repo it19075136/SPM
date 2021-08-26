@@ -64,7 +64,7 @@ function Signup () {
     axios.post('http://localhost:5000/user/add',user).then(res=>{
         const token = res.data;
         console.log(token,"token");
-        if(token ='Email Already Exists'){
+        if(token =='Email Already Exists'){
           // resolve(res.data);
         }
         else if(token){

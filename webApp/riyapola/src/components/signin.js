@@ -74,7 +74,26 @@ const submitHandler=(e)=>{
         })
 }
 const forgetPasswordHandler =(e)=>{
-  window.location.href = '/forgetPassword'
+//   const user ={
+//     email:email
+// }
+  if(user.email){
+    axios.post('http://localhost:5000/user/getCode',user).then((res)=>{
+      //localstorage ekati reducx ekati danna oneda
+      const {token} =res.data;  
+      localStorage.setItem('updatePasswordDetails',token);
+  //    const  =jwt.decode(details);
+  //     dispatch({type:'ADD_USER',payload:res.data});
+      console.log('action axios');
+      console.log(token);
+      // resolve(token)
+      window.location.href = '/forgetPassword'
+  }).catch((err)=>{
+      // reject(err)
+  })
+  }
+    
+ 
 }
   return(
     <div>
