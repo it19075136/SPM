@@ -85,7 +85,8 @@ class updateVehicleAdForm extends Component {
         success: false,
         error: false,
         loading: true,
-        actionWaiting: false
+        actionWaiting: false,
+        isDelete: false
     }
 
     componentDidMount = () => {
@@ -145,10 +146,10 @@ class updateVehicleAdForm extends Component {
             this.setState({ ...this.state, actionWaiting: true }, () => {
                 this.props.deleteVehicleAd(window.location.pathname.replace('/vehicleAd/update/', '')).then((res) => {
                     console.log(res);
-                    this.setState({ ...this.state, success: true }, () => {
+                    this.setState({ ...this.state, success: true, isDelete: true }, () => {
                         notify();
                         setTimeout(() => {
-                            this.setState({ ...this.state, success: false, actionWaiting: false })
+                            this.setState({ ...this.state, success: false, actionWaiting: false, isDelete: false })
                             window.location.href = '/'
                         }, 2000);
                     })
@@ -156,10 +157,8 @@ class updateVehicleAdForm extends Component {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, error: false, actionWaiting: false })
-                            window.location.reload(false);
-                        }, 2000);
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
+                        window.location.reload(false);
                     })
 
                 })
@@ -173,7 +172,16 @@ class updateVehicleAdForm extends Component {
             })
         }
 
-        const notify = () => this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
+        const notify = () => this.state.success && this.state.isDelete ? toast.success('✔ Your ad is successfully deleted!', {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            onClose: this.setState({ ...this.state, isDelete: false }),
+            progress: undefined,
+        }) : this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
