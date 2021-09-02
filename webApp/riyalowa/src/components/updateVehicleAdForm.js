@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Message, List, Loader, Transition } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, List, Loader, Transition, Dimmer, Image } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
-import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { updateVehicleAd, deleteVehicleAd, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -69,30 +70,10 @@ const yearOptions = [
     { key: '5', text: '2004', value: '2004' }
 ]
 
-export default class updateVehicleAdForm extends Component {
+class updateVehicleAdForm extends Component {
 
     state = {
-        payload: {
-            title: '',
-            description: '',
-            status: 'pending',
-            year: null,
-            make: '',
-            model: '',
-            category: '',
-            location: '',
-            bodyType: '',
-            transmission: '',
-            condition: '',
-            engineCapacity: null,
-            fuelType: '',
-            mileage: null,
-            price: null,
-            negotiable: false,
-            images: [],
-            userId: 'test1',
-            contactNumbers: []
-        },
+        payload: this.props.vehicleAd,
         code: '',
         phone: '',
         titleState: true,
@@ -108,12 +89,13 @@ export default class updateVehicleAdForm extends Component {
     }
 
     componentDidMount = () => {
-        axios.get(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`).then((res) => {
-            console.log(res);
-            this.setState({ ...this.state, payload: res.data, loading: false }, () => {
+        this.props.getVehicleAdById(window.location.pathname.replace('/vehicleAd/update/', '')).then((data) => {
+            console.log(data);
+            this.setState({ ...this.state, payload: data, loading: false }, () => {
                 console.log(this.state)
             })
         }).catch((err) => {
+            console.log(err)
             this.setState({ ...this.state, loading: false }, () => {
                 alert('Please check your network connection and refresh the page')
             });
@@ -140,12 +122,34 @@ export default class updateVehicleAdForm extends Component {
             console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
-                axios.put(`http://localhost:5000/vehicle/${window.location.pathname.replace('/vehicleAd/update/', '')}`, this.state.payload).then((res) => {
+                this.props.updateVehicleAd(this.state.payload, window.location.pathname.replace('/vehicleAd/update/', '')).then((res) => {
+                    console.log(res);
+                    this.setState({ ...this.state, success: true }, () => {
+                        notify();
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        notify();
+                            this.setState({ ...this.state, error: false, actionWaiting: false })
+                            window.location.reload(false);
+                    })
+
+                })
+            })
+        }
+
+        const handleDelete = () => {
+            console.log(this.state);
+            this.setState({ ...this.state, actionWaiting: true }, () => {
+                this.props.deleteVehicleAd(window.location.pathname.replace('/vehicleAd/update/', '')).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
                         setTimeout(() => {
                             this.setState({ ...this.state, success: false, actionWaiting: false })
+                            window.location.href = '/'
                         }, 2000);
                     })
                 }).catch((err) => {
@@ -162,10 +166,10 @@ export default class updateVehicleAdForm extends Component {
             })
         }
 
-        const handleImageDrop = (imageList,addUpdateIndex) => {
+        const handleImageDrop = (imageList, addUpdateIndex) => {
             console.log(imageList)
-            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size/(1000*1024) < 5 :true) }},() => {
-                return imageList.length > imageList.filter((img,index )=> img.file ? img.file.size/(1000*1024) < 5:true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published'):null
+            this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList.filter(img => img.file ? img.file.size / (1000 * 1024) < 5 : true) } }, () => {
+                return imageList.length > imageList.filter((img, index) => img.file ? img.file.size / (1000 * 1024) < 5 : true).length ? alert('One or more images you selected exceeds size limit of 5mb, those will not be published') : null
             })
         }
 
@@ -192,6 +196,7 @@ export default class updateVehicleAdForm extends Component {
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
                     Update Your Vehicle Details
                 </Header>
+                {this.state.payload ? 
                 <Form className='update-form-content' onSubmit={handleSubmit} loading={this.state.loading}>
                     <div>
                         <Form.Field required
@@ -291,19 +296,6 @@ export default class updateVehicleAdForm extends Component {
                                 console.log(this.state)
                             })}
                         />
-                        <Form.Group>
-                            <Form.Field
-                                primary
-                                id='submit'
-                                name="formSubmit"
-                                type='submit'
-                                className='form-update-btn'
-                                control={Button}
-                                content={this.state.actionWaiting ? 'Please wait..' : 'Update Ad'}
-                                disabled={this.state.actionWaiting}
-                            />
-                            {this.state.actionWaiting ? <Loader active inline /> : null}
-                        </Form.Group>
                     </div>
                     &nbsp;
                     <div>
@@ -446,7 +438,7 @@ export default class updateVehicleAdForm extends Component {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div style={{ marginTop: '18px' }}>
+                        <div className='update-form-edit-btn-section'>
                             <Modal
                                 closeIcon
                                 open={this.state.imgModalOpen}
@@ -578,11 +570,42 @@ export default class updateVehicleAdForm extends Component {
                                 </Modal.Actions>
                             </Modal>
                         </div>
+                        <div className='form-main-btn-section'>
+                            <Button color='red'
+                                type='button'
+                                className='form-delete-btn'
+                                disabled={this.state.actionWaiting}
+                                onClick={handleDelete}
+                            >{this.state.actionWaiting ? 'Please wait..' : 'Delete Ad'}
+                            </Button>
+                            <Form.Group>
+                                <Form.Field
+                                    primary
+                                    id='submit'
+                                    name="formSubmit"
+                                    type='submit'
+                                    control={Button}
+                                    content={this.state.actionWaiting ? 'Please wait..' : 'Update Ad'}
+                                    disabled={this.state.actionWaiting}
+                                />
+                            </Form.Group>
+                            {this.state.actionWaiting ? <Loader active inline /> : null}
+                        </div>
                     </div>
                 </Form>
+                : 
+                <Dimmer active inverted style={{margin: '0 auto'}}>
+                  <Loader size='large'>Loading</Loader>
+                </Dimmer>}
                 <ToastContainer />
             </div>
 
         )
     }
 }
+
+const mapStateToProps = state => ({
+    vehicleAd: state.vehicle.vehicleAd
+});
+
+export default connect(mapStateToProps, { updateVehicleAd, deleteVehicleAd, getVehicleAdById })(updateVehicleAdForm)
