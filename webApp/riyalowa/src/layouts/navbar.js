@@ -67,11 +67,11 @@ export default class navbar extends Component {
                         position='right'
                         // active={activeItem === 'sign-out'}
                         onClick={()=>{
-                            const login = {
-                                login:false
-                              }
-                              localStorage.setItem('login',login);
-                              localStorage.removeItem("user");
+                            // const login = {
+                            //     login:false
+                            //   }
+                            //   localStorage.setItem('login',login);
+                            //   localStorage.removeItem("user");
                               window.location.href = '/userProfile'
                         }}
                     ></Menu.Item>:null}
