@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
@@ -185,17 +185,13 @@ class vehicleAdForm extends Component {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, success: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
                     })
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, error: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
                     })
                 })
             })
@@ -523,7 +519,7 @@ class vehicleAdForm extends Component {
                         </List.Item>
                     ))}
                 </Transition.Group>
-                <Form.Group>
+                <Form.Group className='form-submit-btn'>
                     <Form.Field
                         primary
                         id='submit'
@@ -535,10 +531,10 @@ class vehicleAdForm extends Component {
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
                 </Form.Group>
-                <ToastContainer style={{fontSize: '20px' }} />
+                <ToastContainer style={{ fontSize: '20px' }} />
             </Form>
         )
     }
 }
 
-export default connect(null,{publishVehicleAd})(vehicleAdForm)
+export default connect(null, { publishVehicleAd })(vehicleAdForm)
