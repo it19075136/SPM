@@ -1,12 +1,11 @@
 import './App.css';
 import {BrowserRouter,Switch,Route} from 'react-router-dom'
+import {store} from './redux/store';
+import {Provider} from 'react-redux';
 import vehicleAdForm from './components/vehicleAdForm';
 import NavBar from './layouts/navbar';
 import Footer from './layouts/footer';
-import signup from './components/signup';
-import signin from './components/signin';
 import sparePartAdForm from './components/sparePartsAdForm';
-import userProfile from './components/userProfile';
 import Signup from './components/signup';
 import Signin from './components/signin';
 import UserProfile from './components/userProfile';
@@ -18,6 +17,7 @@ import ForgetPassword from './components/forgetPassword';
 
 function App() {
   return (
+    <Provider store={store}>
     <BrowserRouter className="App">
       <NavBar/>
       <Switch>
@@ -35,6 +35,7 @@ function App() {
       </Switch>
       <Footer/>
     </BrowserRouter>
+    </Provider>
   );
 }
 

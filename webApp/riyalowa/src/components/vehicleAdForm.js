@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux';
 import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
-import axios from 'axios';
+import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -68,7 +69,7 @@ const yearOptions = [
     { key: '5', text: '2004', value: '2004' }
 ]
 
-export default class vehicleAdForm extends Component {
+class vehicleAdForm extends Component {
 
     state = {
         payload: {
@@ -180,7 +181,7 @@ export default class vehicleAdForm extends Component {
             console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
-                axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                this.props.publishVehicleAd(this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
@@ -539,3 +540,5 @@ export default class vehicleAdForm extends Component {
         )
     }
 }
+
+export default connect(null,{publishVehicleAd})(vehicleAdForm)
