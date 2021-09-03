@@ -11,7 +11,8 @@ const sparePartsRouter = require('./routes/sparePartsRoutes');
 mongoose.connect(process.env.DB_KEY||'&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 }, () => {
     console.log("Connected to database");
 });

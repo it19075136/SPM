@@ -197,7 +197,7 @@ export default class signin extends Component  {
         const userResponds = jwt.decode(token)
         console.log('decode token userRespond', userResponds);
         // dispatch({type:'ADD_USER',payload: userResponds})
-        localStorage.setItem('user', token);
+        localStorage.setItem('user',token);
         console.log('in findUser');
         // resolve(userResponds);
         window.location.href = '/'

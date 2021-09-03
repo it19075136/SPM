@@ -1,19 +1,9 @@
 const router = require('express').Router();
-const { addVehicleAd, updateVehicleAdById, getAllVehicleAds,getVehicleAdById } = require('../api/vehicles.api');
+const { addVehicleAd, updateVehicleAdById, getAllVehicleAds, getVehicleAdById, deleteVehicleAdById } = require('../api/vehicles.api');
 
-router.post('/',(req,res) => {
+router.post('/', (req, res) => {
 
     addVehicleAd(req.body).then((result) => {
-        res.json(result); 
-    }).catch((err) => {
-        res.status(400).json(err);
-    });
-    
-});
-
-router.put('/:id',(req,res) => {
-
-    updateVehicleAdById(req.params.id,req.body).then((result) => {
         res.json(result);
     }).catch((err) => {
         res.status(400).json(err);
@@ -21,7 +11,17 @@ router.put('/:id',(req,res) => {
 
 });
 
-router.get('/',(req,res) => {
+router.put('/:id', (req, res) => {
+
+    updateVehicleAdById(req.params.id, req.body).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+
+});
+
+router.get('/', (req, res) => {
 
     getAllVehicleAds().then((result) => {
         res.json(result);
@@ -31,9 +31,20 @@ router.get('/',(req,res) => {
 
 })
 
-router.get('/:id',(req,res) => {
+router.get('/:id', (req, res) => {
 
     getVehicleAdById(req.params.id).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+
+})
+
+
+router.delete('/:id', (req, res) => {
+
+    deleteVehicleAdById(req.params.id).then((result) => {
         res.json(result);
     }).catch((err) => {
         res.status(400).json(err);

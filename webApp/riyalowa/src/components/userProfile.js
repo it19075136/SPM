@@ -69,9 +69,9 @@ export default class userProfile extends Component  {
         this.setState({
             ...this.state,
             user:{
-                email: decodeItem.email?decodeItem.email:"",
-                password: decodeItem.password?decodeItem.password:"",
-                phoneNumber: decodeItem.phoneNumber?decodeItem.phoneNumber:"",
+                email:decodeItem.email?decodeItem.email:"",
+                password:decodeItem.password?decodeItem.password:"",
+                phoneNumber:decodeItem.phoneNumber?decodeItem.phoneNumber:"",
                 image:decodeItem.image ? decodeItem.image : [],
                 name:decodeItem.name?decodeItem.name:""
             }

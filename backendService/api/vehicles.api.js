@@ -28,7 +28,7 @@ function getAllVehicleAds() {
 //updateVehicleAdById() function
 function updateVehicleAdById(id, payload) {
     return new Promise((resolve, reject) => {
-        Vehicle.findByIdAndUpdate(id, {$set: payload}).then((doc) => {
+        Vehicle.updateOne({_id: id}, { $set: payload }).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);
@@ -47,4 +47,15 @@ function getVehicleAdById(id) {
     })
 }
 
-module.exports = { addVehicleAd,getAllVehicleAds,updateVehicleAdById, getVehicleAdById }
+//deleteVehicleAdById() function
+function deleteVehicleAdById(id) {
+    return new Promise((resolve, reject) => {
+        Vehicle.findByIdAndDelete(id).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = { addVehicleAd, getAllVehicleAds, updateVehicleAdById, getVehicleAdById, deleteVehicleAdById }

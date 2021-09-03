@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
 import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
-import axios from 'axios';
+import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -68,7 +69,7 @@ const yearOptions = [
     { key: '5', text: '2004', value: '2004' }
 ]
 
-export default class vehicleAdForm extends Component {
+class vehicleAdForm extends Component {
 
     state = {
         payload: {
@@ -180,21 +181,17 @@ export default class vehicleAdForm extends Component {
             console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
-                axios.post('http://localhost:5000/vehicle', this.state.payload).then((res) => {
+                this.props.publishVehicleAd(this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, success: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
                     })
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, error: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
                     })
                 })
             })
@@ -206,7 +203,7 @@ export default class vehicleAdForm extends Component {
             })
         }
 
-        const notify = () => this.state.success ? toast.success('Your ad successfully submitted for reviewing!', {
+        const notify = () => this.state.success ? toast.success('✔ Your ad successfully submitted for reviewing!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -214,7 +211,7 @@ export default class vehicleAdForm extends Component {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        }) : this.state.error ? toast.error('Action was unsuccessful, please check and try again!', {
+        }) : this.state.error ? toast.error('❌ Action was unsuccessful, please check and try again!', {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -522,7 +519,7 @@ export default class vehicleAdForm extends Component {
                         </List.Item>
                     ))}
                 </Transition.Group>
-                <Form.Group>
+                <Form.Group className='form-submit-btn'>
                     <Form.Field
                         primary
                         id='submit'
@@ -534,8 +531,10 @@ export default class vehicleAdForm extends Component {
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
                 </Form.Group>
-                <ToastContainer />
+                <ToastContainer style={{ fontSize: '20px' }} />
             </Form>
         )
     }
 }
+
+export default connect(null, { publishVehicleAd })(vehicleAdForm)
