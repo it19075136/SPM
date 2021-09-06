@@ -59,9 +59,9 @@ function deleteVehicleAdById(id) {
 }
 
 //getPublishedVehicleAds() function
-function getPublishedVehicleAds(index) {
+function getPublishedVehicleAds() {
     return new Promise((resolve, reject) => {
-        Vehicle.find({status: 'published'},'',{limit:4*index}).then((doc) => {
+        Vehicle.find({status: 'published'},'_id',{timestamps: false}).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);

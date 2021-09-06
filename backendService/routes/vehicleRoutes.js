@@ -52,9 +52,9 @@ router.delete('/:id', (req, res) => {
 
 })
 
-router.get('/published/:id', (req, res) => {
+router.get('/published/ads', (req, res) => {
 
-    getPublishedVehicleAds(req.params.id).then((result) => {
+    getPublishedVehicleAds().then((result) => {
         res.json(result);
     }).catch((err) => {
         res.status(400).json(err);
