@@ -58,4 +58,15 @@ function deleteVehicleAdById(id) {
     })
 }
 
-module.exports = { addVehicleAd, getAllVehicleAds, updateVehicleAdById, getVehicleAdById, deleteVehicleAdById }
+//getPublishedVehicleAds() function
+function getPublishedVehicleAds(index) {
+    return new Promise((resolve, reject) => {
+        Vehicle.find({status: 'published'},'',{limit:4*index}).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = { addVehicleAd, getAllVehicleAds, updateVehicleAdById, getVehicleAdById, deleteVehicleAdById, getPublishedVehicleAds }
