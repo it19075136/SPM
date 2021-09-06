@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { addVehicleAd, updateVehicleAdById, getAllVehicleAds, getVehicleAdById, deleteVehicleAdById } = require('../api/vehicles.api');
+const { addVehicleAd, updateVehicleAdById, getAllVehicleAds, getVehicleAdById, deleteVehicleAdById, getPublishedVehicleAds } = require('../api/vehicles.api');
 
 router.post('/', (req, res) => {
 
@@ -50,6 +50,15 @@ router.delete('/:id', (req, res) => {
         res.status(400).json(err);
     });
 
+})
+
+router.get('/published/:id', (req, res) => {
+
+    getPublishedVehicleAds(req.params.id).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    })
 })
 
 module.exports = router;
