@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ADD_VEHICLE_AD, DELETE_VEHICLE_AD, GET_ALL_VEHICLE_ADS, GET_VEHICLE_AD_BY_ID, UPDATE_VEHICLE_AD } from '../../utils/constants';
+import { ADD_VEHICLE_AD, DELETE_VEHICLE_AD, GET_ALL_VEHICLE_ADS, GET_PUBLISHED_VEHICLE_ADS, GET_VEHICLE_AD_BY_ID, UPDATE_VEHICLE_AD } from '../../utils/constants';
 
 export const publishVehicleAd = (payload) => dispatch => {
     return new Promise((resolve, reject) => {
@@ -76,10 +76,10 @@ export const getVehicleAdById = (id) => dispatch => {
 
 export const getPublishedVehicleAds = () => dispatch => {
     return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:5000/vehicle/published`).then((res) => {
+        axios.get('http://localhost:5000/vehicle/published/ads').then((res) => {
             if (res.status == 200) {
                 dispatch({
-                    type: GET_ALL_VEHICLE_ADS,
+                    type: GET_PUBLISHED_VEHICLE_ADS,
                     payload: res.data
                 })
                 resolve(res.data)

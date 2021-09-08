@@ -14,6 +14,7 @@ import updateVehicleAdForm from './components/updateVehicleAdForm';
 import updateSparePartsAdForm from './components/updateSparePartsAdForm';
 import updateCategoryForm from './components/updateCategoryForm';
 import ForgetPassword from './components/forgetPassword';
+import vehicleAdsView from './components/vehicleAdsView';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Switch>
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
         <Route exact path='/vehicleAd/update/:id' component={updateVehicleAdForm} />
+        <Route exact path='/vehicleAds' component={vehicleAdsView} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
@@ -33,7 +35,7 @@ function App() {
         <Route exact path='/forgetPassword' component={ForgetPassword} />
         {/* Add components */}
       </Switch>
-      <Footer/>
+      {/* <Footer/> */}
     </BrowserRouter>
     </Provider>
   );
