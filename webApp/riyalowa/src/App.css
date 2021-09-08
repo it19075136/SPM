@@ -244,3 +244,17 @@ margin: 0px 10px 0px 10px !important;
 .form-submit-btn{
   align-self: flex-end;
 }
+
+.ad-cards{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ad-cards-group{
+  padding: 10px;
+}
+
+.pagination{
+  margin-left: 50%;
+}
