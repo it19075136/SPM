@@ -19,7 +19,7 @@ class vehicleAdsView extends Component {
                 // set max per page
                 for (let index = 0; index < this.state.vehicleAds.length; index++) {
                     this.props.getVehicleAdById(this.props.vehicleAds[index]._id).then((res) => {
-                        this.setState({ vehicleAds: [...this.state.vehicleAds.filter((item) => item._id != res._id), res] }, () => {
+                        this.setState({ res,vehicleAds: [res,...this.state.vehicleAds.filter((item) => item._id != res._id)] }, () => {
                             console.log(this.state.vehicleAds)
                         })
                     })
