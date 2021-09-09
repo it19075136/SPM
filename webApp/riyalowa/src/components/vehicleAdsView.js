@@ -7,7 +7,6 @@ class vehicleAdsView extends Component {
 
     state = {
         vehicleAds: [],
-        vehicleAdsForPage: [],
         pagination: {
             activePage: 1,
             boundaryRange: 1,
@@ -19,12 +18,20 @@ class vehicleAdsView extends Component {
         }
     }
 
-    sortAdsArray = () => {
-        console.log(this.state)
+    finalizeImagesPerPage = () => {
+        console.log('in in')
         this.setState({
             ...this.state,
-            vehicleAdsForPage: this.state.vehicleAdsForPage.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title)),
+            vehicleAds: this.state.vehicleAds.splice((this.state.pagination.activePage - 1) * 9,(this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 * this.state.pagination.activePage ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length)),
         })
+    }
+
+    sortAdsArray = (index) => {
+        console.log(this.state,index)
+        this.setState({
+            ...this.state,
+            vehicleAds: this.state.vehicleAds.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title))
+        },index == ((this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length) - 1 )? this.finalizeImagesPerPage : null)
     }
 
     setAdsForPage = () => {
@@ -35,9 +42,10 @@ class vehicleAdsView extends Component {
                 vehicleAds: res
             }, () => {
                 this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.state.vehicleAds.length / 9 } }, () => {
-                    for (let index = (this.state.pagination.activePage - 1) * 9; index < (this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 * this.state.pagination.activePage ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length); index++) {
+                    console.log((this.state.pagination.activePage - 1) * 9,(this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length))
+                    for (let index = (this.state.pagination.activePage - 1) * 9; index < (this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length); index++) {
                         this.props.getVehicleAdById(this.props.vehicleAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, vehicleAdsForPage: [res, ...this.state.vehicleAdsForPage] }, this.sortAdsArray)
+                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },  this.sortAdsArray.bind(this,index))
                         })
                     }
                 })
@@ -52,15 +60,16 @@ class vehicleAdsView extends Component {
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state, pagination: { ...this.state.pagination, activePage } }, () => {
-        this.setState({ ...this.state, vehicleAdsForPage: [] })
-        this.setAdsForPage()
+        this.setState({ ...this.state, vehicleAds: [] },() => {
+            this.setAdsForPage();
+        })
     })
 
     render() {
         return (
             <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.vehicleAdsForPage.length > 0 ? this.state.vehicleAdsForPage.map((item) => {
+                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
                             <Card.Content className='ad-cards'>
                                 <h4>{item.title}</h4>
