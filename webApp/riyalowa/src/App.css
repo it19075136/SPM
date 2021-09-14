@@ -269,3 +269,16 @@ margin: 0px 10px 0px 10px !important;
 .category-card-custom :hover{
   transform: scale(1.2);
 } 
+.ad-cards{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ad-cards-group{
+  padding: 10px;
+}
+
+.pagination{
+  margin-left: 50%;
+}
