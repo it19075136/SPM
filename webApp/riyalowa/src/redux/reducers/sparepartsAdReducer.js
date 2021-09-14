@@ -1,8 +1,10 @@
 import * as actionType from "../../utils/constants";
 
 const initstate = {
-    sparepartsAds = [],
-    sparepartAd = null
+    sparepartsAds: [],
+    sparepartAd: null,
+    publishSparepartAds: [],
+    publishSparepartAdIds: []
 }
 
 export default function (state = initstate, action) {
@@ -31,6 +33,11 @@ export default function (state = initstate, action) {
             return {
                 ...state,
                 sparepartsAds: [...state.sparepartsAds.filter(sparepartAd => sparepartAd._id != action.payload._id)]
+            }
+        case actionType.GET_PUBLISHED_SPAREPARTS_ADS:
+            return {
+                ...state,
+                publishedVehicleAdIds: action.payload
             }
         default:
             return state;
