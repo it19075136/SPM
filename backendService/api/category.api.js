@@ -39,7 +39,7 @@ function updateCategoryById(id,values){
         Category.findByIdAndUpdate(id, {$set:values}).then((docs) => {
             resolve(docs)
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
     })
 }

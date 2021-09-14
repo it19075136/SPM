@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import { Button, Checkbox, Divider, Form, Header, Icon, Modal, Segment } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 import axios from "axios"
 import hashPassword from 'password-hash'
 import jwt from 'jsonwebtoken'
 import ImageUploading from 'react-images-uploading';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // constructor(props){
 //   super(props);
 //   this.state={
@@ -15,31 +16,101 @@ import ImageUploading from 'react-images-uploading';
 //       type:"buyerSeller"
 //   }
 // }
-function UserProfile() {
+export default class userProfile extends Component  {
+
+    state={
+        user:{
+            email: "",
+            password: "",
+            phoneNumber: "",
+            image:[],
+            name:""
+          },
+          action:false,
+          repassword:"",
+          newPassword:"",
+          currentPassword:"",
+          imageList:[],
+          imgModalOpen:false,
+          iconState:{
+            name:false,
+            email:false,
+            phoneNumber:false
+          },
+
+    }
+    
+    // const [action, setAction] = useState({
+    //     success:false
+    //   })
+    //   const [user, setUser] = useState({
+    //     name: decodeItem.name,
+    //     email: decodeItem.email,
+    //     phoneNumber: decodeItem.phoneNumber,
+    //     image: decodeItem.image ? decodeItem.image : []
+    // })
+    // const [repassword, setRepassword] = useState("");
+    // const [newPassword, setNewPassword] = useState({
+    //     password: ""
+    // });
+    // const [currentPassword, setCurrentPassword] = useState("");
+    // const [iconState, setIconState] = useState({
+    //     name:false,
+    //     email:false,
+    //     phoneNumber:false
+    // });
+    // const [imageList, setimageList] = useState([]);
+    // const [imagestate, setImagestate] = useState({
+    //     imgModalOpen:false
+    // });
+    componentDidMount(){
+        const item = localStorage.getItem("user");
+        const decodeItem = jwt.decode(item);
+        this.setState({
+            ...this.state,
+            user:{
+                email:decodeItem.email?decodeItem.email:"",
+                password:decodeItem.password?decodeItem.password:"",
+                phoneNumber:decodeItem.phoneNumber?decodeItem.phoneNumber:"",
+                image:decodeItem.image ? decodeItem.image : [],
+                name:decodeItem.name?decodeItem.name:""
+            }
+        },)
+      }
+    render() {
+  
+
+// componentDidMount() {
+//     setTimeout(() => {
+//         this.setState({
+//         isLoading: false,
+//         status: "Completed!"
+//         });
+//         }, 2000);
+//     }
+    // this.componentDidMount()
     const item = localStorage.getItem("user");
-    const decodeItem = jwt.decode(item);
+        const decodeItem = jwt.decode(item);
+   
+    const notify = () => this.state.action ? toast.success('update is successfull!', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick:true,
+        pauseOnHover:true,
+        draggable:true,
+        progress: undefined,
+    }) :  toast.error('update was unsuccessful', {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick:true,
+        pauseOnHover:true,
+        draggable:true,
+        progress: undefined,
+    }) 
 
-
-    const [user, setUser] = useState({
-        name: decodeItem.name,
-        email: decodeItem.email,
-        phoneNumber: decodeItem.phoneNumber,
-        image: decodeItem.image ? decodeItem.image : []
-    })
-    const [repassword, setRepassword] = useState("");
-    const [newPassword, setNewPassword] = useState({
-        password: ""
-    });
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [iconState, setIconState] = useState({
-        name: false,
-        email: false,
-        phoneNumber: false
-    });
-    const [imageList, setimageList] = useState([]);
-    const [imagestate, setImagestate] = useState({
-        imgModalOpen: false
-    });
+    
     // setUser(decodeItem);
     // const [repassword, setRepassword] = useState("");
     // const responseGoogle = (response) => {
@@ -55,21 +126,36 @@ function UserProfile() {
         //   ...this.user,
         //   [e.target.name]:e.target.value
         // })
-        setUser(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }));
+        // setUser(prevState => ({
+        //     ...prevState,
+        //     [e.target.name]: e.target.value
+        // }));
+        this.setState({
+            ...this.state,
+            user:{
+              ...this.state.user,
+              [e.target.name]:e.target.value
+            }
+          })
     }
     const submitHandler = (e) => {
         // console.log(user, "user");
         e.preventDefault();
         // const password = hashPassword.generate(user.password);
         console.log('in promise in addNewPAssword')
-        axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, user).then((res) => {
+        axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, this.state.user).then((res) => {
             console.log('in post');
             const { token } = res.data;
             if (token) {
-                localStorage.setItem('user', token);
+                // setAction(({
+                //     success:true
+                //  }));
+                this.setState({
+                    ...this.state,
+                    action:true
+                  })
+                  notify();
+                localStorage.setItem('user',token);
                 const userResponds = jwt.decode(token);
                 const userDetails = {
                     _id: userResponds._id,
@@ -81,29 +167,62 @@ function UserProfile() {
                     image:userResponds.image,
                     password:userResponds.password
                 }
+               
                 console.log(userDetails);
+
                 
                 // dispatch({type:'ADD_USER',payload:userDetails});
                 // resolve(userDetails);
             }
+            else{
+                this.setState({
+                    ...this.state,
+                    action:false
+                  })
+                  notify();
+            }
+            // setAction(({
+            //     success:false
+            //  }));
+           
         }).catch((err) => {
             // reject(err)
+            // setAction(({
+            //     success:false
+            //  }));
+            this.setState({
+                ...this.state,
+                action:false
+              })
+              notify();
         })
 
     }
     const passwordHandler = (e) => {
-        console.log(newPassword, "newPassword");
-        console.log(currentPassword, "currentPassword");
+        // console.log(newPassword, "newPassword");
+        // console.log(currentPassword, "currentPassword");
         e.preventDefault();
 
-        if (newPassword.password === repassword && hashPassword.verify(currentPassword, decodeItem.password)) {
+        if (this.state.newPassword === this.state.repassword && hashPassword.verify(this.state.currentPassword, this.state.user.password)) {
             console.log('in promise in addNewPAssword')
-            newPassword.password = hashPassword.generate(newPassword.password);
-            axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, newPassword).then((res) => {
+            // newPassword.password = hashPassword.generate(newPassword.password);
+            this.setState({
+                ...this.state,
+                newPassword:hashPassword.generate(this.state.newPassword)
+              })
+            axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, this.state.newPassword).then((res) => {
                 console.log('in post');
                 const { token } = res.data;
                 if (token) {
-                    localStorage.setItem('user', token);
+                    // setAction(({
+                    //     success:true
+                    //  }));
+                    this.setState({
+                        ...this.state,
+                        action:true
+                      })
+                      notify();
+                    localStorage.setItem('user',token);
                     const userResponds = jwt.decode(token);
                     const userDetails = {
                         _id: userResponds._id,
@@ -114,12 +233,39 @@ function UserProfile() {
                         password: userResponds.password
                     }
                     console.log(userDetails);
+
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
                 }
+                // setAction(({
+                //     success:false
+                //  }));
+                else{
+                    this.setState({
+                        ...this.state,
+                        action:false
+                      })
+                      notify();
+                }
+               
             }).catch((err) => {
                 // reject(err)
+                // setAction(({
+                //     success:false
+                //  }));
+                this.setState({
+                    ...this.state,
+                    action:false
+                  })
+                  notify();
             })
+        }
+        else{
+            this.setState({
+                ...this.state,
+                action:false
+              })
+              notify();
         }
     }
     return (
@@ -130,25 +276,34 @@ function UserProfile() {
                     <Header.Content>User Profile</Header.Content>
                 </Header>
                 <Form className='user-profile-form-centered'>
-                    {user.image.map((image, index) => (
+                {/* {user.image.map((image, index) => (
+                        <div key={index} className="image-item">
+                            <img src={image['data_url']} alt="" width="100" className="img-content" />
+                        </div>
+                    ))} */}
+                    {this.state.user.image.map((image, index) => (
                         <div key={index} className="image-item">
                             <img src={image['data_url']} alt="" width="100" className="img-content" />
                         </div>
                     ))}
                     <Modal
                         closeIcon
-                        open={imagestate.imgModalOpen}
+                        open={this.state.imgModalOpen}
                         trigger={<Button color='blue' type='button'><Icon name='camera' />Profile Image</Button>}
-                        onClose={() => setImagestate({ ...imagestate, imgModalOpen: false })}
-                        onOpen={() => setImagestate({ ...imagestate, imgModalOpen: true })}
+                        // onClose={() => setImagestate({ ...imagestate, imgModalOpen:false })}
+                        // onOpen={() => setImagestate({ ...imagestate, imgModalOpen:true })}
+                        onClose={() => this.setState({...this.state,imgModalOpen:false})}
+                        onOpen={() => this.setState({...this.state,imgModalOpen:true})}
                     >
                         <Header icon='image' content='Update Images' />
                         <Modal.Content>
 
                             <ImageUploading
                                 multiple
-                                value={user.image}
-                                onChange={(imageList, addUpdateIndex) => setUser({ ...user, image: imageList })}
+                                // value={user.image}
+                                value={this.state.user.image}
+                                // onChange={(imageList, addUpdateIndex) => setUser({ ...user, image: imageList })}
+                                onChange={(imageList, addUpdateIndex) =>this.setState({...this.state,user:{image:imageList}})}
                                 maxNumber={2}
                                 dataURLKey="data_url"
                             >
@@ -172,7 +327,7 @@ function UserProfile() {
                                                 Click or Drop Images here
                                             </Segment>
                                             &nbsp;
-                                            <Button color='red' type='button' disabled={user.image.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove  image</Button>
+                                            <Button color='red' type='button' disabled={this.state.user.image.length < 1} onClick={onImageRemoveAll} ><Icon name='trash' />Remove  image</Button>
                                         </div>
                                         <div className="image-list">
                                             {imageList.map((image, index) => (
@@ -190,7 +345,10 @@ function UserProfile() {
                             </ImageUploading>
                         </Modal.Content>
                         <Modal.Actions>
-                            <Button color='green' onClick={() => setImagestate({ ...imagestate, imgModalOpen: false })}>
+                            <Button color='green' 
+                            // onClick={() => setImagestate({ ...imagestate, imgModalOpen:false })}
+                            onClick={() => this.setState({...this.state,imgModalOpen:false})}
+                            >
                                 <Icon name='checkmark' /> Done
                             </Button>
                         </Modal.Actions>
@@ -210,13 +368,18 @@ function UserProfile() {
                         </div>
                         <div className='form-edit-field'>
                             <Icon
-                                name={iconState.name ? 'save' : 'edit'}
+                            // name={iconState.name ? 'save' : 'edit'}
+                                name={this.state.iconState.name ? 'save' : 'edit'}
                                 // name={'edit'}
-                                onClick={() => setIconState({ ...iconState, name: !iconState.name })}
+                                // onClick={() => setIconState({ ...iconState, name: !iconState.name })}
+                                onClick={() => this.setState({...this.state,iconState:{...this.state.iconState,name:!this.state.iconState.name}})}
                             />
-                            <input placeholder='Name' name="name" onChange={formHandler} value={user.name}
+                            <input placeholder='Name' name="name" onChange={formHandler} 
+                            // value={user.name}
+                            value={this.state.user.name}
                                 // contentEditable={iconState.name ? true:false}  
-                                disabled={iconState.name ? false : true}
+                                disabled={this.state.iconState.name ? false : true}
+                                // disabled={iconState.name ? false : true}
                             />
                         </div>
 
@@ -245,12 +408,18 @@ function UserProfile() {
                         </div>
                         <div className='form-edit-field'>
                             <Icon
-                                name={iconState.email ? 'save' : 'edit'}
+                                // name={iconState.email ? 'save' : 'edit'}
+                                name={this.state.iconState.email ? 'save' : 'edit'}
                                 // name={'edit'}
-                                onClick={() => setIconState({ ...iconState, email: !iconState.email })}
+                                // onClick={() => setIconState({ ...iconState, email: !iconState.email })}
+                                onClick={() => this.setState({...this.state,iconState:{...this.state.iconState,email:!this.state.iconState.email}})}
+
                             />
-                            <input placeholder='Email' name="email" onChange={formHandler} value={user.email}
-                                disabled={iconState.email ? false : true}
+                            <input placeholder='Email' name="email" onChange={formHandler} 
+                            // value={user.email}
+                            value={this.state.user.email}
+                                // disabled={iconState.email ? false : true}
+                                disabled={this.state.iconState.email ? false : true}
                             />
                         </div>
 
@@ -262,12 +431,18 @@ function UserProfile() {
                         </div>
                         <div className='form-edit-field'>
                             <Icon
-                                name={iconState.phoneNumber ? 'save' : 'edit'}
+                                // name={iconState.phoneNumber ? 'save' : 'edit'}
+                                name={this.state.iconState.phoneNumber ? 'save' : 'edit'}
                                 // name={'edit'}
-                                onClick={() => setIconState({ ...iconState, phoneNumber: !iconState.phoneNumber })}
+                                // onClick={() => setIconState({ ...iconState, phoneNumber: !iconState.phoneNumber })}
+                                onClick={() => this.setState({...this.state,iconState:{...this.state.iconState,phoneNumber:!this.state.iconState.phoneNumber}})}
+
                             />
-                            <input placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} value={user.phoneNumber}
-                                disabled={iconState.phoneNumber ? false : true}
+                            <input placeholder='phoneNumber' name="phoneNumber" onChange={formHandler} 
+                            // value={user.phoneNumber}
+                            value={this.state.user.phoneNumber}
+                                // disabled={iconState.phoneNumber ? false : true}
+                                disabled={this.state.iconState.phoneNumber ? false : true}
                             />
                         </div>
 
@@ -294,14 +469,20 @@ function UserProfile() {
                             <Icon name="key" />
                             <label>Current Password</label>
                         </div>
-                        <input placeholder='Current Password' name="password" type="password" onChange={(e) => { setCurrentPassword(e.target.value) }} />
+                        <input placeholder='Current Password' name="password" type="password" 
+                        // onChange={(e) => { setCurrentPassword(e.target.value) }} 
+                        onChange={(e) => {this.setState({...this.state,currentPassword:e.target.value}) }} 
+                        />
                     </Form.Field>
                     <Form.Field>
                         <div>
                             <Icon name="key" />
                             <label>New Password</label>
                         </div>
-                        <input placeholder='New Password' name="password" type="password" onChange={(e) => { setNewPassword({ password: e.target.value }) }} />
+                        <input placeholder='New Password' name="password" type="password" 
+                        // onChange={(e) => { setNewPassword({ password: e.target.value }) }}
+                        onChange={(e) => { this.setState({...this.state,newPassword:e.target.value})}}
+                         />
                     </Form.Field>
 
                     <Form.Field>
@@ -309,7 +490,10 @@ function UserProfile() {
                             <Icon name="key" />
                             <label>confirm Password</label>
                         </div>
-                        <input placeholder='confirm Password' name="password" type="password" onChange={(e) => { setRepassword(e.target.value) }} />
+                        <input placeholder='confirm Password' name="password" type="password" 
+                        // onChange={(e) => { setRepassword(e.target.value) }} 
+                        onChange={(e) => {this.setState({...this.state,repassword:e.target.value})}} 
+                        />
                     </Form.Field>
                     {/* <Button type='submit' onClick={submitHandler}>Change Password</Button><br /><br /> */}
                     <Form.Field
@@ -324,11 +508,12 @@ function UserProfile() {
                     /><br /><br />
                 </Form>
             </div>
+            <ToastContainer/>
         </div>
     )
 }
+}
 
-export default UserProfile
 
 
 

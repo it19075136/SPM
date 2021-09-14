@@ -1,12 +1,11 @@
 import './App.css';
 import {BrowserRouter,Switch,Route} from 'react-router-dom'
+import {store} from './redux/store';
+import {Provider} from 'react-redux';
 import vehicleAdForm from './components/vehicleAdForm';
 import NavBar from './layouts/navbar';
 import Footer from './layouts/footer';
-import signup from './components/signup';
-import signin from './components/signin';
 import sparePartAdForm from './components/sparePartsAdForm';
-import userProfile from './components/userProfile';
 import Signup from './components/signup';
 import Signin from './components/signin';
 import UserProfile from './components/userProfile';
@@ -15,9 +14,12 @@ import updateVehicleAdForm from './components/updateVehicleAdForm';
 import updateSparePartsAdForm from './components/updateSparePartsAdForm';
 import updateCategoryForm from './components/updateCategoryForm';
 import ForgetPassword from './components/forgetPassword';
+import categoryList from './components/categoryList'; 
+import homepage from './components/homepage';
 
 function App() {
   return (
+    <Provider store={store}>
     <BrowserRouter className="App">
       <NavBar/>
       <Switch>
@@ -31,10 +33,14 @@ function App() {
         <Route exact path='/category/add' component={AddCategoryForm} />
         <Route exact path='/category/update' component={updateCategoryForm} />
         <Route exact path='/forgetPassword' component={ForgetPassword} />
+        <Route exact path='/category/list' component={categoryList} />
+        <Route exact path='/' component={homepage} />
+
         {/* Add components */}
       </Switch>
       <Footer/>
     </BrowserRouter>
+    </Provider>
   );
 }
 

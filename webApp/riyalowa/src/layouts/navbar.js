@@ -61,29 +61,64 @@ export default class navbar extends Component {
                     >
                         Testimonials
                     </Menu.Item>
+                    {user ?                       <Menu.Item
+                        className="item"
+                        name='My Profile'
+                        position='right'
+                        // active={activeItem === 'sign-out'}
+                        onClick={()=>{
+                            // const login = {
+                            //     login:false
+                            //   }
+                            //   localStorage.setItem('login',login);
+                            //   localStorage.removeItem("user");
+                              window.location.href = '/userProfile'
+                        }}
+                    ></Menu.Item>:null}
                     {user ?
-                    //  (login ?
-                    // <Menu.Item
-                    //  className="item"
-                    //  name='sign-out'
-                    //  position='right'
-                    //  active={activeItem === 'sign-out-google'}
-                    //  onClick={this.handleItemClick}
-                    // > 
-                   
-                    // </Menu.Item>
-                    // :
-                     <Menu.Item
+                    ( login ?(
+                    
+                    <Menu.Item
                         className="item"
                         name='sign-out'
-                        position='right'
+                        // active={activeItem === 'sign-out'}
+                        onClick={()=>{
+                            const login = {
+                                login:false
+                              }
+                              localStorage.setItem('login',login);
+                              localStorage.removeItem("user");
+                              window.location.href = '/signin'
+                        }}
+                    >
+                        <GoogleLogout
+                        clientId="433588545715-a0rf1qdeefuafa8kn13lh9g2v810v9ri.apps.googleusercontent.com"
+                        buttonText="sign-out"
+                        onLogoutSuccess={()=>{
+                            const login = {
+                                login:false
+                              }
+                              localStorage.setItem('login',login);
+                              localStorage.removeItem("user");
+                              window.location.href = '/signin'
+                        }}
+                        
+                        >
+
+                        </GoogleLogout>
+                        </Menu.Item>):
+                    
+                    (<Menu.Item
+                        className="item"
+                        name='sign-out'
                         active={activeItem === 'sign-out'}
                         onClick={this.handleItemClick}
                     >
                         Sign-out
                     </Menu.Item>
+                    ))
                     // ) 
-                    :
+                    :(
 
                         <Menu.Item
                             className="item"
@@ -94,6 +129,7 @@ export default class navbar extends Component {
                         >
                             Sign-in
                         </Menu.Item>
+                        )
                     }
 
                     <Menu.Item
