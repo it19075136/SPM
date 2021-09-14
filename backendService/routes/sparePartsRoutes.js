@@ -15,7 +15,7 @@ router.get('/', (req,res) => {
     getAllSparePartsAds().then((result) => {
         res.json(result);
     }).catch((err) => {
-        console.log(err);
+        res.status(400).json(err);
     })
 })
 
