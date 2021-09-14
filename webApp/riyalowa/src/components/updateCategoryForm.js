@@ -92,11 +92,10 @@ export default class AddCategoryForm extends Component {
     });
   }
   componentDidMount() {
-    //61220bf507a21c39c4825002
+    const { state } = this.props.location
     axios
-      .get(`http://localhost:5000/category/61220bf507a21c39c4825002`)
+      .get(`http://localhost:5000/category/${state}`)
       .then((res) => {
-        console.log("res: ", res.data);
         this.setState({
           images: res.data.images,
           mainName: res.data.mainName,
@@ -250,6 +249,7 @@ export default class AddCategoryForm extends Component {
   }
 
   handleSubmit() {
+    const { state } = this.props.location
     const { childCategory, mainName, mainDescription, images } = this.state;
     let category = this.state;
 
@@ -272,7 +272,7 @@ export default class AddCategoryForm extends Component {
       ) {
         axios
           .put(
-            "http://localhost:5000/category/61220bf507a21c39c4825002",
+            `http://localhost:5000/category/${state}`,
             finalValues
           )
           .then(() => {
@@ -286,7 +286,6 @@ export default class AddCategoryForm extends Component {
 
   render() {
     const { childCategory, mainName, mainDescription, images } = this.state;
-    console.log("this.state: ", this.state);
 
     return (
       <div>

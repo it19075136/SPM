@@ -14,6 +14,8 @@ import updateVehicleAdForm from './components/updateVehicleAdForm';
 import updateSparePartsAdForm from './components/updateSparePartsAdForm';
 import updateCategoryForm from './components/updateCategoryForm';
 import ForgetPassword from './components/forgetPassword';
+import categoryList from './components/categoryList'; 
+import homepage from './components/homepage';
 import vehicleAdsView from './components/vehicleAdsView';
 
 function App() {
@@ -33,6 +35,9 @@ function App() {
         <Route exact path='/category/add' component={AddCategoryForm} />
         <Route exact path='/category/update' component={updateCategoryForm} />
         <Route exact path='/forgetPassword' component={ForgetPassword} />
+        <Route exact path='/category/list' component={categoryList} />
+        <Route exact path='/' component={homepage} />
+
         {/* Add components */}
       </Switch>
       {/* <Footer/> */}
