@@ -27,6 +27,7 @@ export default class sparePartAdForm extends Component {
             category: '',
             title: '',
             description: '',
+            delivery: false,
             price: null,
             negotiable: false,
             images: [],
