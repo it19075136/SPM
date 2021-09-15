@@ -145,9 +145,21 @@ export const getCode =(payload)=>dispatch =>{
         //localstorage ekati reducx ekati danna oneda
         const { token } = res.data;
         localStorage.setItem('updatePasswordDetails', token);
-        //    const  =jwt.decode(details);
+           const userResponds  =jwt.decode(token);
+           const userDetails ={
+            _id:userResponds._id,
+            name :userResponds.name,
+            email : userResponds.email,
+            type : userResponds.type,
+            phoneNumber :userResponds.phoneNumber,
+            password:userResponds.password,
+            wishList:userResponds.wishList ? userResponds.wishList: [],
+            image:userResponds.image ? userResponds.image: []
+          }
         if(token){
-          // dispatch({type:'ADD_USER',payload:res.data});
+
+          // localStorage.setItem('user', token);
+          // dispatch({type:'ADD_USER',payload:userDetails});
         console.log('action axios');
         console.log(token);
         resolve(res.data)

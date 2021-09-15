@@ -121,13 +121,19 @@ router.post('/getCode',(req,res)=>{
         if(details.code){
             const token = jsonwebtoken.sign({
                 _id:details._id,
+                name :details.name,
                 email : details.email,
+                type : details.type,
+                phoneNumber :details.phoneNumber,
+                wishList:details.wishList,
+                image:details.image,
+                password:details.password,
                 code:details.code
             },"jwtSecret")
-            res.json('Action unsuccesfull');
+            res.json({token});
         }
         else{
-            res.json({token});
+            res.json('Action unsuccesfull');
         }
        
     }).catch((err)=>{
