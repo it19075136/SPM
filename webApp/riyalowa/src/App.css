@@ -64,7 +64,7 @@
   display       : flex;
   align-items   : flex-start;
   flex-direction: column;
-  border        : 1px solid #ddd;
+  border        : 1px solid rgba(221, 221, 221, 0);
   /* box-shadow    : 5px 5px 10px; */
   /* width         : 60%; */
   margin        : 50px 2% 50px 2%;
@@ -281,4 +281,39 @@ margin: 0px 10px 0px 10px !important;
 
 .pagination{
   margin-left: 50%;
+}
+
+.header-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 60px;
+  margin: 10px 0 80px 0 !important;
+  color: #165a6e !important;
+  font-weight: 700;
+}
+
+.sub1-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 30px;
+  margin: 100px 0 80px 0 !important;
+  color: #165a6e !important;
+  font-weight: 500;
+  line-height: 36px !important;
+  letter-spacing: 3px;
+}
+
+.card-view-homepage{
+  margin-top: 50px !important;
+}
+
+.trending-vehicle-text{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 20px;
+  margin: 100px 0 0px 0 !important;
+  color: #153842 !important;
+  font-weight: 800;
+  line-height: 36px !important;
+  letter-spacing: 3px;
 }
