@@ -14,6 +14,8 @@ import {
 import "../App.css";
 import { getAllCategories } from "../redux/actions/categoryActions";
 import image1 from "../images/image1.jpg";
+import image2 from "../images/image2.jpeg";
+
 
 class homepage extends Component {
   constructor(props) {
@@ -35,7 +37,7 @@ class homepage extends Component {
     return (
       <Grid.Column>
         <Card>
-          <Image src={image1} wrapped ui={false} />
+          <Image src={image2} wrapped ui={false}/>
           <Card.Content>
             <Card.Header>{title}</Card.Header>
             <Card.Meta>
@@ -67,6 +69,12 @@ class homepage extends Component {
 
     return (
       <div className="form-centered-homepage">
+        <div className="header-text-homepage-riyapola">
+          Riyapola
+          <br></br>
+          <br></br>
+          <br></br>
+        </div>
         <div className="header-text-homepage">
           Affordability at your fingertip
           <br></br>
@@ -77,7 +85,7 @@ class homepage extends Component {
         <h3>Browse Vehicles</h3>
 
         <div>
-          <Grid columns={lengthVehicles} container>
+          <Grid columns={lengthVehicles} container stackable>
             {categories
               .filter((val) => val.type == "Vehicles")
               .slice(0, 4)
