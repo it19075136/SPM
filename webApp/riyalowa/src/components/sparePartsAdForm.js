@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Loader, Transition, List, Icon } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
-import axios from 'axios';
+import {publishSparepartsAd} from '../redux/actions/sparepartsActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,7 +20,7 @@ const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
 ]
 
-export default class sparePartAdForm extends Component {
+class sparePartAdForm extends Component {
     state = {
         payload: {
             condition: '',
@@ -66,21 +66,18 @@ export default class sparePartAdForm extends Component {
             console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
-                axios.post('http://localhost:5000/spareparts', this.state.payload).then((res) => {
+                this.props.publishSparepartsAd(this.state.payload).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, success: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
                     })
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, error: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
+                       
                     })
                 })
             })
@@ -183,6 +180,11 @@ export default class sparePartAdForm extends Component {
                     label='Description'
                     placeholder='Description'
                     onChange={handleChange}
+                />
+
+                <Form.Checkbox label='Delivery Available?'
+                    name='delivery'
+                    onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, delivery: !this.state.delivery } })}
                 />
 
                 <Form.Field
@@ -343,9 +345,11 @@ export default class sparePartAdForm extends Component {
                     />
                     {this.state.actionWaiting ? <Loader active inline /> : null}
                 </Form.Group>
-                <ToastContainer style={{fontSize: '20px'}} />
+                <ToastContainer style={{ fontSize: '20px' }} />
 
             </Form>
         )
     }
 }
+
+export default connect(null, { publishSparepartsAd })(sparePartAdForm)
