@@ -135,7 +135,13 @@ var nodemailer = require('nodemailer');
         console.log(codes);
         const updatePasswordDetails = {
           _id:user._id,
-          email:user.email,
+          name :user.name,
+          email : user.email,
+          type : user.type,
+          phoneNumber :user.phoneNumber,
+          wishList:user.wishList,
+          image:user.image,
+          password:user.password,
           code:codes
         }
 
@@ -158,6 +164,7 @@ var nodemailer = require('nodemailer');
           if(error){
             console.log(error);
             console.log('error in sendmail');
+            resolve('action unsuccess')
           }else{
             console.log('Email sent: ' + info.response);
             resolve(updatePasswordDetails)
