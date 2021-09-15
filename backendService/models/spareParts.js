@@ -20,6 +20,11 @@ const sparePartsSchema = new Schema({
         required: true,
         maxLength: 200
     },
+    delivery: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     price: {
         type: Number
     },

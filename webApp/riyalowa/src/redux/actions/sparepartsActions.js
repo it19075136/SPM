@@ -73,3 +73,21 @@ export const getSparepartAdById = (id) => dispatch => {
         })
     });
 }
+
+export const getPublishedSparepartsAds = () => dispatch => {
+    return new Promise((resolve, reject) => {
+        axios.get('http://localhost:5000/spareparts/published/ads').then((res) => {
+            if (res.status == 200) {
+                dispatch({
+                    type: actionType.GET_PUBLISHED_SPAREPARTS_ADS,
+                    payload: res.data
+                })
+                resolve(res.data)
+            }
+            else
+                resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    });
+}
