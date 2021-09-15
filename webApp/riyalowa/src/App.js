@@ -17,6 +17,7 @@ import ForgetPassword from './components/forgetPassword';
 import categoryList from './components/categoryList'; 
 import homepage from './components/homepage';
 import vehicleAdsView from './components/vehicleAdsView';
+import sparepartsAdView from './components/sparepartsAdView';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
+        <Route exact path='/sparepartAds' component={sparepartsAdView}/>
         <Route exact path='/sparePartsAd/update/:id' component={updateSparePartsAdForm} />
         <Route exact path='/userProfile' component={UserProfile}/>
         <Route exact path='/category/add' component={AddCategoryForm} />

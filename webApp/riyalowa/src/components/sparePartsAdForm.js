@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio, Loader, Transition, List, Icon } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
+import { connect } from 'react-redux';
 import {publishSparepartsAd} from '../redux/actions/sparepartsActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
