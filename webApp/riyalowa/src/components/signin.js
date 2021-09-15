@@ -238,13 +238,14 @@ class signin extends Component  {
     if (this.state.user.email) {
       this.props.getCode(this.state.user).then((res) => {
         //localstorage ekati reducx ekati danna oneda
-        const { token } = res.data;
+        const { token } = res;
         if(token){
           localStorage.setItem('updatePasswordDetails', token);
         //    const  =jwt.decode(details);
         //     dispatch({type:'ADD_USER',payload:res.data});
         console.log('action axios');
         console.log(token);
+        
         window.location.href = '/forgetPassword'
         }
         
