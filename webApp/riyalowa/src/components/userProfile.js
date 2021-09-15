@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken'
 import ImageUploading from 'react-images-uploading';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { connect } from 'react-redux'
+import { userUpdate } from '../redux/actions/userActions';
 // constructor(props){
 //   super(props);
 //   this.state={
@@ -16,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 //       type:"buyerSeller"
 //   }
 // }
-export default class userProfile extends Component  {
+class userProfile extends Component  {
 
     state={
         user:{
@@ -143,9 +145,16 @@ export default class userProfile extends Component  {
         e.preventDefault();
         // const password = hashPassword.generate(user.password);
         console.log('in promise in addNewPAssword')
-        axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, this.state.user).then((res) => {
+        this.setState({
+            ...this.state,
+            user:{
+              ...this.state.user,
+              password:this.state.newPassword
+            }
+          })
+        this.props.userUpdate(this.state.user,decodeItem).then((res) => {
             console.log('in post');
-            const { token } = res.data;
+            const { token } = res;
             if (token) {
                 // setAction(({
                 //     success:true
@@ -155,20 +164,20 @@ export default class userProfile extends Component  {
                     action:true
                   })
                   notify();
-                localStorage.setItem('user',token);
-                const userResponds = jwt.decode(token);
-                const userDetails = {
-                    _id: userResponds._id,
-                    name: userResponds.name,
-                    email: userResponds.email,
-                    type: userResponds.type,
-                    phoneNumber: userResponds.phoneNumber,
-                    wishList:userResponds.wishList,
-                    image:userResponds.image,
-                    password:userResponds.password
-                }
+                // localStorage.setItem('user',token);
+                // const userResponds = jwt.decode(token);
+                // const userDetails = {
+                //     _id: userResponds._id,
+                //     name: userResponds.name,
+                //     email: userResponds.email,
+                //     type: userResponds.type,
+                //     phoneNumber: userResponds.phoneNumber,
+                //     wishList:userResponds.wishList,
+                //     image:userResponds.image,
+                //     password:userResponds.password
+                // }
                
-                console.log(userDetails);
+                // console.log(userDetails);
 
                 
                 // dispatch({type:'ADD_USER',payload:userDetails});
@@ -210,9 +219,9 @@ export default class userProfile extends Component  {
                 ...this.state,
                 newPassword:hashPassword.generate(this.state.newPassword)
               })
-            axios.post(`http://localhost:5000/user/update/${decodeItem._id}`, this.state.newPassword).then((res) => {
+              this.props.userUpdate(this.state.user,decodeItem).then((res) => {
                 console.log('in post');
-                const { token } = res.data;
+                const { token } = res;
                 if (token) {
                     // setAction(({
                     //     success:true
@@ -222,17 +231,17 @@ export default class userProfile extends Component  {
                         action:true
                       })
                       notify();
-                    localStorage.setItem('user',token);
-                    const userResponds = jwt.decode(token);
-                    const userDetails = {
-                        _id: userResponds._id,
-                        name: userResponds.name,
-                        email: userResponds.email,
-                        type: userResponds.type,
-                        phoneNumber: userResponds.phoneNumber,
-                        password: userResponds.password
-                    }
-                    console.log(userDetails);
+                    // localStorage.setItem('user',token);
+                    // const userResponds = jwt.decode(token);
+                    // const userDetails = {
+                    //     _id: userResponds._id,
+                    //     name: userResponds.name,
+                    //     email: userResponds.email,
+                    //     type: userResponds.type,
+                    //     phoneNumber: userResponds.phoneNumber,
+                    //     password: userResponds.password
+                    // }
+                    // console.log(userDetails);
 
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
@@ -513,6 +522,12 @@ export default class userProfile extends Component  {
     )
 }
 }
+const mapStateToProps = state => ({
+    user: state.user.user
+  });
+  
+export default connect(mapStateToProps, { userUpdate })(userProfile)
+  
 
 
 

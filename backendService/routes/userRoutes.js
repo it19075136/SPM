@@ -17,7 +17,8 @@ router.post('/add', (req, res) => {
             password:newUser.password,
             image:newUser.image
         },"jwtSecret")
-        res.json(token);
+        console.log('SEND THE token')
+        res.json({token});
     }
     else{
         res.json('Email Already Exists')
@@ -88,7 +89,8 @@ router.post('/update/:id', (req, res) => {
  console.log(req.body)
     updateUserById(req.body)
         .then((user) => {
-            console.log('in router post in then')
+            if(user){
+                console.log('in router post in then')
             const token = jsonwebtoken.sign({
                 _id:user._id,
                 name :user.name,
@@ -102,6 +104,12 @@ router.post('/update/:id', (req, res) => {
             res.json(
                 {token}
             )
+            }
+            else{
+                res.json('Action unscuccesful')
+            }
+            
+            
         })
 })
 
@@ -110,12 +118,18 @@ router.post('/getCode',(req,res)=>{
     console.log(req.body);
     getEmailAndPassCode(req.body.email).then(details=>{
         console.log('router post in getEmail')
-        const token = jsonwebtoken.sign({
-            _id:details._id,
-            email : details.email,
-            code:details.code
-        },"jwtSecret")
-        res.json({token});
+        if(details.code){
+            const token = jsonwebtoken.sign({
+                _id:details._id,
+                email : details.email,
+                code:details.code
+            },"jwtSecret")
+            res.json('Action unsuccesfull');
+        }
+        else{
+            res.json({token});
+        }
+       
     }).catch((err)=>{
         console.log('err');
         console.log(err);
