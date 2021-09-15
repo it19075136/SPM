@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
-import { Card, Placeholder, Loader, Button, Form, Grid, Segment, Pagination } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination } from 'semantic-ui-react';
 
 class vehicleAdsView extends Component {
 
@@ -18,15 +18,23 @@ class vehicleAdsView extends Component {
             showFirstAndLastNav: false,
             showPreviousAndNextNav: false,
             totalPages: 1,
-        }
+            disabled: true
+        },
+        counter: 0
     }
 
-    sortAdsArray = (index) => {
-        console.log(this.state,index)
+    sortAdsArray = () => {
         this.setState({
             ...this.state,
+            counter: this.state.counter+1,
             vehicleAds: this.state.vehicleAds.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title))
+        },() => {
+        if(this.state.counter === this.state.vehicleAds.length)
+        this.setState({
+            ...this.state
+            ,pagination: {...this.state.pagination,disabled: false}
         })
+    })
     }
 
     setAdsForPage = () => {
@@ -40,7 +48,7 @@ class vehicleAdsView extends Component {
                     console.log(this.state.pagination.indexOfFirstCard,(this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
                     for (let index = 0; index < this.state.pagination.indexOfLastCard - (9*(this.state.pagination.activePage-1)); index++) {
                         this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },  this.sortAdsArray.bind(this,index))
+                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },this.sortAdsArray)
                         })
                     }
                 })
@@ -61,7 +69,7 @@ class vehicleAdsView extends Component {
         this.setAdsForPage()
     }
 
-    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,vehicleAds:[],pagination: { ...this.state.pagination, activePage, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,vehicleAds:[],counter:0,pagination: { ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
         indexOfLastCard: (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage))+9*(activePage-1):(activePage * this.state.pagination.cardsPerPage)}}, () => {
             this.setAdsForPage(this.state);
     })
@@ -99,6 +107,7 @@ class vehicleAdsView extends Component {
                         lastItem={this.state.pagination.showFirstAndLastNav ? undefined : null}
                         prevItem={this.state.pagination.showPreviousAndNextNav ? undefined : null}
                         nextItem={this.state.pagination.showPreviousAndNextNav ? undefined : null}
+                        disabled={this.state.pagination.disabled}
                     />
                 </div>
             </div>
