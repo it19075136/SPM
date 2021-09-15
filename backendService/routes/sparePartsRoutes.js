@@ -1,4 +1,4 @@
-const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsAds, deleteSparepartsById } = require('../api/spareParts.api');
+const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsAds, deleteSparepartsById, getPublishedSparepartsAds } = require('../api/spareParts.api');
 const router = require('express').Router();
 
 //**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'getSparePartById' FUNCTION*/
