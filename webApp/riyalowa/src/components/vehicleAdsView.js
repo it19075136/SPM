@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
-import { Card, Placeholder, Loader, Button, Form, Grid, Segment, Pagination } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination } from 'semantic-ui-react';
 
 class vehicleAdsView extends Component {
 
@@ -9,29 +9,32 @@ class vehicleAdsView extends Component {
         vehicleAds: [],
         pagination: {
             activePage: 1,
+            cardsPerPage: 9,
+            indexOfLastCard: 9,
+            indexOfFirstCard: 0,
             boundaryRange: 1,
             siblingRange: 1,
             showEllipsis: false,
             showFirstAndLastNav: false,
             showPreviousAndNextNav: false,
             totalPages: 1,
-        }
+            disabled: true
+        },
+        counter: 0
     }
 
-    finalizeImagesPerPage = () => {
-        console.log('in in')
+    sortAdsArray = () => {
         this.setState({
             ...this.state,
-            vehicleAds: this.state.vehicleAds.splice((this.state.pagination.activePage - 1) * 9,(this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 * this.state.pagination.activePage ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length)),
-        })
-    }
-
-    sortAdsArray = (index) => {
-        console.log(this.state,index)
-        this.setState({
-            ...this.state,
+            counter: this.state.counter+1,
             vehicleAds: this.state.vehicleAds.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title))
-        },index == ((this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length) - 1 )? this.finalizeImagesPerPage : null)
+        },() => {
+        if(this.state.counter === this.state.vehicleAds.length)
+        this.setState({
+            ...this.state
+            ,pagination: {...this.state.pagination,disabled: false}
+        })
+    })
     }
 
     setAdsForPage = () => {
@@ -39,13 +42,13 @@ class vehicleAdsView extends Component {
         this.props.getPublishedVehicleAds().then((res) => {
             this.setState({
                 ...this.state,
-                vehicleAds: res
+                vehicleAds: res.slice(this.state.pagination.indexOfFirstCard,this.state.pagination.indexOfLastCard)
             }, () => {
-                this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.state.vehicleAds.length / 9 } }, () => {
-                    console.log((this.state.pagination.activePage - 1) * 9,(this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length))
-                    for (let index = (this.state.pagination.activePage - 1) * 9; index < (this.state.vehicleAds.length - (this.state.pagination.activePage - 1) * 9 >= 9 ? 9 * this.state.pagination.activePage : this.state.vehicleAds.length); index++) {
-                        this.props.getVehicleAdById(this.props.vehicleAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },  this.sortAdsArray.bind(this,index))
+                this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
+                    console.log(this.state.pagination.indexOfFirstCard,(this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
+                    for (let index = 0; index < this.state.pagination.indexOfLastCard - (9*(this.state.pagination.activePage-1)); index++) {
+                        this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
+                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },this.sortAdsArray)
                         })
                     }
                 })
@@ -56,13 +59,19 @@ class vehicleAdsView extends Component {
     }
 
     componentDidMount = () => {
+        this.setState({
+            ...this.state,
+            pagination: {...this.state.pagination,
+                indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
+                indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
+            }
+        })
         this.setAdsForPage()
     }
 
-    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state, pagination: { ...this.state.pagination, activePage } }, () => {
-        this.setState({ ...this.state, vehicleAds: [] },() => {
-            this.setAdsForPage();
-        })
+    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,vehicleAds:[],counter:0,pagination: { ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+        indexOfLastCard: (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage))+9*(activePage-1):(activePage * this.state.pagination.cardsPerPage)}}, () => {
+            this.setAdsForPage(this.state);
     })
 
     render() {
@@ -98,6 +107,7 @@ class vehicleAdsView extends Component {
                         lastItem={this.state.pagination.showFirstAndLastNav ? undefined : null}
                         prevItem={this.state.pagination.showPreviousAndNextNav ? undefined : null}
                         nextItem={this.state.pagination.showPreviousAndNextNav ? undefined : null}
+                        disabled={this.state.pagination.disabled}
                     />
                 </div>
             </div>
