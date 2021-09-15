@@ -8,7 +8,7 @@ function addSparePartAd(payload) {
         newSparePart.save().then((sparepart) => {
             resolve(sparepart);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
 
     })
@@ -20,7 +20,7 @@ function getAllSparePartsAds() {
         spareParts.find().then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
     })
 }
@@ -31,7 +31,7 @@ function getSparePartById(id) {
         spareParts.findById(id).then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            resolve(err)
+            reject(err)
         });
     });
 }
@@ -39,10 +39,10 @@ function getSparePartById(id) {
 //updateSparePartById() function
 function updateSparePartById(id, payload) {
     return new Promise((resolve, reject) => {
-        spareParts.findByIdAndUpdate(id, {$set: payload}).then((docs) => {
+        spareParts.updateOne({_id: id}, {$set: payload}).then((docs) => {
             resolve(docs);
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         });
     })
 }
@@ -53,9 +53,20 @@ function deleteSparepartsById(id){
         spareParts.findByIdAndRemove(id).then(() => {
             resolve("Successfully deleted!");
         }).catch((err) => {
-            resolve(err);
+            reject(err);
         })
     })
 }
 
-module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById }
+//getPublishedSparepartsAds() function
+function getPublishedSparepartsAds() {
+    return new Promise((resolve, reject) => {
+        spareParts.find({ status: 'published' }, '_id title location price negotiable', { sort: { title: 1 } }).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById, getPublishedSparepartsAds }

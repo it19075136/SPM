@@ -60,6 +60,17 @@
   padding       : 10px;
 }
 
+.form-centered-homepage {
+  display       : flex;
+  align-items   : flex-start;
+  flex-direction: column;
+  border        : 1px solid rgba(221, 221, 221, 0);
+  /* box-shadow    : 5px 5px 10px; */
+  /* width         : 60%; */
+  margin        : 50px 2% 50px 2%;
+  padding       : 10px;
+}
+
 .main-form-wrapper {
   display        : flex;
   flex-direction : row;
@@ -244,3 +255,114 @@ margin: 0px 10px 0px 10px !important;
 .form-submit-btn{
   align-self: flex-end;
 }
+
+.category-card-custom{
+  width: 200px;
+  height: 50px;
+  background-color: #165a6e !important;
+  color: rgb(255, 255, 255) !important;
+  font-size: large !important;
+  border-radius: 0px !important;
+ 
+} 
+
+.category-card-custom :hover{
+  transform: scale(1.2);
+} 
+.ad-cards{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ad-cards-group{
+  padding: 10px;
+}
+
+.pagination{
+  margin-left: 50%;
+}
+
+.header-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 60px;
+  margin: 10px 0 30px 0 !important;
+  color: #165a6e !important;
+  font-weight: 700;
+}
+
+.sub1-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 30px;
+  margin: 100px 0 80px 0 !important;
+  color: #165a6e !important;
+  font-weight: 500;
+  line-height: 36px !important;
+  letter-spacing: 3px;
+}
+
+.card-view-homepage{
+  margin-top: 50px !important;
+}
+
+.trending-vehicle-text{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 20px;
+  margin: 100px 0 0px 0 !important;
+  color: #153842 !important;
+  font-weight: 800;
+  line-height: 36px !important;
+  letter-spacing: 3px;
+}
+
+.header-text-homepage-riyapola{
+
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 90px;
+    margin: 10px 0 30px 0 !important;
+    /* color: #000000 !important; */
+    font-weight: 500;  
+    letter-spacing: 20px !important;
+}
+
+/* #mName{
+	font-size:50px;
+	text-align:center;
+	margin-top:0px;
+	word-spacing:20px;
+	letter-spacing:60px;
+	color:#990099;
+	font-family:Cambria;
+	
+
+} */
+
+.header-text-homepage-riyapola{
+	animation-name: colorchange;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes colorchange{
+	0%{color:#000000}
+    /* 1%{color:#000000;} */
+	/* 25%{color:#833b3500} */
+    50% {color:#ffffff00 }
+	/* 75%{color:#33a16c} */
+	/* 85%{color:white} */
+    100% {color: #000000;}
+}
+
+/* @keyframes colorchange{
+	0%{color:#990099}
+    1%{color:#4285F4;}
+	25%{color:#DB4437}
+    50% {color:#F4B400 }
+	75%{color:#0F9D58}
+	85%{color:white}
+    100% {color: #990099;}
+} */
