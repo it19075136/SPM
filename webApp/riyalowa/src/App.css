@@ -64,7 +64,7 @@
   display       : flex;
   align-items   : flex-start;
   flex-direction: column;
-  border        : 1px solid #ddd;
+  border        : 1px solid rgba(221, 221, 221, 0);
   /* box-shadow    : 5px 5px 10px; */
   /* width         : 60%; */
   margin        : 50px 2% 50px 2%;
@@ -282,4 +282,129 @@ margin: 0px 10px 0px 10px !important;
 
 .pagination{
   margin-left: 50%;
+}
+
+.header-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 60px;
+  margin: 10px 0 30px 0 !important;
+  color: #165a6e !important;
+  font-weight: 700;
+}
+
+.sub1-text-homepage{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 30px;
+  margin: 100px 0 80px 0 !important;
+  color: #165a6e !important;
+  font-weight: 500;
+  line-height: 36px !important;
+  letter-spacing: 3px;
+}
+
+.card-view-homepage{
+  margin-top: 50px !important;
+}
+
+.trending-vehicle-text{
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 20px;
+  margin: 100px 0 0px 0 !important;
+  color: #153842 !important;
+  font-weight: 800;
+  line-height: 36px !important;
+  letter-spacing: 3px;
+}
+
+.header-text-homepage-riyapola{
+
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 90px;
+    margin: 10px 0 30px 0 !important;
+    /* color: #000000 !important; */
+    font-weight: 500;  
+    letter-spacing: 20px !important;
+}
+
+/* #mName{
+	font-size:50px;
+	text-align:center;
+	margin-top:0px;
+	word-spacing:20px;
+	letter-spacing:60px;
+	color:#990099;
+	font-family:Cambria;
+	
+
+} */
+
+.header-text-homepage-riyapola{
+	animation-name: colorchange;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes colorchange{
+	0%{color:#000000}
+    /* 1%{color:#000000;} */
+	/* 25%{color:#833b3500} */
+    50% {color:#ffffff00 }
+	/* 75%{color:#33a16c} */
+	/* 85%{color:white} */
+    100% {color: #000000;}
+}
+
+/* @keyframes colorchange{
+	0%{color:#990099}
+    1%{color:#4285F4;}
+	25%{color:#DB4437}
+    50% {color:#F4B400 }
+	75%{color:#0F9D58}
+	85%{color:white}
+    100% {color: #990099;}
+} */
+
+/* 404 Error  */
+
+.page_404 {
+  padding    : 100px 30px 100px 200px;
+  background : #fff;
+  font-family: 'Arvo', serif;
+}
+
+.page_404 img {
+  width: 100%;
+}
+
+.four_zero_four_bg {
+
+  background-image   : url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+  height             : 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.four_zero_four_bg h1 {
+  font-size: 80px;
+}
+
+.four_zero_four_bg h3 {
+  font-size: 80px;
+}
+
+.link_404 {
+  color     : #fff !important;
+  padding   : 10px 20px;
+  background: #39ac31;
+  margin    : 20px 0;
+  display   : inline-block;
+}
+
+.contant_box_404 {
+  margin-top: -50px;
 }

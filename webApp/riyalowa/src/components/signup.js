@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { Button, Checkbox, Form, Header, Icon } from 'semantic-ui-react'
 import GoogleLogin, { GoogleLogout } from 'react-google-login'
 import axios from "axios"
+import { connect } from 'react-redux'
 import hashPassword from 'password-hash'
 import jwt from 'jsonwebtoken'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { addUser } from '../redux/actions/userActions';
 
 // constructor(props){
 //   super(props);
@@ -17,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 //   }
 // }
 
-export default class signup extends Component{ 
+class signup extends Component{ 
   // const [user, setUser] = useState({
   //   name :"" ,
   //         email :"" ,
@@ -72,10 +74,39 @@ export default class signup extends Component{
     }
     localStorage.setItem('login',login);
     // this.state.user.password = hashPassword.generate(this.state.user.password);
-    axios.post('http://localhost:5000/user/add',this.state.user).then(res=>{
-        const token = res.data;
-        console.log(token,"token");
-        if(token =='Email Already Exists'){
+    this.props.addUser(this.state.user).then(res=>{
+        const {token} = res;
+        // console.log(token,"token");
+        
+        if(token){
+        //   setAction({
+        //     success:true
+        //  });
+        // setAction(true)
+        console.log('true')
+        this.setState({
+          ...this.state,
+          action:true
+        })
+          notify();
+          // console.log('action',action)
+            // const userResponds =jwt.decode(token);
+            // const userDetails ={
+            //     _id:userResponds._id,
+            //     name :userResponds.name,
+            //     email : userResponds.email,
+            //     type : userResponds.type,
+            //     phoneNumber :userResponds.phoneNumber
+            // }
+
+            // console.log('decode token userRespond',userResponds);
+            // console.log('send details to redux',userDetails)
+            // localStorage.setItem('user',token);
+            window.location.href = '/'
+            // dispatch({type:'ADD_USER',payload:userDetails})
+            // resolve(res.data);
+        }
+        else{
           // resolve(res.data);
         //   setAction(({
         //     success:false
@@ -88,34 +119,6 @@ export default class signup extends Component{
           notify();
         }
       
-        else if(token){
-        //   setAction({
-        //     success:true
-        //  });
-        // setAction(true)
-        console.log('true')
-        this.setState({
-          ...this.state,
-          action:true
-        })
-          notify();
-          // console.log('action',action)
-            const userResponds =jwt.decode(token);
-            const userDetails ={
-                _id:userResponds._id,
-                name :userResponds.name,
-                email : userResponds.email,
-                type : userResponds.type,
-                phoneNumber :userResponds.phoneNumber
-            }
-
-            console.log('decode token userRespond',userResponds);
-            console.log('send details to redux',userDetails)
-            localStorage.setItem('user',token);
-            window.location.href = '/'
-            // dispatch({type:'ADD_USER',payload:userDetails})
-            // resolve(res.data);
-        }
          
     }).catch(err=>{
         console.log(err)
@@ -162,23 +165,13 @@ export default class signup extends Component{
     //   }
     // })
     this.state.user.password = hashPassword.generate(this.state.user.password);
-    axios.post('http://localhost:5000/user/add',this.state.user).then(res=>{
-        const token = res.data;
-        console.log(token,"token");
-        if(token =='Email Already Exists'){
-          // resolve(res.data);
-        //   setAction(({
-        //     success:false
-        //  }));
-        console.log('false')
-        this.setState({
-          ...this.state,
-          action:false
-        })
-          notify();
-        }
+    this.props.addUser(this.state.user).then(res=>{
+      console.log(res,"res.data")
+        const {token} = res;
+        // console.log(token,"token");
+        
       
-        else if(token){
+         if(token){
         //   setAction({
         //     success:true
         //  });
@@ -194,21 +187,33 @@ export default class signup extends Component{
           }
           localStorage.setItem('login',login);
           // console.log('action',action)
-            const userResponds =jwt.decode(token);
-            const userDetails ={
-                _id:userResponds._id,
-                name :userResponds.name,
-                email : userResponds.email,
-                type : userResponds.type,
-                phoneNumber :userResponds.phoneNumber
-            }
+            // const userResponds =jwt.decode(token);
+            // const userDetails ={
+            //     _id:userResponds._id,
+            //     name :userResponds.name,
+            //     email : userResponds.email,
+            //     type : userResponds.type,
+            //     phoneNumber :userResponds.phoneNumber
+            // }
 
-            console.log('decode token userRespond',userResponds);
-            console.log('send details to redux',userDetails)
-            localStorage.setItem('user',token);
+            // console.log('decode token userRespond',userResponds);
+            // console.log('send details to redux',userDetails)
+            // localStorage.setItem('user',token);
             window.location.href = '/'
             // dispatch({type:'ADD_USER',payload:userDetails})
             // resolve(res.data);
+        }
+        else{
+          // resolve(res.data);
+        //   setAction(({
+        //     success:false
+        //  }));
+        console.log('false')
+        this.setState({
+          ...this.state,
+          action:false
+        })
+          notify();
         }
          
     }).catch(err=>{
@@ -302,6 +307,11 @@ export default class signup extends Component{
 )
   }
 }
+const mapStateToProps = state => ({
+  user: state.user.user
+});
+
+export default connect(mapStateToProps, { addUser })(signup)
 
 
 // import React, { useState } from 'react'

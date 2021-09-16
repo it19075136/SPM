@@ -6,7 +6,9 @@ import passwordHash from 'password-hash'
 import jwt from 'jsonwebtoken'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export default class signin extends Component  {
+import { connect } from 'react-redux'
+import { getUser,getCode } from '../redux/actions/userActions';
+class signin extends Component  {
   // const [user, setUser] = useState({
   //   email: "",
   //   password: ""
@@ -54,16 +56,16 @@ export default class signin extends Component  {
       }
     })
     // user.password = passwordHash.generate(user.password);
-    axios.post('http://localhost:5000/user/getUser', this.state.user).then((res) => {
+    this.props.getUser(this.state.user).then((res) => {
       console.log('in dispathc');
 
       // const { password } = res.data;
       // password = jwt.decode(password);
-      console.log('res.data', res.data);
+      console.log('res.data', res);
       // console.log('token', token);
       // console.log('password', password);
       // console.log(Password);
-      const { token } = res.data;
+      const { token } = res;
         console.log('token', token)
         const userResponds = jwt.decode(token)
       if (userResponds.email){
@@ -94,7 +96,7 @@ export default class signin extends Component  {
         
         console.log('decode token userRespond', userResponds);
         // dispatch({type:'ADD_USER',payload: userResponds})
-        localStorage.setItem('user', token);
+        // localStorage.setItem('user', token);
         console.log('in findUser');
         // resolve(userResponds);
         window.location.href = '/'
@@ -158,10 +160,10 @@ export default class signin extends Component  {
       }
     })
     // user.password = passwordHash.generate(user.password);
-    axios.post('http://localhost:5000/user/getUser', this.state.user).then((res) => {
+    this.props.getUser(this.state.user).then((res) => {
       console.log('in dispathc');
 
-      const { password } = res.data;
+      const { password } = res;
       // password = jwt.decode(password);
       console.log('res.data', res.data);
       // console.log('token', token);
@@ -192,12 +194,12 @@ export default class signin extends Component  {
       //    success:true
       // }));
       //  console.log('action',action)
-        const { token } = res.data;
+        const { token } = res;
         console.log('token', token)
         const userResponds = jwt.decode(token)
         console.log('decode token userRespond', userResponds);
         // dispatch({type:'ADD_USER',payload: userResponds})
-        localStorage.setItem('user',token);
+        // localStorage.setItem('user',token);
         console.log('in findUser');
         // resolve(userResponds);
         window.location.href = '/'
@@ -234,16 +236,21 @@ export default class signin extends Component  {
     //     email:email
     // }
     if (this.state.user.email) {
-      axios.post('http://localhost:5000/user/getCode', this.state.user).then((res) => {
+      this.props.getCode(this.state.user).then((res) => {
         //localstorage ekati reducx ekati danna oneda
-        const { token } = res.data;
-        localStorage.setItem('updatePasswordDetails', token);
+        const { token } = res;
+        if(token){
+          localStorage.setItem('updatePasswordDetails', token);
         //    const  =jwt.decode(details);
         //     dispatch({type:'ADD_USER',payload:res.data});
         console.log('action axios');
         console.log(token);
-        // resolve(token)
+        
         window.location.href = '/forgetPassword'
+        }
+        
+        // resolve(token)
+        
       }).catch((err) => {
         // reject(err)
       })
@@ -312,6 +319,11 @@ export default class signin extends Component  {
   )
 }
 }
+const mapStateToProps = state => ({
+  user: state.user.user
+});
+
+export default connect(mapStateToProps, { getUser,getCode })(signin)
 
 
 

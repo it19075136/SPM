@@ -29,6 +29,7 @@ export default class updateSparePartsAdForm extends Component {
             category: '',
             title: '',
             description: '',
+            delivery: false,
             price: null,
             negotiable: false,
             images: [],
@@ -50,7 +51,7 @@ export default class updateSparePartsAdForm extends Component {
     }
 
     componentDidMount = () => {
-        axios.get(`http://localhost:5000/spareparts/${window.location.pathname.replace('/sparePartsAd/update/', '')}`).then((res) => {
+        this.props.getSparepartAdById(window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
             console.log(res);
             this.setState({ ...this.state, payload: res.data, loading: false }, () => {
                 console.log(this.state)
@@ -78,22 +79,20 @@ export default class updateSparePartsAdForm extends Component {
             console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
-                axios.put(`http://localhost:5000/spareparts/${window.location.pathname.replace('/sparePartsAd/update/', '')}`, this.state.payload).then((res) => {
+                this.props.updateSparepartsAd(this.state.payload, window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, success: false, actionWaiting: false })
-                        }, 2000);
+                        this.setState({ ...this.state, success: false, actionWaiting: false })
+                     
                     })
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
-                        setTimeout(() => {
-                            this.setState({ ...this.state, error: false, actionWaiting: false })
-                            window.location.reload(false);
-                        }, 2000);
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
+                        window.location.reload(false);
+                      
                     })
 
                 })
