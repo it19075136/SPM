@@ -39,7 +39,7 @@ class sparePartAdView extends Component {
     setAdsForPage = () => {
 
         this.props.getPublishedSparepartsAds().then((res) => {
-            console.log(this.props.getPublishedSparepartsAds())
+            console.log(this.state.sparepartsAds)
             this.setState({
                 ...this.state,
                 sparepartsAds: res.slice(this.state.pagination.indexOfFirstCard,this.state.pagination.indexOfLastCard)
@@ -118,7 +118,7 @@ class sparePartAdView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    sparepartsAds: state.sparepart.publishSparePartsAdIds
+    sparepartsAds: state.sparepart.publishedSparepartsAdIds
 })
 
 export default connect(mapStateToProps, {getPublishedSparepartsAds, getSparepartAdById})(sparePartAdView);
