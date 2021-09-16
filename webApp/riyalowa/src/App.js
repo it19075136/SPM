@@ -32,7 +32,7 @@ function App() {
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
-        <Route exact path='/sparepartAds' component={sparepartsAdView}/>
+        <Route exact path='/sparePartsAds' component={sparepartsAdView}/>
         <Route exact path='/sparePartsAd/update/:id' component={updateSparePartsAdForm} />
         <Route exact path='/userProfile' component={UserProfile}/>
         <Route exact path='/category/add' component={AddCategoryForm} />
