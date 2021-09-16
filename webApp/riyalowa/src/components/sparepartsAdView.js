@@ -39,6 +39,7 @@ class sparePartAdView extends Component {
     setAdsForPage = () => {
 
         this.props.getPublishedSparepartsAds().then((res) => {
+            console.log(this.props.getPublishedSparepartsAds())
             this.setState({
                 ...this.state,
                 sparepartsAds: res.slice(this.state.pagination.indexOfFirstCard,this.state.pagination.indexOfLastCard)
