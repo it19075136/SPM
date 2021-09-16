@@ -18,6 +18,7 @@ import categoryList from './components/categoryList';
 import homepage from './components/homepage';
 import vehicleAdsView from './components/vehicleAdsView';
 import sparepartsAdView from './components/sparepartsAdView';
+import errorPage from './components/404Error';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route exact path='/forgetPassword' component={ForgetPassword} />
         <Route exact path='/category/list' component={categoryList} />
         <Route exact path='/' component={homepage} />
+        <Route exact path="/404Error" component={errorPage} />
 
         {/* Add components */}
       </Switch>
