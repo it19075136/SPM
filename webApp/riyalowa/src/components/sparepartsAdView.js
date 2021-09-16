@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import {getPublishedSparepartsAds, getSparepartAdById} from '../redux/actions/sparepartsActions';
+import { connect } from 'react-redux';
+import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import { Card, Placeholder, Loader, Button, Pagination } from 'semantic-ui-react';
 
 class sparePartAdView extends Component {
@@ -25,56 +25,62 @@ class sparePartAdView extends Component {
     sortAdsArray = () => {
         this.setState({
             ...this.state,
-            counter: this.state.counter+1,
+            counter: this.state.counter + 1,
             sparepartsAds: this.state.sparepartsAds.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title))
-        },() => {
-        if(this.state.counter === this.state.sparepartsAds.length)
-        this.setState({
-            ...this.state
-            ,pagination: {...this.state.pagination,disabled: false}
+        }, () => {
+            if (this.state.counter === this.state.sparepartsAds.length)
+                this.setState({
+                    ...this.state
+                    , pagination: { ...this.state.pagination, disabled: false }
+                })
         })
-    })
     }
 
     setAdsForPage = () => {
 
-        this.props.getPublishedSparepartsAds().then((res) => {
-            console.log(this.state.sparepartsAds)
-            this.setState({
-                ...this.state,
-                sparepartsAds: res.slice(this.state.pagination.indexOfFirstCard,this.state.pagination.indexOfLastCard)
-            }, () => {
-                this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
-                    console.log(this.state.pagination.indexOfFirstCard,(this.state.sparepartsAds.length - this.state.pagination.indexOfFirstCard))
-                    for (let index = 0; index < this.state.pagination.indexOfLastCard - (9*(this.state.pagination.activePage-1)); index++) {
-                        this.props.getSparepartAdById(this.state.sparepartsAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, sparepartsAds: [res, ...this.state.sparepartsAds.filter((item) => item._id != res._id)] },this.sortAdsArray)
-                        })
-                    }
-                })
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
-    }
-    
-    componentDidMount = () => {
         this.setState({
             ...this.state,
-            pagination: {...this.state.pagination,
-                indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
-                indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
-            }
-        })
-        this.setAdsForPage()
+            sparepartsAds: this.props.sparepartsAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+        }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
+                console.log(this.state.pagination.indexOfFirstCard, (this.state.sparepartsAds.length - this.state.pagination.indexOfFirstCard))
+                for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
+                    this.props.getSparepartAdById(this.state.sparepartsAds[index]._id).then((res) => {
+                        this.setState({ ...this.state, sparepartsAds: [res, ...this.state.sparepartsAds.filter((item) => item._id != res._id)] }, this.sortAdsArray)
+                    })
+                }
+            })
+        });
+
     }
 
-    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,sparepartsAds:[],counter:0,pagination: { ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-        indexOfLastCard: (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage))+9*(activePage-1):(activePage * this.state.pagination.cardsPerPage)}}, () => {
-            this.setAdsForPage(this.state);
+    componentDidMount = () => {
+        this.props.getPublishedSparepartsAds().then((res) => {
+            this.setState({
+                ...this.state,
+                pagination: {
+                    ...this.state.pagination,
+                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                    indexOfLastCard: (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                }
+            })
+            this.setAdsForPage()
+        }).catch((err) => {
+            alert('Connection error!')
+        })
+    }
+
+    handlePaginationChange = (e, { activePage }) => this.setState({
+        ...this.state, sparepartsAds: [], counter: 0, pagination: {
+            ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+            indexOfLastCard: (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
+        }
+    }, () => {
+        this.setAdsForPage(this.state);
     })
 
     render() {
+        console.log(this.props.sparepartsAds)
         return (
             <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
@@ -114,11 +120,11 @@ class sparePartAdView extends Component {
         )
     }
 
-    
+
 }
 
 const mapStateToProps = (state) => ({
-    sparepartsAds: state.sparepart.publishedSparepartsAdIds
+    sparepartsAds: state.sparepart.publishSparepartAdIds
 })
 
-export default connect(mapStateToProps, {getPublishedSparepartsAds, getSparepartAdById})(sparePartAdView);
+export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById })(sparePartAdView);

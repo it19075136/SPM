@@ -39,35 +39,36 @@ class vehicleAdsView extends Component {
 
     setAdsForPage = () => {
 
-        this.props.getPublishedVehicleAds().then((res) => {
-            this.setState({
-                ...this.state,
-                vehicleAds: res.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
-            }, () => {
-                this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
-                    console.log(this.state.pagination.indexOfFirstCard, (this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
-                    for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
-                        this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] }, this.sortAdsArray)
-                        })
-                    }
-                })
+        this.setState({
+            ...this.state,
+            vehicleAds: this.props.vehicleAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+        }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
+                console.log(this.state.pagination.indexOfFirstCard, (this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
+                for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
+                    this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
+                        this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] }, this.sortAdsArray)
+                    })
+                }
             })
-        }).catch((err) => {
-            console.log(err);
-        })
+        });
     }
 
     componentDidMount = () => {
-        this.setState({
-            ...this.state,
-            pagination: {
-                ...this.state.pagination,
-                indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
-                indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
-            }
+
+        this.props.getPublishedVehicleAds().then((res) => {
+            this.setState({
+                ...this.state,
+                pagination: {
+                    ...this.state.pagination,
+                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                    indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                }
+            }, () => this.setAdsForPage()
+            )
+        }).catch((err) => {
+            alert('Connection error!')
         })
-        this.setAdsForPage()
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -85,7 +86,7 @@ class vehicleAdsView extends Component {
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
-                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false}/> : <Placeholder >
+                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
                                 <Placeholder.Image square />
                             </Placeholder>}
                             <Card.Content>
