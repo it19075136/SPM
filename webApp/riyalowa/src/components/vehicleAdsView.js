@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
-import { Card, Placeholder, Loader, Button, Pagination } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Icon } from 'semantic-ui-react';
+import jwt from 'jsonwebtoken'
 
 class vehicleAdsView extends Component {
 
@@ -20,9 +21,19 @@ class vehicleAdsView extends Component {
             totalPages: 1,
             disabled: true
         },
-        counter: 0
+        counter: 0,
+        user:{
+            _id:"",
+            name:"",
+            email:"",
+            type:"",
+            phoneNumber:"",
+            image:[],
+            wishList:[],
+            password:"",
+        }
     }
-
+  
     sortAdsArray = () => {
         this.setState({
             ...this.state,
@@ -59,14 +70,27 @@ class vehicleAdsView extends Component {
     }
 
     componentDidMount = () => {
+        const userdetais = localStorage.getItem("user");
+        const users = jwt.decode(userdetais);
         this.setState({
             ...this.state,
             pagination: {...this.state.pagination,
                 indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
                 indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
+            },
+            user:{
+                _id:users._id,
+                name:users.name,
+                email:users.email,
+                type:users.type,
+                phoneNumber:users.phoneNumber,
+                image:users.image,
+                wishList:users.wishList,
+                password:users.password
             }
         })
         this.setAdsForPage()
+        console.log('in componentDidMount')
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,vehicleAds:[],counter:0,pagination: { ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
@@ -75,11 +99,50 @@ class vehicleAdsView extends Component {
     })
 
     render() {
+        // const setwishList=(id)=>{
+        //     console.log('in set wishlist',id)
+        //     if( this.state.user.wishList.includes(id)){
+
+        //     }    
+        // }
         return (
             <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
+                            <Icon name="heart" disabled={this.state.user.wishList ? !this.state.user.wishList.includes(item._id):true }
+                            corner="top right"
+                                // user.wishList.map(list=>{ return list==item._id})
+                                color={this.state.user.wishList.includes(item._id) ? "red" : null}
+                                size="big" 
+                                link={onclick=()=>{
+                                    console.log('in set wishlist',item._id)
+                                    if( this.state.user.wishList.includes(item._id)){
+                                        this.setState({
+                                            ...this.state,
+                                            user:{
+                                                ...this.state.user,
+                                                wishList:this.state.user.wishList.filter(Wish=> Wish!=item._id )
+                                               
+                                            }
+                                        })
+                                        console.log('this.state.user.wishList in if',this.state.user.wishList)
+                                    }
+                                    else{
+                                        this.setState({
+                                            ...this.state,
+                                            user:{
+                                                ...this.state.user,
+                                                wishList:[...this.state.user.wishList,item._id]
+                                               
+                                            }
+                                        })
+                                        console.log('this.state.user.wishList',this.state.user.wishList)
+                                        localStorage.setItem('user', this.state.user);
+                                    }
+                                }} 
+                                // link={}
+                                />
                             <Card.Content className='ad-cards'>
                                 <h4>{item.title}</h4>
                                 {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
