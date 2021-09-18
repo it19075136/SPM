@@ -80,6 +80,10 @@ class vehicleAdsView extends Component {
         this.setAdsForPage(this.state);
     })
 
+    navigateToDetails = (id) => {
+        window.location.href = `/vehicleAdDetail/${id}`
+    }
+
     render() {
         return (
             <div >
@@ -98,7 +102,7 @@ class vehicleAdsView extends Component {
                                     : null}
                             </Card.Content>
                             <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}

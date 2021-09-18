@@ -20,6 +20,8 @@ import vehicleAdsView from './components/vehicleAdsView';
 import sparepartsAdView from './components/sparepartsAdView';
 import errorPage from './components/404Error';
 import AdminSparepartsAdView from './components/AdminSparepartsAdView';
+import vehicleAdDetails from './components/vehicleAdDetails';
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
         <Route exact path='/vehicleAd/update/:id' component={updateVehicleAdForm} />
         <Route exact path='/vehicleAds' component={vehicleAdsView} />
+        <Route exact path='/vehicleAdDetail/:id' component={vehicleAdDetails} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
