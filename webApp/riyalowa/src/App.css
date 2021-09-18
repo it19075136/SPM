@@ -408,3 +408,5 @@ margin: 0px 10px 0px 10px !important;
 .contant_box_404 {
   margin-top: -50px;
 }
+
+@import "~react-image-gallery/styles/css/image-gallery.css";
