@@ -34,6 +34,8 @@ export default class AddCategoryForm extends Component {
     this.handleSubmitManualMake= this.handleSubmitManualMake.bind(this);
     this.handleImportAllMake = this.handleImportAllMake.bind(this);
     this.handleImportRemoveAllMake= this.handleImportRemoveAllMake.bind(this);
+    this.categoryOnCLick= this.categoryOnCLick.bind(this);
+
 
   }
 
@@ -45,6 +47,10 @@ export default class AddCategoryForm extends Component {
           })
         })
     })
+  }
+
+  categoryOnCLick(){
+    window.location.href= '/category/list'
   }
 
   childCategoryUi() {
@@ -289,6 +295,10 @@ export default class AddCategoryForm extends Component {
             >
               Add Category
             </Button>
+
+            <Button className="add-category-btn" onClick={this.categoryOnCLick}>Go back </Button>
+
+
             {/* <Button
               type="submit"
               className="add-category-button"

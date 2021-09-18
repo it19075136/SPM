@@ -4,6 +4,7 @@ import { Form, Input, TextArea, Button, Select, Header, Icon, Segment, Radio, Mo
 import ImageUploading from 'react-images-uploading';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById } from '../redux/actions/sparepartsActions';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -24,20 +25,7 @@ const phoneOptions = [
 export default class updateSparePartsAdForm extends Component {
 
     state = {
-        payload: {
-            condition: '',
-            category: '',
-            title: '',
-            description: '',
-            delivery: false,
-            price: null,
-            negotiable: false,
-            images: [],
-            location: '',
-            userId: 'u1',
-            contactNumbers: [],
-            status: 'pending'
-        },
+        payload: this.props.sparepartAd,
         code: '',
         phone: '',
         titleState: true,
@@ -57,6 +45,7 @@ export default class updateSparePartsAdForm extends Component {
                 console.log(this.state)
             })
         }).catch((err) => {
+            console.log(err)
             this.setState({ ...this.state, loading: false }, () => {
                 alert('Please check your network connection and refresh the page');
             });
@@ -418,3 +407,7 @@ export default class updateSparePartsAdForm extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    sparepart: state.sparepart.sparepartsAd
+})

@@ -46,7 +46,7 @@ function App() {
 
         {/* Add components */}
       </Switch>
-      {/* <Footer/> */}
+      <Footer/>
     </BrowserRouter>
     </Provider>
   );
