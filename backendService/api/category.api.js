@@ -13,14 +13,21 @@ function addCategory(payload){
 }
 
 function getAllCategories(){
+
     return new Promise((resolve,reject) => {
-        Category.find((err, docs) => {
-            if(err){
-                reject(err)
-            }else{
-                resolve(docs);
-            }
-        });
+        // Category.find((err, docs) => {
+        //     if(err){
+        //         reject(err)
+        //     }else{
+        //         resolve(docs);
+        //     }
+        // });
+
+        Category.find({},'_id make mainDescription mainName type',{}).then((doc) => {
+            resolve(doc)
+        }).catch((err) => {
+            reject(err)
+        })
     });
 }
 
@@ -55,6 +62,18 @@ function deleteCategoryById(id){
     
 }
 
+function getImageByCategoryId(id){
+    return new Promise((resolve,reject) => {
+        let image = '';
+        Category.findById(id).then((docs) => {
+            image = docs.images[0];
+            resolve(image.data_url)
+        }).catch((err) => {
+            resolve(err);
+        })
+    })
+}
 
 
-module.exports = {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById}
+
+module.exports = {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById,getImageByCategoryId}

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
-const {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById} = require('../api/category.api');
+const {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById, getImageByCategoryId} = require('../api/category.api');
+const Category = require('../models/categoryModal');
 
 router.post('/', async (req,res) => {
 
@@ -38,6 +39,15 @@ router.put('/:id', async (req,res) => {
 
 router.delete('/:id', async (req,res) => {
     deleteCategoryById(req.params.id).then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        console.log(err);
+    })
+})
+
+router.get('/image/:id', async (req,res) => {
+    console.log('req.params.id: ', req.params.id);
+    getImageByCategoryId(req.params.id).then((result) => {
         res.json(result);
     }).catch((err) => {
         console.log(err);

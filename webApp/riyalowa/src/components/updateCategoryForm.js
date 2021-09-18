@@ -43,6 +43,13 @@ export default class AddCategoryForm extends Component {
     this.handleSubmitManualMake = this.handleSubmitManualMake.bind(this);
     this.handleImportAllMake = this.handleImportAllMake.bind(this);
     this.handleImportRemoveAllMake = this.handleImportRemoveAllMake.bind(this);
+    this.categoryOnCLick= this.categoryOnCLick.bind(this);
+
+  }
+
+  
+  categoryOnCLick(){
+    window.location.href= '/category/list'
   }
 
   handleImportRemoveAllMake() {
@@ -91,21 +98,20 @@ export default class AddCategoryForm extends Component {
       type: value,
     });
   }
-  componentDidMount() {
-    const { state } = this.props.location
-    axios
-      .get(`http://localhost:5000/category/${state}`)
-      .then((res) => {
-        this.setState({
-          images: res.data.images,
-          mainName: res.data.mainName,
-          mainDescription: res.data.mainDescription,
-          type: res.data.type,
-          vehicleMake: res.data.make,
-        });
-      });
+   componentDidMount() {
+    const { state } = this.props.location;
+     axios.get(`http://localhost:5000/category/${state}`).then((res) => {
 
-    axios
+      this.setState({
+        // images: res.data.images,
+        mainName: res.data.mainName,
+        mainDescription: res.data.mainDescription,
+        type: res.data.type,
+        vehicleMake: res.data.make,
+      });
+    });
+
+     axios
       .get(
         "https://private-anon-7d56ba085d-carsapi1.apiary-mock.com/manufacturers"
       )
@@ -277,6 +283,7 @@ export default class AddCategoryForm extends Component {
           )
           .then(() => {
             alert("Category Updated Successfully");
+            window.location.href = '/category/list'
           });
       } else {
         alert("Main category fields cannot be empty");
@@ -338,6 +345,9 @@ export default class AddCategoryForm extends Component {
             >
               Update Category
             </Button>
+
+            <Button className="add-category-btn" onClick={this.categoryOnCLick}>Go back </Button>
+
 
             <ImageUploading
               multiple
