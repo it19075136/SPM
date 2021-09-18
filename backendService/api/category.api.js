@@ -55,6 +55,20 @@ function deleteCategoryById(id){
     
 }
 
+function getImageByCategoryId(id){
+    return new Promise((resolve,reject) => {
+        let image = '';
+        Category.findById(id).then((docs) => {
+            image = docs.images[0];
+            console.log('image: ', image);
+            resolve(image.data_url)
+        }).catch((err) => {
+            console.log('err: ', err);
+            resolve(err);
+        })
+    })
+}
 
 
-module.exports = {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById}
+
+module.exports = {addCategory,getAllCategories,getCategoryById,updateCategoryById,deleteCategoryById,getImageByCategoryId}
