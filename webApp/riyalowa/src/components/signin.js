@@ -235,7 +235,8 @@ class signin extends Component  {
     //   const user ={
     //     email:email
     // }
-    if (this.state.user.email) {
+    if (this.state.user.email){
+      console.log('this.state.user.email',this.state.user.email)
       this.props.getCode(this.state.user).then((res) => {
         //localstorage ekati reducx ekati danna oneda
         const { token } = res;

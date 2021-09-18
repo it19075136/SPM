@@ -19,6 +19,7 @@ import homepage from './components/homepage';
 import vehicleAdsView from './components/vehicleAdsView';
 import sparepartsAdView from './components/sparepartsAdView';
 import errorPage from './components/404Error';
+import myads from './components/myads';
 import AdminSparepartsAdView from './components/AdminSparepartsAdView';
 import vehicleAdDetails from './components/vehicleAdDetails';
 
@@ -44,6 +45,7 @@ function App() {
         <Route exact path='/category/update' component={updateCategoryForm} />
         <Route exact path='/forgetPassword' component={ForgetPassword} />
         <Route exact path='/category/list' component={categoryList} />
+        <Route exact path='/myads' component={myads} />
         <Route exact path='/' component={homepage} />
         <Route exact path="/404Error" component={errorPage} />
 
