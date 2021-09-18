@@ -37,7 +37,7 @@ export default function (state = initstate, action) {
         case actionType.GET_PUBLISHED_SPAREPARTS_ADS:
             return {
                 ...state,
-                publishedVehicleAdIds: action.payload
+                publishSparepartAdIds: action.payload
             }
         default:
             return state;

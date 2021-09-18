@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
-import { Card, Placeholder, Loader, Button, Pagination, Icon } from 'semantic-ui-react';
 import jwt from 'jsonwebtoken'
+import { Card, Placeholder, Loader, Button, Pagination, Image ,Icon} from 'semantic-ui-react';
 
 class vehicleAdsView extends Component {
 
@@ -37,66 +37,96 @@ class vehicleAdsView extends Component {
     sortAdsArray = () => {
         this.setState({
             ...this.state,
-            counter: this.state.counter+1,
+            counter: this.state.counter + 1,
             vehicleAds: this.state.vehicleAds.sort((a, b) => a.title.localeCompare(b.title) == 0 ? -1 : a.title.localeCompare(b.title))
-        },() => {
-        if(this.state.counter === this.state.vehicleAds.length)
-        this.setState({
-            ...this.state
-            ,pagination: {...this.state.pagination,disabled: false}
+        }, () => {
+            if (this.state.counter === this.state.vehicleAds.length)
+                this.setState({
+                    ...this.state
+                    , pagination: { ...this.state.pagination, disabled: false }
+                })
         })
-    })
     }
 
     setAdsForPage = () => {
 
-        this.props.getPublishedVehicleAds().then((res) => {
-            this.setState({
-                ...this.state,
-                vehicleAds: res.slice(this.state.pagination.indexOfFirstCard,this.state.pagination.indexOfLastCard)
-            }, () => {
-                this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
-                    console.log(this.state.pagination.indexOfFirstCard,(this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
-                    for (let index = 0; index < this.state.pagination.indexOfLastCard - (9*(this.state.pagination.activePage-1)); index++) {
-                        this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
-                            this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] },this.sortAdsArray)
-                        })
-                    }
-                })
+        this.setState({
+            ...this.state,
+            vehicleAds: this.props.vehicleAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+        }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
+                console.log(this.state.pagination.indexOfFirstCard, (this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
+                for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
+                    this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
+                        this.setState({ ...this.state, vehicleAds: [res, ...this.state.vehicleAds.filter((item) => item._id != res._id)] }, this.sortAdsArray)
+                    })
+                }
             })
-        }).catch((err) => {
-            console.log(err);
-        })
+        });
     }
 
     componentDidMount = () => {
-        const userdetais = localStorage.getItem("user");
+        // const userdetais = localStorage.getItem("user");
+        // const users = jwt.decode(userdetais);
+        // this.setState({
+        //     ...this.state,
+        //     pagination: {...this.state.pagination,
+        //         indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
+        //         indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
+        //     },
+        //     user:{
+        //         _id:users._id,
+        //         name:users.name,
+        //         email:users.email,
+        //         type:users.type,
+        //         phoneNumber:users.phoneNumber,
+        //         image:users.image,
+        //         wishList:users.wishList,
+        //         password:users.password
+        //     }
+        // })
+        // this.setAdsForPage()
+        // console.log('in componentDidMount')
+
+        this.props.getPublishedVehicleAds().then((res) => {
+            const userdetais = localStorage.getItem("user");
         const users = jwt.decode(userdetais);
-        this.setState({
-            ...this.state,
-            pagination: {...this.state.pagination,
-                indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
-                indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
-            },
-            user:{
-                _id:users._id,
-                name:users.name,
-                email:users.email,
-                type:users.type,
-                phoneNumber:users.phoneNumber,
-                image:users.image,
-                wishList:users.wishList,
-                password:users.password
-            }
+            this.setState({
+                ...this.state,
+                pagination: {
+                    ...this.state.pagination,
+                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                    indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                },
+                user:{
+                    _id:users._id,
+                    name:users.name,
+                    email:users.email,
+                    type:users.type,
+                    phoneNumber:users.phoneNumber,
+                    image:users.image,
+                    wishList:users.wishList,
+                    password:users.password
+                }
+            }, () => this.setAdsForPage()
+            )
+        }).catch((err) => {
+            alert('Connection error!')
         })
-        this.setAdsForPage()
-        console.log('in componentDidMount')
     }
 
-    handlePaginationChange = (e, { activePage }) => this.setState({ ...this.state,vehicleAds:[],counter:0,pagination: { ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-        indexOfLastCard: (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage))+9*(activePage-1):(activePage * this.state.pagination.cardsPerPage)}}, () => {
-            this.setAdsForPage(this.state);
+    handlePaginationChange = (e, { activePage }) => this.setState({
+        ...this.state, vehicleAds: [], counter: 0, pagination: {
+            ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+            indexOfLastCard: (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
+        }
+    }, () => {
+        this.setAdsForPage(this.state);
     })
+
+    navigateToDetails = (id) => {
+        window.location.href = `/vehicleAdDetail/${id}`
+    }
 
     render() {
         // const setwishList=(id)=>{
@@ -145,16 +175,31 @@ class vehicleAdsView extends Component {
                                 />
                             <Card.Content className='ad-cards'>
                                 <h4>{item.title}</h4>
-                                {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
+                                {/* {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
                                     <Placeholder.Image square />
                                 </Placeholder>}
                                 {item.title ? <div>
                                     <h4>{item.location}</h4>
                                     <h4>Rs. {item.price}</h4> {item.negotiable ? 'Negotiable' : null}
                                 </div> : null}
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button> */}
+                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                                <Placeholder.Image square />
+                            </Placeholder>}
+                            <Card.Content>
+                                <Card.Header>{item.title}</Card.Header>
+                                {item.title ? <div><Card.Description>
+                                    <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
+                                </Card.Description>
+                                    <Card.Meta>{item.location}</Card.Meta></div>
+                                    : null}
+                            </Card.Content>
+                            <Card.Content extra>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
+                            </Card.Content>
                             </Card.Content>
                         </Card>
+
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 </Card.Group>
                 <div className='pagination'>

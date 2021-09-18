@@ -15,6 +15,11 @@ import "../App.css";
 import { getAllCategories } from "../redux/actions/categoryActions";
 import image1 from "../images/image1.jpg";
 import image2 from "../images/image2.jpeg";
+import vehicle1 from "../images/vehicle1.jpg"
+import vehicle2 from "../images/vehicle2.jpg"
+import spareparts1 from "../images/spareparts1.jpg"
+import spareparts2 from "../images/spareparts2.jpg"
+import './sample.css';
 
 
 class homepage extends Component {
@@ -37,7 +42,7 @@ class homepage extends Component {
     return (
       <Grid.Column>
         <Card>
-          <Image src={image2} wrapped ui={false}/>
+          <Image src={image2} wrapped ui={false} />
           <Card.Content>
             <Card.Header>{title}</Card.Header>
             <Card.Meta>
@@ -70,7 +75,7 @@ class homepage extends Component {
     return (
       <div className="form-centered-homepage">
         <div className="header-text-homepage-riyapola">
-          Riyapola
+          Riyalowa
           <br></br>
           <br></br>
           <br></br>
@@ -80,6 +85,15 @@ class homepage extends Component {
           <br></br>
           <br></br>
           <br></br>& Best cars in town.
+        </div>
+        {/* Slider Goes Here  */}
+        <div id="slider">
+          <figure>
+            <img src={spareparts2} alt />
+            <img src={vehicle1} alt />
+            <img src={vehicle2} alt />
+            <img src={spareparts1} alt />
+          </figure>
         </div>
 
         <h3>Browse Vehicles</h3>
@@ -91,10 +105,13 @@ class homepage extends Component {
               .slice(0, 4)
               .map((data, index) => (
                 <Grid.Column key={index}>
-                  <Button className="category-card-custom" animated="vertical">
-                    <Button.Content visible>{data.mainName}</Button.Content>
-                    <Button.Content hidden>{data.mainName}</Button.Content>
-                  </Button>
+                  <Card.Content color="blue" extra>
+                    <Icon name="car" size="big" color="blue" circular bordered inverted flipped />
+                    <Button color="blue" size="big" animated="vertical" primary inverted>
+                      <Button.Content visible>{data.mainName}</Button.Content>
+                      <Button.Content hidden>{data.mainName}</Button.Content>
+                    </Button>
+                  </Card.Content>
                 </Grid.Column>
               ))}
           </Grid>
@@ -109,11 +126,18 @@ class homepage extends Component {
               .slice(0, 8)
               .map((data, index) => (
                 <Grid.Column key={index}>
-                  <Button className="category-card-custom" animated="vertical">
-                    <Button.Content visible>{data.mainName}</Button.Content>
-                    <Button.Content hidden>{data.mainName}</Button.Content>
-                  </Button>
+                  <Card.Content color="blue" extra>
+                    <Icon name="settings" size="big" color="blue" circular bordered flipped />
+                    <Button  size="big" animated="vertical" inverted primary>
+                      <Button.Content visible>{data.mainName}</Button.Content>
+                      <Button.Content hidden>{data.mainName}</Button.Content>
+                    </Button>
+                  </Card.Content>
                 </Grid.Column>
+                //   <Button className="category-card-custom" animated="vertical">
+                //   <Button.Content visible>{data.mainName}</Button.Content>
+                //   <Button.Content hidden>{data.mainName}</Button.Content>
+                // </Button>
               ))}
           </Grid>
         </div>
