@@ -98,21 +98,21 @@ export default class AddCategoryForm extends Component {
       type: value,
     });
   }
-  componentDidMount() {
-    const { state } = this.props.location
-    axios
-      .get(`http://localhost:5000/category/${state}`)
-      .then((res) => {
-        this.setState({
-          images: res.data.images,
-          mainName: res.data.mainName,
-          mainDescription: res.data.mainDescription,
-          type: res.data.type,
-          vehicleMake: res.data.make,
-        });
+   componentDidMount() {
+    const { state } = this.props.location;
+     axios.get(`http://localhost:5000/category/${state}`).then((res) => {
+      id = res.data._id;
+      console.log('id: ', id);
+      this.setState({
+        // images: res.data.images,
+        mainName: res.data.mainName,
+        mainDescription: res.data.mainDescription,
+        type: res.data.type,
+        vehicleMake: res.data.make,
       });
+    });
 
-    axios
+     axios
       .get(
         "https://private-anon-7d56ba085d-carsapi1.apiary-mock.com/manufacturers"
       )
@@ -123,6 +123,8 @@ export default class AddCategoryForm extends Component {
           }),
         });
       });
+
+
   }
 
   childCategoryUi() {

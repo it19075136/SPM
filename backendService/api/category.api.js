@@ -13,14 +13,21 @@ function addCategory(payload){
 }
 
 function getAllCategories(){
+
     return new Promise((resolve,reject) => {
-        Category.find((err, docs) => {
-            if(err){
-                reject(err)
-            }else{
-                resolve(docs);
-            }
-        });
+        // Category.find((err, docs) => {
+        //     if(err){
+        //         reject(err)
+        //     }else{
+        //         resolve(docs);
+        //     }
+        // });
+
+        Category.find({},'_id make mainDescription mainName type',{}).then((doc) => {
+            resolve(doc)
+        }).catch((err) => {
+            reject(err)
+        })
     });
 }
 
@@ -60,10 +67,8 @@ function getImageByCategoryId(id){
         let image = '';
         Category.findById(id).then((docs) => {
             image = docs.images[0];
-            console.log('image: ', image);
             resolve(image.data_url)
         }).catch((err) => {
-            console.log('err: ', err);
             resolve(err);
         })
     })
