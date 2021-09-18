@@ -2,8 +2,10 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import { Form, Input, TextArea, Button, Select, Header, Icon, Segment, Radio, Modal, Transition, List} from 'semantic-ui-react';
 import ImageUploading from 'react-images-uploading';
+import { connect } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById } from '../redux/actions/sparepartsActions';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -21,23 +23,10 @@ const phoneOptions = [
 ]
 
 
-export default class updateSparePartsAdForm extends Component {
+class updateSparePartsAdForm extends Component {
 
     state = {
-        payload: {
-            condition: '',
-            category: '',
-            title: '',
-            description: '',
-            delivery: false,
-            price: null,
-            negotiable: false,
-            images: [],
-            location: '',
-            userId: 'u1',
-            contactNumbers: [],
-            status: 'pending'
-        },
+        payload: this.props.sparepartsAd,
         code: '',
         phone: '',
         titleState: true,
@@ -47,7 +36,8 @@ export default class updateSparePartsAdForm extends Component {
         success: false,
         error: false,
         loading: true,
-        actionWaiting: false
+        actionWaiting: false,
+        isDelete: false
     }
 
     componentDidMount = () => {
@@ -57,6 +47,7 @@ export default class updateSparePartsAdForm extends Component {
                 console.log(this.state)
             })
         }).catch((err) => {
+            console.log(err)
             this.setState({ ...this.state, loading: false }, () => {
                 alert('Please check your network connection and refresh the page');
             });
@@ -98,6 +89,32 @@ export default class updateSparePartsAdForm extends Component {
                 })
             })
         }
+
+
+        const handleDelete = () => {
+            console.log(this.state);
+            this.setState({ ...this.state, actionWaiting: true }, () => {
+                this.props.deleteSparepartsAd(window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
+                    console.log(res);
+                    this.setState({ ...this.state, success: true, isDelete: true }, () => {
+                        notify();
+                        setTimeout(() => {
+                            this.setState({ ...this.state, success: false, actionWaiting: false, isDelete: false })
+                            window.location.href = '/'
+                        }, 2000);
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    this.setState({ ...this.state, error: true }, () => {
+                        notify();
+                        this.setState({ ...this.state, error: false, actionWaiting: false })
+                        window.location.reload(false);
+                    })
+
+                })
+            })
+        }
+
 
         const handleImageDrop = (imageList, addUpdateIndex) => {
             console.log(imageList)
@@ -281,7 +298,7 @@ export default class updateSparePartsAdForm extends Component {
                                 <ImageUploading
                                     multiple
                                     value={this.state.payload.images}
-                                    onChange={(imageList, addUpdateIndex) => this.setState({ ...this.state, payload: { ...this.state.payload, images: imageList } })}
+                                    onChange={handleImageDrop}
                                     maxNumber={10}
                                     dataURLKey="data_url"
                                 >
@@ -418,3 +435,9 @@ export default class updateSparePartsAdForm extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    sparepartsAd: state.sparepart.sparepartsAd
+});
+
+export default connect(mapStateToProps, {updateSparepartsAd, deleteSparepartsAd, getSparepartAdById})(updateSparePartsAdForm)

@@ -409,6 +409,8 @@ margin: 0px 10px 0px 10px !important;
   margin-top: -50px;
 }
 
+@import "~react-image-gallery/styles/css/image-gallery.css";
+
 .main-form-wrapper-category-list {
   /* display        : flex; */
   /* flex-direction : row; */

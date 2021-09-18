@@ -92,7 +92,7 @@ class homepage extends Component {
             <img src={spareparts2} alt />
             <img src={vehicle1} alt />
             <img src={vehicle2} alt />
-            <img src={spareparts1}alt />
+            <img src={spareparts1} alt />
           </figure>
         </div>
 
@@ -105,10 +105,13 @@ class homepage extends Component {
               .slice(0, 4)
               .map((data, index) => (
                 <Grid.Column key={index}>
-                  <Button className="category-card-custom" animated="vertical">
-                    <Button.Content visible>{data.mainName}</Button.Content>
-                    <Button.Content hidden>{data.mainName}</Button.Content>
-                  </Button>
+                  <Card.Content color="blue" extra>
+                    <Icon name="car" size="big" color="blue" circular bordered inverted flipped />
+                    <Button color="blue" size="big" animated="vertical" primary inverted>
+                      <Button.Content visible>{data.mainName}</Button.Content>
+                      <Button.Content hidden>{data.mainName}</Button.Content>
+                    </Button>
+                  </Card.Content>
                 </Grid.Column>
               ))}
           </Grid>
@@ -123,11 +126,18 @@ class homepage extends Component {
               .slice(0, 8)
               .map((data, index) => (
                 <Grid.Column key={index}>
-                  <Button className="category-card-custom" animated="vertical">
-                    <Button.Content visible>{data.mainName}</Button.Content>
-                    <Button.Content hidden>{data.mainName}</Button.Content>
-                  </Button>
+                  <Card.Content color="blue" extra>
+                    <Icon name="settings" size="big" color="blue" circular bordered flipped />
+                    <Button  size="big" animated="vertical" inverted primary>
+                      <Button.Content visible>{data.mainName}</Button.Content>
+                      <Button.Content hidden>{data.mainName}</Button.Content>
+                    </Button>
+                  </Card.Content>
                 </Grid.Column>
+                //   <Button className="category-card-custom" animated="vertical">
+                //   <Button.Content visible>{data.mainName}</Button.Content>
+                //   <Button.Content hidden>{data.mainName}</Button.Content>
+                // </Button>
               ))}
           </Grid>
         </div>
