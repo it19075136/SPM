@@ -101,8 +101,7 @@ export default class AddCategoryForm extends Component {
    componentDidMount() {
     const { state } = this.props.location;
      axios.get(`http://localhost:5000/category/${state}`).then((res) => {
-      id = res.data._id;
-      console.log('id: ', id);
+
       this.setState({
         // images: res.data.images,
         mainName: res.data.mainName,
@@ -123,8 +122,6 @@ export default class AddCategoryForm extends Component {
           }),
         });
       });
-
-
   }
 
   childCategoryUi() {
