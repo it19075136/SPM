@@ -15,6 +15,11 @@ import "../App.css";
 import { getAllCategories } from "../redux/actions/categoryActions";
 import image1 from "../images/image1.jpg";
 import image2 from "../images/image2.jpeg";
+import vehicle1 from "../images/vehicle1.jpg"
+import vehicle2 from "../images/vehicle2.jpg"
+import spareparts1 from "../images/spareparts1.jpg"
+import spareparts2 from "../images/spareparts2.jpg"
+import './sample.css';
 
 
 class homepage extends Component {
@@ -37,7 +42,7 @@ class homepage extends Component {
     return (
       <Grid.Column>
         <Card>
-          <Image src={image2} wrapped ui={false}/>
+          <Image src={image2} wrapped ui={false} />
           <Card.Content>
             <Card.Header>{title}</Card.Header>
             <Card.Meta>
@@ -80,6 +85,15 @@ class homepage extends Component {
           <br></br>
           <br></br>
           <br></br>& Best cars in town.
+        </div>
+        {/* Slider Goes Here  */}
+        <div id="slider">
+          <figure>
+            <img src={spareparts2} alt />
+            <img src={vehicle1} alt />
+            <img src={vehicle2} alt />
+            <img src={spareparts1}alt />
+          </figure>
         </div>
 
         <h3>Browse Vehicles</h3>
