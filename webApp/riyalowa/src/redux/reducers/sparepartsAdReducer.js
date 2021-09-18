@@ -27,7 +27,7 @@ export default function (state = initstate, action) {
         case actionType.GET_ALL_SPAREPARTS_ADS:
             return {
                 ...state,
-                sparepartAd: action.payload
+                sparepartsAds: action.payload
             }
         case actionType.DELETE_SPAREPARTS_AD:
             return {
