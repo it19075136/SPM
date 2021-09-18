@@ -91,7 +91,7 @@ class vehicleAdDetails extends Component {
 
                         </Grid.Row>
                         <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Location: {this.state.vehicleAdDetails.location} </Header> <Icon name='map marker alternate' />
+                            <Header>Location: {this.state.vehicleAdDetails.location} </Header> <Icon name='map marker alternate' size="big" style={{marginTop: '-10px'}}  color="blue"/>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid>

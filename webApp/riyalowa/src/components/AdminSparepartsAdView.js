@@ -27,6 +27,10 @@ class AdminSparepartsAdView extends Component {
         })
     }
 
+    navigateToDetails = (id) => {
+        window.location.href = `/sparepartAdDetail/${id}`
+    }
+
     render() {
         return (
             <div>
@@ -56,7 +60,7 @@ class AdminSparepartsAdView extends Component {
                                     <Table.Cell textAlign="center">{sparepart.updatedAt.split('T')[0]}</Table.Cell>
                                     <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
                                     <Table.Cell textAlign="center">
-                                        <Button icon>
+                                        <Button icon onClick={this.navigateToDetails.bind(this,sparepart._id)}>
                                             <Icon name='info' color="blue" circular/>
                                         </Button>
                                     </Table.Cell>
