@@ -70,7 +70,7 @@ class homepage extends Component {
     return (
       <div className="form-centered-homepage">
         <div className="header-text-homepage-riyapola">
-          Riyapola
+          Riyalowa
           <br></br>
           <br></br>
           <br></br>

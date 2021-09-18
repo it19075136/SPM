@@ -408,3 +408,24 @@ margin: 0px 10px 0px 10px !important;
 .contant_box_404 {
   margin-top: -50px;
 }
+
+.main-form-wrapper-category-list {
+  /* display        : flex; */
+  /* flex-direction : row; */
+  margin         : 30px;
+  /* justify-content: space-around; */
+}
+
+.search-bar-cat-list{
+  width: 100% !important;
+  border: 1px solid rgb(92, 112, 156) !important;
+  border-radius: 10px !important;
+  height: 30px;
+  text-align: center !important;
+}
+
+.add-category-btn{
+  margin: 10px 0 20px 0 !important;
+  background-color: #165a6e !important;
+  color:#ddd !important;
+}
