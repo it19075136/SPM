@@ -19,12 +19,26 @@ class categoryList extends Component {
     this.deleteCategory = this.deleteCategory.bind(this);
     this.basicCloseModal = this.basicCloseModal.bind(this);
     this.deleteAndCloseCategory = this.deleteAndCloseCategory.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.categoryOnCLick= this.categoryOnCLick.bind(this);
 
 
     this.state = {
       isModalOpen : false,
-      deleteId : ''
+      deleteId : '',
+      searchQuerry: ''
     }
+  }
+
+  categoryOnCLick(){
+    window.location.href= '/category/add'
+  }
+
+  handleInputChange(e){
+    this.setState({
+      searchQuerry : e.target.value
+    })
+
   }
 
   updateCategory(id){
@@ -81,10 +95,16 @@ class categoryList extends Component {
   }
 
   render() {
-    const {categories} = this.props;    
+    const {categories} = this.props;  
+    const {searchQuerry} = this.state;  
     return (
-      <div className="main-form-wrapper">
+      <div className="main-form-wrapper-category-list">
         {this.basicCloseModal()}
+
+        <Button className="add-category-btn" onClick={this.categoryOnCLick}>Add a new category</Button>
+
+        <input type="text" className="search-bar-cat-list" placeholder="Search for..."  onChange={this.handleInputChange}/>
+
         <Table singleLine>
           <Table.Header>
             <Table.Row>
@@ -98,7 +118,9 @@ class categoryList extends Component {
 
           
           <Table.Body>
-          {categories.map((value) => {
+          {categories.filter(
+            elem => {return elem.mainName.toLowerCase().includes(searchQuerry.toLocaleLowerCase())} 
+          ).map((value) => {
            
            return(
             <Table.Row>
