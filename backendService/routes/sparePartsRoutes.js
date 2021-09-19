@@ -1,11 +1,14 @@
 const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsAds, deleteSparepartsById, getPublishedSparepartsAds, getPendingSparepartsAds } = require('../api/spareParts.api');
+
 const router = require('express').Router();
 
 //**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'getSparePartById' FUNCTION*/
 router.get('/:id', (req,res) => {
     getSparePartById(req.params.id).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
 });
 
 //**GET METHOD TO GET ALL SPAREPARTS DETAIL BY ID USING 'getAllSparePartsAds' FUNCTION*/
@@ -13,30 +16,34 @@ router.get('/', (req,res) => {
     getAllSparePartsAds().then((result) => {
         res.json(result);
     }).catch((err) => {
-        console.log(err);
+        res.status(400).json(err);
     })
 })
 
-//**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'addSparePartAd' FUNCTION*/
+//**POST METHOD TO POST SPAREPARTS DETAIL BY ID USING 'addSparePartAd' FUNCTION*/
 router.post('/', (req,res) => {
     addSparePartAd(req.body).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
     })
 });
 
 //**PUT METHOD TO UPDATE SPAREPARTS DETAIL BY ID USING 'updateSparePartById' FUNCTION*/
 router.put('/:id', (req,res) => {
     updateSparePartById(req.params.id,req.body).then((result) => {
-        result._id ? res.json(result) : res.status(400).json(result);
-    })
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
 });
 
 //**DELETE METHOD TO DELETE SPAREPARTS DETAIL BY ID USING 'deleteSparepartsById' FUNCTION*/
 router.delete('/:id', (req, res) => {
     deleteSparepartsById(req.params.id).then((result) => {
-        res.json(doc);
+        res.json(result);
     }).catch((err) => {
-        console.log(err);
+        res.status(400).json(err);
     })
 });
 
@@ -57,5 +64,6 @@ router.get('/pending/ads', (req, res) => {
         res.status(400).json(err);
     })
 })
+
 
 module.exports = router;

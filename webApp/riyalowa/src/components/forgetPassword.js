@@ -4,7 +4,11 @@ import GoogleLogin from 'react-google-login'
 import axios from "axios"
 import passwordHash from 'password-hash'
 import jwt from 'jsonwebtoken'
-export default class forgetPassword extends Component { 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { userUpdate } from '../redux/actions/userActions';
+import { connect } from 'react-redux'
+class forgetPassword extends Component { 
 //   const [user, setUser] = useState({
 //      password:""
    
@@ -24,6 +28,8 @@ state={
 render() {
 const item = localStorage.getItem("updatePasswordDetails");
 const OTPDetails = jwt.decode(item);
+const userdetais = localStorage.getItem("user");
+const user = jwt.decode(userdetais);
 
 const formHandler =(e)=>{
 // setUser({
@@ -66,12 +72,13 @@ const submitHandler=(e)=>{
     })
     console.log('in promise in addNewPAssword')
 
-        if(passwordHash.verify(forgetPassword.reEnterPassword,password) && OTPDetails.code == forgetPassword.OTP){
-                axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password}).then((res)=>{
+        if(passwordHash.verify(this.state.reEnterPassword,password) && passwordHash.verify(this.state.OTP,OTPDetails.code)){
+                // axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password})
+                this.props.userUpdate(this.state.user,user).then((res)=>{
                     console.log('in post');
-                    const {token} =res.data;    
+                    const {token} =res;    
                 if(token){
-                    localStorage.setItem('user',token);
+                    // localStorage.setItem('user',token);
                     const userResponds = jwt.decode(token);
                     const userDetails ={
                         _id:userResponds._id,
@@ -83,15 +90,45 @@ const submitHandler=(e)=>{
                         wishList:userResponds.userResponds,
                         image:userResponds.image
                     }
-                    console.log(userDetails);
+                    // console.log(userDetails);
+                    this.setState({
+                      ...this.state,
+                      action:true
+                    })
+                      notify();
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
+                }
+                else{
+                  // console.log(userDetails);
+                    this.setState({
+                      ...this.state,
+                      action:false
+                    })
+                      notify();
                 }
                 }).catch((err)=>{
                     // reject(err)
                 })
             }
 }
+const notify = () => this.state.action ? toast.success('Login  was  successfull!', {
+  position: "bottom-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+}) : toast.error('Login was unsuccessful', {
+  position: "bottom-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+})
   return(
     <div>
   <Form className='user-form-centered'>
@@ -121,8 +158,9 @@ const submitHandler=(e)=>{
     </Form.Field>
     <Button type='submit' onClick={submitHandler}>Re Set Password</Button>
   </Form>
-  
+  <ToastContainer />
 </div>
 )
 }
 }
+export default connect(null, { userUpdate })(forgetPassword)

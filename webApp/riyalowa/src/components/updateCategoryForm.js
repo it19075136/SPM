@@ -43,6 +43,13 @@ export default class AddCategoryForm extends Component {
     this.handleSubmitManualMake = this.handleSubmitManualMake.bind(this);
     this.handleImportAllMake = this.handleImportAllMake.bind(this);
     this.handleImportRemoveAllMake = this.handleImportRemoveAllMake.bind(this);
+    this.categoryOnCLick= this.categoryOnCLick.bind(this);
+
+  }
+
+  
+  categoryOnCLick(){
+    window.location.href= '/category/list'
   }
 
   handleImportRemoveAllMake() {
@@ -91,22 +98,20 @@ export default class AddCategoryForm extends Component {
       type: value,
     });
   }
-  componentDidMount() {
-    //61220bf507a21c39c4825002
-    axios
-      .get(`http://localhost:5000/category/61220bf507a21c39c4825002`)
-      .then((res) => {
-        console.log("res: ", res.data);
-        this.setState({
-          images: res.data.images,
-          mainName: res.data.mainName,
-          mainDescription: res.data.mainDescription,
-          type: res.data.type,
-          vehicleMake: res.data.make,
-        });
-      });
+   componentDidMount() {
+    const { state } = this.props.location;
+     axios.get(`http://localhost:5000/category/${state}`).then((res) => {
 
-    axios
+      this.setState({
+        // images: res.data.images,
+        mainName: res.data.mainName,
+        mainDescription: res.data.mainDescription,
+        type: res.data.type,
+        vehicleMake: res.data.make,
+      });
+    });
+
+     axios
       .get(
         "https://private-anon-7d56ba085d-carsapi1.apiary-mock.com/manufacturers"
       )
@@ -250,6 +255,7 @@ export default class AddCategoryForm extends Component {
   }
 
   handleSubmit() {
+    const { state } = this.props.location
     const { childCategory, mainName, mainDescription, images } = this.state;
     let category = this.state;
 
@@ -272,11 +278,12 @@ export default class AddCategoryForm extends Component {
       ) {
         axios
           .put(
-            "http://localhost:5000/category/61220bf507a21c39c4825002",
+            `http://localhost:5000/category/${state}`,
             finalValues
           )
           .then(() => {
             alert("Category Updated Successfully");
+            window.location.href = '/category/list'
           });
       } else {
         alert("Main category fields cannot be empty");
@@ -286,7 +293,6 @@ export default class AddCategoryForm extends Component {
 
   render() {
     const { childCategory, mainName, mainDescription, images } = this.state;
-    console.log("this.state: ", this.state);
 
     return (
       <div>
@@ -339,6 +345,9 @@ export default class AddCategoryForm extends Component {
             >
               Update Category
             </Button>
+
+            <Button className="add-category-btn" onClick={this.categoryOnCLick}>Go back </Button>
+
 
             <ImageUploading
               multiple

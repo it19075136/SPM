@@ -28,7 +28,7 @@ function getAllVehicleAds() {
 //updateVehicleAdById() function
 function updateVehicleAdById(id, payload) {
     return new Promise((resolve, reject) => {
-        Vehicle.updateOne({_id: id}, { $set: payload }).then((doc) => {
+        Vehicle.updateOne({ _id: id }, { $set: payload }).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);
@@ -61,7 +61,7 @@ function deleteVehicleAdById(id) {
 //getPublishedVehicleAds() function
 function getPublishedVehicleAds() {
     return new Promise((resolve, reject) => {
-        Vehicle.find({status: 'published'},'_id',{timestamps: false}).then((doc) => {
+        Vehicle.find({ status: 'published' }, '_id title location price negotiable', { sort: { title: 1 } }).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);
