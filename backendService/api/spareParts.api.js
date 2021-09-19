@@ -58,4 +58,26 @@ function deleteSparepartsById(id){
     })
 }
 
-module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById }
+//getPublishedSparepartsAds() function
+function getPublishedSparepartsAds() {
+    return new Promise((resolve, reject) => {
+        spareParts.find({ status: 'published' }, '_id title location price negotiable', { sort: { title: 1 } }).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+//getPendingSparepartsAds() function
+function getPendingSparepartsAds() {
+    return new Promise((resolve, reject) => {
+        spareParts.find({ status: 'pending' }, '_id title updatedAt userId status', { sort: { title: 1 } }).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById, getPublishedSparepartsAds, getPendingSparepartsAds }
