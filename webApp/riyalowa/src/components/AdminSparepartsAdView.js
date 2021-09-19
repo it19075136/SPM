@@ -60,9 +60,10 @@ class AdminSparepartsAdView extends Component {
                                     <Table.Cell textAlign="center">{sparepart.updatedAt.split('T')[0]}</Table.Cell>
                                     <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
                                     <Table.Cell textAlign="center">
-                                        <Button icon onClick={this.navigateToDetails.bind(this,sparepart._id)}>
-                                            <Icon name='info' color="blue" circular/>
+                                        <Button icon onClick={this.navigateToDetails.bind(this, sparepart._id)}>
+                                        <Icon name='info' color="blue" circular/>
                                         </Button>
+                                        <Button disabled size='small'>Approve</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             )
@@ -73,7 +74,6 @@ class AdminSparepartsAdView extends Component {
                     <Table.Footer fullWidth>
                         <Table.Row>
                             <Table.HeaderCell colSpan='6'>
-                                <Button size='small'>Approve</Button>
                                 <Button disabled size='small'>
                                     Approve All
                                 </Button>
