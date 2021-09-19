@@ -22,7 +22,7 @@ export const publishSparepartsAd = (payload) => dispatch => {
 
 export const updateSparepartsAd = (payload, id) => dispatch => {
     return new Promise((resolve, reject) => {
-        axios.post(`http://localhost:5000/spareparts/${id}`, payload).then((res) => {
+        axios.put(`http://localhost:5000/spareparts/${id}`, payload).then((res) => {
             if(res.status == 200) {
                 dispatch({
                     type: actionType.UPDATE_SPAREPARTS_AD,
