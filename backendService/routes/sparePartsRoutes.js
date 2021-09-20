@@ -1,4 +1,5 @@
-const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsAds, deleteSparepartsById, getPublishedSparepartsAds } = require('../api/spareParts.api');
+const { addSparePartAd, updateSparePartById, getSparePartById, getAllSparePartsAds, deleteSparepartsById, getPublishedSparepartsAds, getPendingSparepartsAds } = require('../api/spareParts.api');
+
 const router = require('express').Router();
 
 //**GET METHOD TO GET SPAREPARTS DETAIL BY ID USING 'getSparePartById' FUNCTION*/
@@ -54,5 +55,15 @@ router.get('/published/ads', (req, res) => {
         res.status(400).json(err);
     })
 })
+
+//**GET METHOD TO GET ALL PENDING SPAREPARTS DETAIL  USING 'getPendingSparepartsAds' FUNCTION*/
+router.get('/pending/ads', (req, res) => {
+    getPendingSparepartsAds().then((result) => {
+        res.json(result);
+    }).catch((err) => {
+        res.status(400).json(err);
+    })
+})
+
 
 module.exports = router;

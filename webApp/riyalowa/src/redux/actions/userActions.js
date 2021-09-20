@@ -235,3 +235,7 @@ export const userUpdate =(payload,decodeItem)=>dispatch =>{
 
 })
 }
+
+export const login = (payload) => dispatch => {
+  dispatch({ type: 'ADD_USER', payload: payload })
+}

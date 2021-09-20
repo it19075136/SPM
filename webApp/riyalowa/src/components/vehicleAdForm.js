@@ -90,7 +90,7 @@ class vehicleAdForm extends Component {
             price: null,
             negotiable: false,
             images: [],
-            userId: 'test1',
+            userId: this.props.user._id,
             contactNumbers: []
         },
         code: '',
@@ -537,4 +537,8 @@ class vehicleAdForm extends Component {
     }
 }
 
-export default connect(null, { publishVehicleAd })(vehicleAdForm)
+const mapStateToProps = state => ({
+    user: state.user.user
+})
+
+export default connect(mapStateToProps, { publishVehicleAd })(vehicleAdForm)

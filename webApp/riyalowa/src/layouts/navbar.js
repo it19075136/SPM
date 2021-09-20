@@ -18,6 +18,9 @@ export default class navbar extends Component {
             case 'sign-in':
                 window.location.href = '/signin'
                 break;
+            case 'home':
+                window.location.href = '/'
+                break;    
             case 'sign-out':
                 localStorage.removeItem("user");
                 window.location.href = '/signin'
