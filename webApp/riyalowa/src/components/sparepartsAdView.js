@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
 class sparePartAdView extends Component {
     state = {
@@ -91,7 +91,7 @@ class sparePartAdView extends Component {
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
                         return <Card>
-                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                            {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
                             </Placeholder>}
                             <Card.Content>
