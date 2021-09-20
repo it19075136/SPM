@@ -91,3 +91,20 @@ export const getPublishedVehicleAds = () => dispatch => {
         })
     });
 }
+export const getAllVehicleAds = () => dispatch => {
+    return new Promise((resolve, reject) => {
+        axios.get('http://localhost:5000/vehicle').then((res) => {
+            if (res.status == 200) {
+                // dispatch({
+                //     type: GET_All_VEHICLE_ADS,
+                //     payload: res.data
+                // })
+                resolve(res.data)
+            }
+            else
+                resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    });
+}
