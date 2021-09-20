@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { updateVehicleAd, getPendingVehicleAds } from '../redux/actions/vehicleAdActions';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Icon, Table, Header, Loader } from 'semantic-ui-react';
-
+import { CSVLink } from "react-csv";
 
 class AdminVehicleAdsView extends Component {
     state = {
@@ -43,13 +43,42 @@ class AdminVehicleAdsView extends Component {
             console.log(item, index, res)
         })
     }
-
+ 
+    headers = [
+      { label: "First Name", key: "firstName" },
+      { label: "Last Name", key: "lastName" },
+      { label: "Email", key: "email" },
+      { label: "Age", key: "age" }
+    ];
+     
+    data = [
+      { firstName: "Warren", lastName: "Morrow", email: "sokyt@mailinator.com", age: "36" },
+      { firstName: "Gwendolyn", lastName: "Galloway", email: "weciz@mailinator.com", age: "76" },
+      { firstName: "Astra", lastName: "Wyatt", email: "quvyn@mailinator.com", age: "57" },
+      { firstName: "Jasmine", lastName: "Wong", email: "toxazoc@mailinator.com", age: "42" },
+      { firstName: "Brooke", lastName: "Mcconnell", email: "vyry@mailinator.com", age: "56" },
+      { firstName: "Christen", lastName: "Haney", email: "pagevolal@mailinator.com", age: "23" },
+      { firstName: "Tate", lastName: "Vega", email: "dycubo@mailinator.com", age: "87" },
+      { firstName: "Amber", lastName: "Brady", email: "vyconixy@mailinator.com", age: "78" },
+      { firstName: "Philip", lastName: "Whitfield", email: "velyfi@mailinator.com", age: "22" },
+      { firstName: "Kitra", lastName: "Hammond", email: "fiwiloqu@mailinator.com", age: "35" },
+      { firstName: "Charity", lastName: "Mathews", email: "fubigonero@mailinator.com", age: "63" }
+    ];
+     
+    csvReport = {
+      data: this.data,
+      headers: this.headers,
+      filename: 'Clue_Mediator_Report.csv'
+    };
+     
     render() {
+        console.log(this.csvReport);
         return (
             <div>
                 <Header size='huge' textAlign="center">Vehicle Ads Management</Header>
                 <br />
                 <br />
+                <CSVLink {...this.csvReport} className='export-btn'>Export to CSV</CSVLink>
                 <Table compact celled definition color="blue" inverted>
                     <Table.Header>
                         <Table.Row textAlign="center">
