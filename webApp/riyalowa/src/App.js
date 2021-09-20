@@ -23,11 +23,16 @@ import AdminSparepartsAdView from './components/AdminSparepartsAdView';
 import vehicleAdDetails from './components/vehicleAdDetails';
 import sparepartAdDetails from './components/sparepartAdDetails';
 import myads from './components/myads';
+import AdminVehicleAdsView from './components/AdminVehicleAdsView';
+import { login } from './redux/actions/userActions';
+import jwt from 'jsonwebtoken'
 
-
-
+if(localStorage.user){
+  store.dispatch(login(jwt.decode(localStorage.user)));
+}
 
 function App() {
+
   return (
     <Provider store={store}>
     <BrowserRouter className="App">
@@ -37,6 +42,7 @@ function App() {
         <Route exact path='/vehicleAd/update/:id' component={updateVehicleAdForm} />
         <Route exact path='/vehicleAds' component={vehicleAdsView} />
         <Route exact path='/vehicleAdDetail/:id' component={vehicleAdDetails} />
+        <Route exact path='/adminVehicleAds' component={AdminVehicleAdsView} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
