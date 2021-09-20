@@ -91,7 +91,7 @@ class vehicleAdForm extends Component {
             negotiable: false,
             images: [],
             userId: this.props.user._id,
-            contactNumbers: []
+            contactNumbers: [this.props.user.phoneNumber]
         },
         code: '',
         phone: '',
