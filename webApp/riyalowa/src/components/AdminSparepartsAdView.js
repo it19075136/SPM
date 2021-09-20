@@ -89,7 +89,7 @@ class AdminSparepartsAdView extends Component {
                         <Table.Row>
                             <Table.HeaderCell colSpan='6'>
                                 <Button disabled={this.state.approvedPayload.length < 1} size='small' onClick={this.bulkApprove}>
-                                    Approve All
+                                    Approve Selected Ads
                                 </Button>
                             </Table.HeaderCell>
                         </Table.Row>

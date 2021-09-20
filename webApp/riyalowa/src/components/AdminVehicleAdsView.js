@@ -33,14 +33,14 @@ class AdminVehicleAdsView extends Component {
     }
 
     handleSelect = (e) => {
-        if(e.target.id)
-        this.setState({...this.state,approvedPayload: this.state.approvedPayload.find(item => item == e.target.id) ? this.state.approvedPayload.filter(item =>  item != e.target.id):[...this.state.approvedPayload,e.target.id]});
+        if (e.target.id)
+            this.setState({ ...this.state, approvedPayload: this.state.approvedPayload.find(item => item == e.target.id) ? this.state.approvedPayload.filter(item => item != e.target.id) : [...this.state.approvedPayload, e.target.id] });
     }
 
     bulkApprove = () => {
-        this.state.approvedPayload.forEach(async (item,index) => {
-            const res = await this.props.updateVehicleAd({status: 'published'},item);
-            console.log(item,index,res)
+        this.state.approvedPayload.forEach(async (item, index) => {
+            const res = await this.props.updateVehicleAd({ status: 'published' }, item);
+            console.log(item, index, res)
         })
     }
 
@@ -62,25 +62,25 @@ class AdminVehicleAdsView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                    <Loader indeterminate active={this.state.loading} />
+                        <Loader indeterminate active={this.state.loading} />
                         {this.props.vehicleAds.length != 0 ? this.props.vehicleAds.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
                             return (
                                 <Table.Row key={vehicleAd._id}>
                                     <Table.Cell collapsing selectable={false}>
-                                        <Checkbox slider onChange={this.handleSelect} id={vehicleAd._id} checked={this.state.approvedPayload.find(item => item == vehicleAd._id) ? true:false} />
+                                        <Checkbox slider onChange={this.handleSelect} id={vehicleAd._id} checked={this.state.approvedPayload.find(item => item == vehicleAd._id) ? true : false} />
                                     </Table.Cell>
                                     <Table.Cell>{vehicleAd.title}</Table.Cell>
                                     <Table.Cell textAlign="center">{vehicleAd.updatedAt.split('T')[0]}</Table.Cell>
                                     <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
                                     <Table.Cell textAlign="center">
                                         <Button icon onClick={this.navigateToDetails.bind(this, vehicleAd._id)}>
-                                        <Icon name='info' color="blue" circular/>
+                                            <Icon name='info' color="blue" circular />
                                         </Button>
                                         <Button disabled size='small'>Approve</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             )
-                        }) : !this.state.loading ? <Table.Row style={{textAlign:'right',color: 'black', fontSize: '24px'}}>No Ads pending approval</Table.Row>:null}
+                        }) : !this.state.loading ? <Table.Row style={{ textAlign: 'right', color: 'black', fontSize: '24px' }}>No Ads pending approval</Table.Row> : null}
 
                     </Table.Body>
 
@@ -88,7 +88,7 @@ class AdminVehicleAdsView extends Component {
                         <Table.Row>
                             <Table.HeaderCell colSpan='6'>
                                 <Button disabled={this.state.approvedPayload.length < 1} size='small' onClick={this.bulkApprove}>
-                                    Approve All
+                                    Approve Selected Ads
                                 </Button>
                             </Table.HeaderCell>
                         </Table.Row>
