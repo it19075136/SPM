@@ -17,12 +17,6 @@ const locationOptions = [
     { key: '7', text: 'Ampara', value: 'ampara' },
 ]
 
-const vehicleMakeOptions = [
-    { key: 't', text: 'Toyota', value: 'toyota' },
-    { key: 's', text: 'Suzuki', value: 'suzuki' },
-    { key: 'h', text: 'Honda', value: 'honda' },
-]
-
 const vehicleModelOptions = [
     { key: 'ax', text: 'Axio', value: 'axio' },
     { key: 'al', text: 'Allion', value: 'allion' },
