@@ -4,7 +4,10 @@ import {
   Icon,
   Table,
   Modal,
-  Header
+  Header,
+  Dropdown,
+  Radio,
+  Form
 } from "semantic-ui-react";
 import "../App.css";
 import { connect } from "react-redux";
@@ -21,13 +24,21 @@ class categoryList extends Component {
     this.deleteAndCloseCategory = this.deleteAndCloseCategory.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.categoryOnCLick= this.categoryOnCLick.bind(this);
-
+    this.handleTypeChange = this.handleTypeChange.bind(this);
 
     this.state = {
       isModalOpen : false,
       deleteId : '',
-      searchQuerry: ''
+      searchQuerry: '',
+      radioVehicleType : 'Vehicles'
     }
+  }
+
+  handleTypeChange(e,{value}){
+    this.setState({
+      radioVehicleType : value 
+    })
+
   }
 
   categoryOnCLick(){
@@ -93,10 +104,21 @@ class categoryList extends Component {
     </Modal.Actions>
   </Modal>)
   }
-
+  
   render() {
     const {categories} = this.props;  
+    console.log('categories: ', categories);
     const {searchQuerry} = this.state;  
+    console.log('this.state.radioVehicleType: ', this.state.radioVehicleType);
+
+    let categoriesCustom = categories.map((value) => {
+     if(value.type == this.state.radioVehicleType){
+       return value;
+     }
+    }).filter(n => n)
+
+    console.log('categoriesCustom: ', categoriesCustom);
+    
     return (
       <div className="main-form-wrapper-category-list">
         {this.basicCloseModal()}
@@ -104,6 +126,39 @@ class categoryList extends Component {
         <Button className="add-category-btn" onClick={this.categoryOnCLick}>Add a new category</Button>
 
         <input type="text" className="search-bar-cat-list" placeholder="Search for..."  onChange={this.handleInputChange}/>
+
+        <Form className="form-category-types">
+        {/* <Form.Field>
+          Selected value: <b>{this.state.radioVehicleType}</b>
+        </Form.Field> */}
+        <Form.Field className="form-field-category">
+          <Radio
+            label='Vehicles'
+            name='radioGroup'
+            value='Vehicles'
+            checked={this.state.radioVehicleType === 'Vehicles'}
+            onChange={this.handleTypeChange}
+          />
+        </Form.Field>
+        <Form.Field>
+          <Radio
+            label='Spare Parts'
+            name='radioGroup'
+            value='Spare Parts'
+            checked={this.state.radioVehicleType === 'Spare Parts'}
+            onChange={this.handleTypeChange}
+          />
+        </Form.Field>
+        {/* <Form.Field>
+          <Radio
+            label='All Types'
+            name='radioGroup'
+            value=''
+            checked={this.state.radioVehicleType === ''}
+            onChange={this.handleTypeChange}
+          />
+        </Form.Field> */}
+      </Form>
 
         <Table singleLine>
           <Table.Header>
@@ -118,8 +173,8 @@ class categoryList extends Component {
 
           
           <Table.Body>
-          {categories.filter(
-            elem => {return elem.mainName.toLowerCase().includes(searchQuerry.toLocaleLowerCase())} 
+          {categoriesCustom.filter(
+            elem => {return elem.mainName.toLowerCase().includes(`${searchQuerry.toLocaleLowerCase()}`)} 
           ).map((value) => {
            
            return(
