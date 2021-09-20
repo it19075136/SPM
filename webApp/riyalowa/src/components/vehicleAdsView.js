@@ -22,16 +22,17 @@ class vehicleAdsView extends Component {
             disabled: true
         },
         counter: 0,
-        user:{
-            _id:"",
-            name:"",
-            email:"",
-            type:"",
-            phoneNumber:"",
-            image:[],
-            wishList:[],
-            password:"",
-        }
+        user:null
+        // {
+        //     _id:"",
+        //     name:"",
+        //     email:"",
+        //     type:"",
+        //     phoneNumber:"",
+        //     image:[],
+        //     wishList:[],
+        //     password:"",
+        // }
     }
   
     sortAdsArray = () => {
@@ -98,16 +99,17 @@ class vehicleAdsView extends Component {
                     indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
                     indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                 },
-                user:{
-                    _id:users._id,
-                    name:users.name,
-                    email:users.email,
-                    type:users.type,
-                    phoneNumber:users.phoneNumber,
-                    image:users.image,
-                    wishList:users.wishList,
-                    password:users.password
-                }
+                user:users
+                // {
+                //     _id:users._id,
+                //     name:users.name,
+                //     email:users.email,
+                //     type:users.type,
+                //     phoneNumber:users.phoneNumber,
+                //     image:users.image,
+                //     wishList:users.wishList,
+                //     password:users.password
+                // }
             }, () => this.setAdsForPage()
             )
         }).catch((err) => {
@@ -143,7 +145,7 @@ class vehicleAdsView extends Component {
                             <Icon name="heart" disabled={this.state.user.wishList ? !this.state.user.wishList.includes(item._id):true }
                             corner="top right"
                                 // user.wishList.map(list=>{ return list==item._id})
-                                color={this.state.user.wishList.includes(item._id) ? "red" : null}
+                                color={this.state.user.wishList.includes(item._id) ? "red" : "brown"}
                                 size="big" 
                                 link={onclick=()=>{
                                     console.log('in set wishlist',item._id)
@@ -171,19 +173,12 @@ class vehicleAdsView extends Component {
                                         localStorage.setItem('user', this.state.user);
                                     }
                                 }} 
+
                                 // link={}
                                 />
                             <Card.Content className='ad-cards'>
                                 <h4>{item.title}</h4>
-                                {/* {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
-                                    <Placeholder.Image square />
-                                </Placeholder>}
-                                {item.title ? <div>
-                                    <h4>{item.location}</h4>
-                                    <h4>Rs. {item.price}</h4> {item.negotiable ? 'Negotiable' : null}
-                                </div> : null}
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button> */}
-                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false}  alt="" width="100" height="100"/> : <Placeholder style={{ width: '100px', height: '100px' }} >
                                 <Placeholder.Image square />
                             </Placeholder>}
                             <Card.Content>
