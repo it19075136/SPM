@@ -175,15 +175,7 @@ class vehicleAdsView extends Component {
                                 />
                             <Card.Content className='ad-cards'>
                                 <h4>{item.title}</h4>
-                                {/* {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
-                                    <Placeholder.Image square />
-                                </Placeholder>}
-                                {item.title ? <div>
-                                    <h4>{item.location}</h4>
-                                    <h4>Rs. {item.price}</h4> {item.negotiable ? 'Negotiable' : null}
-                                </div> : null}
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button> */}
-                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false}  alt="" width="100" height="100"/> : <Placeholder style={{ width: '100px', height: '100px' }} >
                                 <Placeholder.Image square />
                             </Placeholder>}
                             <Card.Content>
