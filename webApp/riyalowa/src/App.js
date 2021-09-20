@@ -19,12 +19,20 @@ import homepage from './components/homepage';
 import vehicleAdsView from './components/vehicleAdsView';
 import sparepartsAdView from './components/sparepartsAdView';
 import errorPage from './components/404Error';
-import myads from './components/myads';
 import AdminSparepartsAdView from './components/AdminSparepartsAdView';
 import vehicleAdDetails from './components/vehicleAdDetails';
+import sparepartAdDetails from './components/sparepartAdDetails';
+import myads from './components/myads';
+import AdminVehicleAdsView from './components/AdminVehicleAdsView';
+import { login } from './redux/actions/userActions';
+import jwt from 'jsonwebtoken'
 
+if(localStorage.user){
+  store.dispatch(login(jwt.decode(localStorage.user)));
+}
 
 function App() {
+
   return (
     <Provider store={store}>
     <BrowserRouter className="App">
@@ -34,10 +42,12 @@ function App() {
         <Route exact path='/vehicleAd/update/:id' component={updateVehicleAdForm} />
         <Route exact path='/vehicleAds' component={vehicleAdsView} />
         <Route exact path='/vehicleAdDetail/:id' component={vehicleAdDetails} />
+        <Route exact path='/adminVehicleAds' component={AdminVehicleAdsView} />
         <Route exact path='/signup' component={Signup} />
         <Route exact path='/signin' component={Signin} />
         <Route exact path='/sparePartsAd/create' component={sparePartAdForm}/>
         <Route exact path='/sparePartsAds' component={sparepartsAdView}/>
+        <Route exact path='/sparepartAdDetail/:id' component={sparepartAdDetails}/>
         <Route exact path='/adminsparePartsAds' component={AdminSparepartsAdView}/>
         <Route exact path='/sparePartsAd/update/:id' component={updateSparePartsAdForm} />
         <Route exact path='/userProfile' component={UserProfile}/>

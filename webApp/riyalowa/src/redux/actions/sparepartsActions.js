@@ -22,16 +22,14 @@ export const publishSparepartsAd = (payload) => dispatch => {
 
 export const updateSparepartsAd = (payload, id) => dispatch => {
     return new Promise((resolve, reject) => {
-        axios.post(`http://localhost:5000/spareparts/${id}`, payload).then((res) => {
-            if(res.status == 200) {
+        axios.put(`http://localhost:5000/spareparts/${id}`, payload).then((res) => {
+            if (res.status == 200) {
                 dispatch({
                     type: actionType.UPDATE_SPAREPARTS_AD,
                     payload: res.data
-                })
-                resolve(res.data)
-            }
+                })}
             else
-                resolve(res.data);
+                resolve(res);
         }).catch((err) => {
             reject(err);
         })
@@ -80,6 +78,24 @@ export const getPublishedSparepartsAds = () => dispatch => {
             if (res.status == 200) {
                 dispatch({
                     type: actionType.GET_PUBLISHED_SPAREPARTS_ADS,
+                    payload: res.data
+                })
+                resolve(res.data)
+            }
+            else
+                resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    });
+}
+
+export const getPendingSparepartsAds = () => dispatch => {
+    return new Promise((resolve, reject) => {
+        axios.get('http://localhost:5000/spareparts/pending/ads').then((res) => {
+            if (res.status == 200) {
+                dispatch({
+                    type: actionType.GET_ALL_SPAREPARTS_ADS,
                     payload: res.data
                 })
                 resolve(res.data)

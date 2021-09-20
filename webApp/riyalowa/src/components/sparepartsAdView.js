@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
-import { Card, Placeholder, Loader, Button, Pagination } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image } from 'semantic-ui-react';
 
 class sparePartAdView extends Component {
     state = {
@@ -79,6 +79,11 @@ class sparePartAdView extends Component {
         this.setAdsForPage(this.state);
     })
 
+    navigateToDetails = (id) => {
+        window.location.href = `/sparepartAdDetail/${id}`
+    }
+
+
     render() {
         console.log(this.props.sparepartsAds)
         return (
@@ -86,16 +91,19 @@ class sparePartAdView extends Component {
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
                         return <Card>
-                            <Card.Content className='ad-cards'>
-                                <h4>{item.title}</h4>
-                                {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
-                                    <Placeholder.Image square />
-                                </Placeholder>}
-                                {item.title ? <div>
-                                    <h4>{item.location}</h4>
-                                    <h4>Rs. {item.price}</h4> {item.negotiable ? 'Negotiable' : null}
-                                </div> : null}
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button>
+                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                                <Placeholder.Image square />
+                            </Placeholder>}
+                            <Card.Content>
+                                <Card.Header>{item.title}</Card.Header>
+                                {item.title ? <div><Card.Description>
+                                    <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
+                                </Card.Description>
+                                    <Card.Meta>{item.location}</Card.Meta></div>
+                                    : null}
+                            </Card.Content>
+                            <Card.Content extra>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}

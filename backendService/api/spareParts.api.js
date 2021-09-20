@@ -39,8 +39,12 @@ function getSparePartById(id) {
 //updateSparePartById() function
 function updateSparePartById(id, payload) {
     return new Promise((resolve, reject) => {
-        spareParts.updateOne({_id: id}, {$set: payload}).then((docs) => {
-            resolve(docs);
+        spareParts.updateOne({ _id: id }, { $set: payload }).then((docs) => {
+            spareParts.findById(id).then((res) => {
+                resolve(res);
+            }).catch((err) => {
+                reject(err)
+            })
         }).catch((err) => {
             reject(err);
         });
@@ -69,4 +73,15 @@ function getPublishedSparepartsAds() {
     })
 }
 
-module.exports = {addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById, getPublishedSparepartsAds }
+//getPendingSparepartsAds() function
+function getPendingSparepartsAds() {
+    return new Promise((resolve, reject) => {
+        spareParts.find({ status: 'pending' }, '_id title updatedAt userId status', { sort: { title: 1 } }).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = { addSparePartAd, getAllSparePartsAds, getSparePartById, updateSparePartById, deleteSparepartsById, getPublishedSparepartsAds, getPendingSparepartsAds }

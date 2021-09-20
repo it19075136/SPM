@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { updateSparepartsAd, deleteSparepartsAd, getPendingSparepartsAds } from '../redux/actions/sparepartsActions';
+import { updateVehicleAd, getPendingVehicleAds } from '../redux/actions/vehicleAdActions';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Icon, Table, Header, Loader } from 'semantic-ui-react';
 
 
-class AdminSparepartsAdView extends Component {
+class AdminVehicleAdsView extends Component {
     state = {
-        payload: this.props.sparepartsAd,
+        payload: this.props.vehicleAds,
         success: false,
         error: false,
         loading: true,
@@ -15,7 +15,7 @@ class AdminSparepartsAdView extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getPendingSparepartsAds().then((data) => {
+        this.props.getPendingVehicleAds().then((data) => {
             console.log(data);
             this.setState({ ...this.state, payload: data, loading: false }, () => {
                 console.log(this.state)
@@ -29,26 +29,25 @@ class AdminSparepartsAdView extends Component {
     }
 
     navigateToDetails = (id) => {
-        window.location.href = `/sparepartAdDetail/${id}`
+        window.location.href = `/vehicleAdDetail/${id}`
     }
 
     handleSelect = (e) => {
-        if(e.target.id)
-        this.setState({...this.state,approvedPayload: this.state.approvedPayload.find(item => item == e.target.id) ? this.state.approvedPayload.filter(item =>  item != e.target.id):[...this.state.approvedPayload,e.target.id]});
+        if (e.target.id)
+            this.setState({ ...this.state, approvedPayload: this.state.approvedPayload.find(item => item == e.target.id) ? this.state.approvedPayload.filter(item => item != e.target.id) : [...this.state.approvedPayload, e.target.id] });
     }
 
     bulkApprove = () => {
-        this.state.approvedPayload.forEach(async (item,index) => {
-            const res = await this.props.updateSparepartsAd({status: 'published'},item);
-            console.log(item,index,res)
+        this.state.approvedPayload.forEach(async (item, index) => {
+            const res = await this.props.updateVehicleAd({ status: 'published' }, item);
+            console.log(item, index, res)
         })
-
     }
 
     render() {
         return (
             <div>
-                <Header size='huge' textAlign="center">Spare Part Ads Management</Header>
+                <Header size='huge' textAlign="center">Vehicle Ads Management</Header>
                 <br />
                 <br />
                 <Table compact celled definition color="blue" inverted>
@@ -63,25 +62,25 @@ class AdminSparepartsAdView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                    <Loader indeterminate active={this.state.loading} />
-                        {this.props.sparepartsAd.length != 0 ? this.props.sparepartsAd.filter(sparePart => sparePart.status != 'published').map(sparepart => {
+                        <Loader indeterminate active={this.state.loading} />
+                        {this.props.vehicleAds.length != 0 ? this.props.vehicleAds.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
                             return (
-                                <Table.Row key={sparepart._id}>
+                                <Table.Row key={vehicleAd._id}>
                                     <Table.Cell collapsing selectable={false}>
-                                        <Checkbox slider onChange={this.handleSelect} id={sparepart._id} checked={this.state.approvedPayload.find(item => item == sparepart._id) ? true:false} />
+                                        <Checkbox slider onChange={this.handleSelect} id={vehicleAd._id} checked={this.state.approvedPayload.find(item => item == vehicleAd._id) ? true : false} />
                                     </Table.Cell>
-                                    <Table.Cell>{sparepart.title}</Table.Cell>
-                                    <Table.Cell textAlign="center">{sparepart.updatedAt.split('T')[0]}</Table.Cell>
+                                    <Table.Cell>{vehicleAd.title}</Table.Cell>
+                                    <Table.Cell textAlign="center">{vehicleAd.updatedAt.split('T')[0]}</Table.Cell>
                                     <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
                                     <Table.Cell textAlign="center">
-                                        <Button icon onClick={this.navigateToDetails.bind(this, sparepart._id)}>
-                                        <Icon name='info' color="blue" circular/>
+                                        <Button icon onClick={this.navigateToDetails.bind(this, vehicleAd._id)}>
+                                            <Icon name='info' color="blue" circular />
                                         </Button>
                                         <Button disabled size='small'>Approve</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             )
-                        }) : !this.state.loading ? <Table.Row style={{textAlign:'right',color: 'black', fontSize: '24px'}}>No Ads pending approval</Table.Row>:null}
+                        }) : !this.state.loading ? <Table.Row style={{ textAlign: 'right', color: 'black', fontSize: '24px' }}>No Ads pending approval</Table.Row> : null}
 
                     </Table.Body>
 
@@ -102,8 +101,8 @@ class AdminSparepartsAdView extends Component {
 }
 
 const mapStateToProps = state => ({
-    sparepartsAd: state.sparepart.sparepartsAds
+    vehicleAds: state.vehicle.vehicleAds
 });
 
-export default connect(mapStateToProps, { updateSparepartsAd, deleteSparepartsAd, getPendingSparepartsAds })(AdminSparepartsAdView)
+export default connect(mapStateToProps, { updateVehicleAd, getPendingVehicleAds })(AdminVehicleAdsView)
 
