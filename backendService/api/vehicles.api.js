@@ -69,4 +69,15 @@ function getPublishedVehicleAds() {
     })
 }
 
-module.exports = { addVehicleAd, getAllVehicleAds, updateVehicleAdById, getVehicleAdById, deleteVehicleAdById, getPublishedVehicleAds }
+//getPendingVehicleAds() function
+function getPendingVehicleAds() {
+    return new Promise((resolve, reject) => {
+        spareParts.find({ status: 'pending' }, '_id title updatedAt userId status', { sort: { title: 1 } }).then((doc) => {
+            resolve(doc);
+        }).catch((err) => {
+            reject(err);
+        });
+    })
+}
+
+module.exports = { addVehicleAd, getAllVehicleAds, updateVehicleAdById, getVehicleAdById, deleteVehicleAdById, getPublishedVehicleAds, getPendingVehicleAds }
