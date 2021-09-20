@@ -98,11 +98,9 @@ class updateSparePartsAdForm extends Component {
                     this.setState({ ...this.state, success: true, isDelete: true }, () => {
                         notify();
                         this.setState({ ...this.state, success: false, actionWaiting: false })
-                    })
-                    setTimeout(() => {
+                    },() =>{ 
                         window.location.href = '/';
-                    },2000)
-                    
+                    })
                 }).catch((err) => {
                     console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
