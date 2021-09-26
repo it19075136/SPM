@@ -24,8 +24,10 @@ export const updateSparepartsAd = (payload, id) => dispatch => {
     return new Promise((resolve, reject) => {
         axios.put(`http://localhost:5000/spareparts/${id}`, payload).then((res) => {
             if (res.status == 200) {
-                getPendingSparepartsAds();
-            }
+                dispatch({
+                    type: actionType.UPDATE_SPAREPARTS_AD,
+                    payload: res.data
+                })}
             else
                 resolve(res);
         }).catch((err) => {

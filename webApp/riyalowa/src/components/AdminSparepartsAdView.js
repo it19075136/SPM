@@ -32,6 +32,30 @@ class AdminSparepartsAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
+    handleApprove = (id) => {
+        console.log(id)
+        this.setState({ ...this.state, actionWaiting: true }, () => {
+            this.props.updateSparepartsAd({status: "published"}, id).then((res) => {
+                console.log(res);
+                this.setState({ ...this.state, success: true }, () => {
+                    // notify();
+                    this.setState({ ...this.state, success: false, actionWaiting: false })
+
+                })
+            }).catch((err) => {
+                console.log(err);
+                this.setState({ ...this.state, error: true }, () => {
+                    // notify();
+                    this.setState({ ...this.state, error: false, actionWaiting: false })
+                    window.location.reload(false);
+
+                })
+
+            })
+        })
+    }
+
+    
     handleSelect = (e) => {
         if(e.target.id)
         this.setState({...this.state,approvedPayload: this.state.approvedPayload.find(item => item == e.target.id) ? this.state.approvedPayload.filter(item =>  item != e.target.id):[...this.state.approvedPayload,e.target.id]});
@@ -46,9 +70,30 @@ class AdminSparepartsAdView extends Component {
     }
 
     render() {
+
+        
+        // const notify = () => this.state.success ? toast.success('✔ Ad successfully approved and published!', {
+        //     position: "bottom-right",
+        //     autoClose: 2000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        // }) : this.state.error ? toast.error('❌ Action was unsuccessful, please check and try again!', {
+        //     position: "bottom-right",
+        //     autoClose: 2000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        // }) : null
+    
+
         return (
             <div>
-                <Header size='huge' textAlign="center">Admin Spare Parts Action Table</Header>
+                <Header size='huge' textAlign="center">Spare Part Ads Management</Header>
                 <br />
                 <br />
                 <Table compact celled definition color="blue" inverted>
@@ -75,9 +120,9 @@ class AdminSparepartsAdView extends Component {
                                     <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
                                     <Table.Cell textAlign="center">
                                         <Button icon onClick={this.navigateToDetails.bind(this, sparepart._id)}>
-                                        <Icon name='info' color="blue" circular/>
+                                            <Icon name='info'  color="blue" circular inverted/>
                                         </Button>
-                                        <Button disabled size='small'>Approve</Button>
+                                        <Button color="blue" type="button" size='small' onClick={this.handleApprove.bind(this, sparepart._id)}>Approve</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             )
@@ -89,7 +134,7 @@ class AdminSparepartsAdView extends Component {
                         <Table.Row>
                             <Table.HeaderCell colSpan='6'>
                                 <Button disabled={this.state.approvedPayload.length < 1} size='small' onClick={this.bulkApprove}>
-                                    Approve All
+                                    Approve Selected Ads
                                 </Button>
                             </Table.HeaderCell>
                         </Table.Row>

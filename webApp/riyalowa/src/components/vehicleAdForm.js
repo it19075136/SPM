@@ -3,18 +3,9 @@ import { connect } from 'react-redux';
 import { Form, Input, TextArea, Button, Select, Divider, Header, Icon, Segment, Message, Loader, List, Transition } from 'semantic-ui-react'
 import ImageUploading from 'react-images-uploading';
 import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
+import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const categoryOptions = [
-    { key: 'c', text: 'Car', value: 'car' },
-    { key: 's', text: 'SUV', value: 'suv' },
-    { key: 'v', text: 'Van', value: 'van' },
-    { key: 'b', text: 'Bus', value: 'bus' },
-    { key: 'l', text: 'Lorry', value: 'lorry' },
-    { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
-    { key: 'o', text: 'Other', value: 'othe' },
-]
 
 const locationOptions = [
     { key: '1', text: 'Kandy', value: 'kandy' },
@@ -24,12 +15,6 @@ const locationOptions = [
     { key: '5', text: 'Kurunegala', value: 'kurunegala' },
     { key: '6', text: 'Jaffna', value: 'jaffna' },
     { key: '7', text: 'Ampara', value: 'ampara' },
-]
-
-const vehicleMakeOptions = [
-    { key: 't', text: 'Toyota', value: 'toyota' },
-    { key: 's', text: 'Suzuki', value: 'suzuki' },
-    { key: 'h', text: 'Honda', value: 'honda' },
 ]
 
 const vehicleModelOptions = [
@@ -90,14 +75,16 @@ class vehicleAdForm extends Component {
             price: null,
             negotiable: false,
             images: [],
-            userId: 'test1',
-            contactNumbers: []
+            userId: this.props.user._id,
+            contactNumbers: [this.props.user.phoneNumber]
         },
         code: '',
         phone: '',
         success: false,
         error: false,
         actionWaiting: false,
+        categoryOptions:[],
+        makeOptions:[]
         // validation: {
         //     year: false,
         //     make: false,
@@ -112,6 +99,16 @@ class vehicleAdForm extends Component {
     }
 
     componentDidMount = () => {
+
+        this.props.getAllCategories().then((res) => {
+            res.filter(item => item.type == 'Vehicles').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOptions: [...this.state.categoryOptions, { key: index, text: element.mainName, value: element.mainName }] }, () => {
+                    element.make.forEach((childElem) => {
+                        this.setState({ ...this.state, makeOptions: [...this.state.makeOptions,{key: element.mainName , text: childElem, value: childElem}]})
+                    })
+                })
+            })
+        })
         // axios.get('http://localhost:5000/category').then((categoryList) => {
         //     categoryList.data.map((category) => {
         //         categoryOptions.push({ key: category._id, text: category.mainName, value: category.mainName });
@@ -254,7 +251,7 @@ class vehicleAdForm extends Component {
                     name="category"
                     width='16'
                     control={Select}
-                    options={categoryOptions} // get categories
+                    options={this.state.categoryOptions} // get categories
                     label={{ children: 'Category', htmlFor: 'category' }}
                     placeholder='Vehicle Category'
                     error={this.state.payload.category == ''}
@@ -268,7 +265,7 @@ class vehicleAdForm extends Component {
                     name="make"
                     width='16'
                     control={Select}
-                    options={vehicleMakeOptions}
+                    options={this.state.payload.category ? this.state.makeOptions.filter(item => item.key == this.state.payload.category) : this.state.makeOptions}
                     error={this.state.payload.make == ''}
                     label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                     placeholder='Vehicle Make'
@@ -537,4 +534,9 @@ class vehicleAdForm extends Component {
     }
 }
 
-export default connect(null, { publishVehicleAd })(vehicleAdForm)
+const mapStateToProps = state => ({
+    user: state.user.user,
+    categories: state.category.categories
+})
+
+export default connect(mapStateToProps, { publishVehicleAd, getAllCategories })(vehicleAdForm)

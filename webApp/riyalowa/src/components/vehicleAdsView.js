@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
-import { Card, Placeholder, Loader, Button, Pagination, Image ,Icon} from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
 class vehicleAdsView extends Component {
 
@@ -22,18 +22,19 @@ class vehicleAdsView extends Component {
             disabled: true
         },
         counter: 0,
-        user:{
-            _id:"",
-            name:"",
-            email:"",
-            type:"",
-            phoneNumber:"",
-            image:[],
-            wishList:[],
-            password:"",
-        }
+        user: null
+        // {
+        //     _id:"",
+        //     name:"",
+        //     email:"",
+        //     type:"",
+        //     phoneNumber:"",
+        //     image:[],
+        //     wishList:[],
+        //     password:"",
+        // }
     }
-  
+
     sortAdsArray = () => {
         this.setState({
             ...this.state,
@@ -90,7 +91,7 @@ class vehicleAdsView extends Component {
 
         this.props.getPublishedVehicleAds().then((res) => {
             const userdetais = localStorage.getItem("user");
-        const users = jwt.decode(userdetais);
+            const users = jwt.decode(userdetais);
             this.setState({
                 ...this.state,
                 pagination: {
@@ -98,16 +99,17 @@ class vehicleAdsView extends Component {
                     indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
                     indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                 },
-                user:{
-                    _id:users._id,
-                    name:users.name,
-                    email:users.email,
-                    type:users.type,
-                    phoneNumber:users.phoneNumber,
-                    image:users.image,
-                    wishList:users.wishList,
-                    password:users.password
-                }
+                user: users
+                // {
+                //     _id:users._id,
+                //     name:users.name,
+                //     email:users.email,
+                //     type:users.type,
+                //     phoneNumber:users.phoneNumber,
+                //     image:users.image,
+                //     wishList:users.wishList,
+                //     password:users.password
+                // }
             }, () => this.setAdsForPage()
             )
         }).catch((err) => {
@@ -140,63 +142,56 @@ class vehicleAdsView extends Component {
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
-                            <Icon name="heart" disabled={this.state.user.wishList ? !this.state.user.wishList.includes(item._id):true }
-                            corner="top right"
-                                // user.wishList.map(list=>{ return list==item._id})
-                                color={this.state.user.wishList.includes(item._id) ? "red" : null}
-                                size="big" 
-                                link={onclick=()=>{
-                                    console.log('in set wishlist',item._id)
-                                    if( this.state.user.wishList.includes(item._id)){
-                                        this.setState({
-                                            ...this.state,
-                                            user:{
-                                                ...this.state.user,
-                                                wishList:this.state.user.wishList.filter(Wish=> Wish!=item._id )
-                                               
-                                            }
-                                        })
-                                        console.log('this.state.user.wishList in if',this.state.user.wishList)
-                                    }
-                                    else{
-                                        this.setState({
-                                            ...this.state,
-                                            user:{
-                                                ...this.state.user,
-                                                wishList:[...this.state.user.wishList,item._id]
-                                               
-                                            }
-                                        })
-                                        console.log('this.state.user.wishList',this.state.user.wishList)
-                                        localStorage.setItem('user', this.state.user);
-                                    }
-                                }} 
-                                // link={}
-                                />
-                            <Card.Content className='ad-cards'>
-                                <h4>{item.title}</h4>
-                                {/* {item.images ? <img src={item.images[0]['data_url']} alt="" width="100" height="100" /> : <Placeholder style={{ width: '100px', height: '100px' }} >
-                                    <Placeholder.Image square />
-                                </Placeholder>}
-                                {item.title ? <div>
-                                    <h4>{item.location}</h4>
-                                    <h4>Rs. {item.price}</h4> {item.negotiable ? 'Negotiable' : null}
-                                </div> : null}
-                                <Button primary icon='eye' label='view' onClick={() => console.log(item._id)} >view</Button> */}
-                            {item.images ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <Placeholder >
+                            {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
                             </Placeholder>}
                             <Card.Content>
-                                <Card.Header>{item.title}</Card.Header>
-                                {item.title ? <div><Card.Description>
-                                    <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
-                                </Card.Description>
-                                    <Card.Meta>{item.location}</Card.Meta></div>
-                                    : null}
-                            </Card.Content>
-                            <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
-                            </Card.Content>
+                                <Card.Content>
+                                    <Card.Header>{item.title}
+                                        <Icon name="heart" disabled={this.state.user.wishList ? !this.state.user.wishList.includes(item._id) : true}
+                                            corner="bottom right"
+                                            style={{float: 'right'}}
+                                            // user.wishList.map(list=>{ return list==item._id})
+                                            color={this.state.user.wishList.includes(item._id) ? "red" : "brown"}
+                                            size="big"
+                                            link={onclick = () => {
+                                                console.log('in set wishlist', item._id)
+                                                if (this.state.user.wishList.includes(item._id)) {
+                                                    this.setState({
+                                                        ...this.state,
+                                                        user: {
+                                                            ...this.state.user,
+                                                            wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+
+                                                        }
+                                                    })
+                                                    console.log('this.state.user.wishList in if', this.state.user.wishList)
+                                                }
+                                                else {
+                                                    this.setState({
+                                                        ...this.state,
+                                                        user: {
+                                                            ...this.state.user,
+                                                            wishList: [...this.state.user.wishList, item._id]
+
+                                                        }
+                                                    })
+                                                    console.log('this.state.user.wishList', this.state.user.wishList)
+                                                    localStorage.setItem('user', jwt.sign(this.state.user,'privateKey'));
+                                                }
+                                            }}
+
+                                        // link={}
+                                        /></Card.Header>
+                                    {item.title ? <div><Card.Description>
+                                        <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
+                                    </Card.Description>
+                                        <Card.Meta>{item.location}</Card.Meta></div>
+                                        : null}
+                                </Card.Content>
+                                <Card.Content extra>
+                                    <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
+                                </Card.Content>
                             </Card.Content>
                         </Card>
 

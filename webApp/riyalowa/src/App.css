@@ -431,3 +431,28 @@ margin: 0px 10px 0px 10px !important;
   background-color: #165a6e !important;
   color:#ddd !important;
 }
+
+.form-category-types{
+  margin-top: 10px !important;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+.form-field-category{
+  margin-right: 10px !important;
+}
+
+.export-btn{
+  background-color:#076AE0;
+  color: white !important;
+  border:1px solid black;
+  padding: 10px;
+  float: right;
+  border-radius: 8px;
+  margin:5px 5px 5px;
+}
+
+.export-btn :hover{
+  background-color:#0249a0 !important
+}
