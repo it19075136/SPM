@@ -1,5 +1,5 @@
 const router  = require('express').Router();
-const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode,addwishListToItem }  = require('../api/user.api');
+const { createuser, getAllUsers,getAllSellers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode,addwishListToItem }  = require('../api/user.api');
 const jsonwebtoken = require('jsonwebtoken');
 //add user
 router.post('/add', (req, res) => {
@@ -41,8 +41,18 @@ router.get('/', (req, res) => {
 
 })
 
-//get All users by id
+//get all sellers
+router.get('/sellers', (req, res) => {
 
+    getAllSellers().then((docs) => {
+        res.json(docs);
+    }).catch((err) => {
+        res.json('err: ', err);
+    })
+
+})
+
+//get user by id
 router.get('/:id', (req, res) => {
     getUserById(req.params.id).then((user) => {
         res.json(user);
