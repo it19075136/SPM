@@ -35,6 +35,16 @@ var nodemailer = require('nodemailer');
    });
  }
 
+ function getAllSellers() {
+  return new Promise((resolve, reject) => {
+    User.find({type: 'buyerSeller'},'_id name email phoneNumber',{sort: {name: 1}}).then((docs) => {
+      resolve(docs)
+    }).catch((err) => {
+      reject(err)
+    })
+  });
+}
+
  function getUserById(id) {
    return new Promise((resolve, reject) => {
      User.findById(id)
@@ -207,6 +217,7 @@ var nodemailer = require('nodemailer');
    createuser,
    getAllUsers,
    getUserById,
+   getAllSellers,
    deleteUserById,
    updateUserById,
    getUsetByEmailAndPassword,
