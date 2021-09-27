@@ -8,7 +8,7 @@ import ImageUploading from 'react-images-uploading';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux'
-import { userUpdate } from '../redux/actions/userActions';
+import { userUpdate,deleteProfile } from '../redux/actions/userActions';
 // constructor(props){
 //   super(props);
 //   this.state={
@@ -277,12 +277,74 @@ class userProfile extends Component  {
               notify();
         }
     }
+    const deleteProfile =()=>{
+        this.props.deleteProfile(decodeItem).then((res) => {
+            console.log('in post');
+            // const { token } = res;
+            console.log("res.data",res)
+            if (res != "Action unscuccesful") {
+                // setAction(({
+                //     success:true
+                //  }));
+                localStorage.removeItem("user");
+                this.setState({
+                    ...this.state,
+                    action:true
+                  })
+                  notify();
+                  window.location.href = '/'
+                // localStorage.setItem('user',token);
+                // const userResponds = jwt.decode(token);
+                // const userDetails = {
+                //     _id: userResponds._id,
+                //     name: userResponds.name,
+                //     email: userResponds.email,
+                //     type: userResponds.type,
+                //     phoneNumber: userResponds.phoneNumber,
+                //     wishList:userResponds.wishList,
+                //     image:userResponds.image,
+                //     password:userResponds.password
+                // }
+               
+                // console.log(userDetails);
+
+                
+                // dispatch({type:'ADD_USER',payload:userDetails});
+                // resolve(userDetails);
+            }
+            else{
+                this.setState({
+                    ...this.state,
+                    action:false
+                  })
+                  notify();
+            }
+            // setAction(({
+            //     success:false
+            //  }));
+           
+        }).catch((err) => {
+            // reject(err)
+            // setAction(({
+            //     success:false
+            //  }));
+            this.setState({
+                ...this.state,
+                action:false
+              })
+              notify();
+        })
+    }
     return (
         <div className="profile-main">
             <div>
                 <Header as='h2' icon textAlign='center' style={{marginRight: '-300px', color: '#076AE0'}}>
                     <Icon name='user' circular />
                     <Header.Content>User Profile</Header.Content>
+                </Header>
+                <Header as='h5' icon textAlign='right' style={{marginRight: '-400px', color: '#076AE0', }}>
+                <Button color='blue' type='button' onClick={deleteProfile}>Delete Profile<Icon name='trash' circular /></Button>
+                    
                 </Header>
                 <Form className='user-profile-form-centered'>
                 {/* {user.image.map((image, index) => (
@@ -526,7 +588,7 @@ const mapStateToProps = state => ({
     user: state.user.user
   });
   
-export default connect(mapStateToProps, { userUpdate })(userProfile)
+export default connect(mapStateToProps, { userUpdate,deleteProfile })(userProfile)
   
 
 
