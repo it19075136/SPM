@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { updateVehicleAd, getPendingVehicleAds, getPublishedVehicleAds } from '../redux/actions/vehicleAdActions';
+import { getAllSellers } from '../redux/actions/userActions';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Icon, Table, Header, Loader } from 'semantic-ui-react';
 import { CSVLink } from "react-csv";
@@ -11,7 +12,8 @@ class AdminVehicleAdsView extends Component {
         error: false,
         loading: true,
         actionWaiting: false,
-        approvedPayload: []
+        approvedPayload: [],
+        sellers: []
     }
 
     componentDidMount = () => {
@@ -28,6 +30,9 @@ class AdminVehicleAdsView extends Component {
         })
 
         this.props.getPublishedVehicleAds();
+        this.props.getAllSellers().then((res) => {
+            console.log(res)
+        });
     }
 
     navigateToDetails = (id) => {
@@ -122,5 +127,5 @@ const mapStateToProps = state => ({
     publishVehicleAds: state.vehicle.publishedVehicleAdIds
 });
 
-export default connect(mapStateToProps, { updateVehicleAd, getPendingVehicleAds, getPublishedVehicleAds })(AdminVehicleAdsView)
+export default connect(mapStateToProps, { updateVehicleAd, getPendingVehicleAds, getPublishedVehicleAds, getAllSellers })(AdminVehicleAdsView)
 
