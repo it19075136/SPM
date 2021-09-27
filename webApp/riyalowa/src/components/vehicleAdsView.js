@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
+import { userUpdate } from '../redux/actions/userActions';
 import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
 class vehicleAdsView extends Component {
@@ -65,7 +66,137 @@ class vehicleAdsView extends Component {
             })
         });
     }
-
+    componentDidUpdate=()=>{
+        // const userdetais = localStorage.getItem("user");
+        // const decodeItem = jwt.decode(userdetais);
+        console.log('componentDidUpdate',this.state)
+        if(this.state.user){
+            this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+                console.log('in post');
+                const { token } = res;
+                if (token) {
+                    console.log(token,"token")
+                    // setAction(({
+                    //     success:true
+                    //  }));
+                    // this.setState({
+                    //     ...this.state,
+                    //     action:true
+                    //   })
+                    //   notify();
+                    // localStorage.setItem('user',token);
+                    // const userResponds = jwt.decode(token);
+                    // const userDetails = {
+                    //     _id: userResponds._id,
+                    //     name: userResponds.name,
+                    //     email: userResponds.email,
+                    //     type: userResponds.type,
+                    //     phoneNumber: userResponds.phoneNumber,
+                    //     wishList:userResponds.wishList,
+                    //     image:userResponds.image,
+                    //     password:userResponds.password
+                    // }
+                   
+                    // console.log(userDetails);
+    
+                    
+                    // dispatch({type:'ADD_USER',payload:userDetails});
+                    // resolve(userDetails);
+                }
+                else{
+                    // this.setState({
+                    //     ...this.state,
+                    //     action:false
+                    //   })
+                    //   notify();
+                }
+                // setAction(({
+                //     success:false
+                //  }));
+               
+            }).catch((err) => {
+                // reject(err)
+                // setAction(({
+                //     success:false
+                //  }));
+                // this.setState({
+                //     ...this.state,
+                //     action:false
+                //   })
+                //   notify();
+            })
+        }
+        
+    }
+    // componentWillUnmount=()=>{
+    //     console.log('componentWillUnmount',this.state)
+    //     if(this.state.user){
+    //         this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+    //             console.log('in post');
+    //             const { token } = res;
+    //             // if (token) {
+    //                 // setAction(({
+    //                 //     success:true
+    //                 //  }));
+    //                 // this.setState({
+    //                 //     ...this.state,
+    //                 //     action:true
+    //                 //   })
+    //                 //   notify();
+    //                 // localStorage.setItem('user',token);
+    //                 // const userResponds = jwt.decode(token);
+    //                 // const userDetails = {
+    //                 //     _id: userResponds._id,
+    //                 //     name: userResponds.name,
+    //                 //     email: userResponds.email,
+    //                 //     type: userResponds.type,
+    //                 //     phoneNumber: userResponds.phoneNumber,
+    //                 //     wishList:userResponds.wishList,
+    //                 //     image:userResponds.image,
+    //                 //     password:userResponds.password
+    //                 // }
+                   
+    //                 // console.log(userDetails);
+    
+                    
+    //                 // dispatch({type:'ADD_USER',payload:userDetails});
+    //                 // resolve(userDetails);
+    //             // }
+    //             // else{
+    //             //     this.setState({
+    //             //         ...this.state,
+    //             //         action:false
+    //             //       })
+    //             //       notify();
+    //             // }
+    //             // setAction(({
+    //             //     success:false
+    //             //  }));
+               
+    //         }).catch((err) => {
+    //             // reject(err)
+    //             // setAction(({
+    //             //     success:false
+    //             //  }));
+    //             // this.setState({
+    //             //     ...this.state,
+    //             //     action:false
+    //             //   })
+    //             //   notify();
+    //         })
+    //     }
+        
+    //     // window.location.href = ``
+    // }
+    // componentDidUpdate=()=>{
+    //     console.log('componentDidUpdate',this.state)
+    // }
+    // componentDidCatch=()=>{
+    //     console.log('componentDidCatch',this.state)
+    // }
+    // componentWillMount=()=>{
+    //     console.log('componentWillMount',this.state)
+    // }
     componentDidMount = () => {
         // const userdetais = localStorage.getItem("user");
         // const users = jwt.decode(userdetais);
@@ -131,12 +262,34 @@ class vehicleAdsView extends Component {
     }
 
     render() {
-        // const setwishList=(id)=>{
-        //     console.log('in set wishlist',id)
-        //     if( this.state.user.wishList.includes(id)){
+        const setwishList=(id)=>{
+            
+                console.log('in set wishlist', id)
+                if (this.state.user.wishList.includes(id)) {
+                    this.setState({
+                        ...this.state,
+                        user: {
+                            ...this.state.user,
+                            wishList: this.state.user.wishList.filter(Wish => Wish != id)
 
-        //     }    
-        // }
+                        }
+                    })
+                    console.log('this.state.user.wishList in if', this.state.user.wishList)
+                }
+                else {
+                    this.setState({
+                        ...this.state,
+                        user: {
+                            ...this.state.user,
+                            wishList: [...this.state.user.wishList, id]
+
+                        }
+                    })
+                    console.log('this.state.user.wishList', this.state.user.wishList)
+                    localStorage.setItem('user', this.state.user);
+                }
+              
+        }
         return (
             <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
@@ -148,41 +301,47 @@ class vehicleAdsView extends Component {
                             <Card.Content>
                                 <Card.Content>
                                     <Card.Header>{item.title}
-                                        <Icon name="heart" disabled={this.state.user.wishList ? !this.state.user.wishList.includes(item._id) : true}
+                                    <div  hidden={this.state.user ? false:true} onClick={()=>{
+            
+            console.log('in set wishlist', item._id)
+            if (this.state.user.wishList.includes(item._id)) {
+                this.setState({
+                    ...this.state,
+                    user: {
+                        ...this.state.user,
+                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+
+                    }
+                })
+                console.log('this.state.user.wishList in if', this.state.user.wishList)
+            }
+            else {
+                this.setState({
+                    ...this.state,
+                    user: {
+                        ...this.state.user,
+                        wishList: [...this.state.user.wishList, item._id]
+
+                    }
+                })
+                console.log('this.state.user.wishList', this.state.user.wishList)
+                localStorage.setItem('user', this.state.user);
+            }
+          
+    }} >
+                                    {/* <a onclick = {setwishList(item._id)}> */}
+                                        <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
                                             corner="bottom right"
                                             style={{float: 'right'}}
                                             // user.wishList.map(list=>{ return list==item._id})
-                                            color={this.state.user.wishList.includes(item._id) ? "red" : "brown"}
+                                            color={this.state.user ?(this.state.user.wishList.includes(item._id) ? "red" : "brown"):"brown"}
                                             size="big"
-                                            link={onclick = () => {
-                                                console.log('in set wishlist', item._id)
-                                                if (this.state.user.wishList.includes(item._id)) {
-                                                    this.setState({
-                                                        ...this.state,
-                                                        user: {
-                                                            ...this.state.user,
-                                                            wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
-
-                                                        }
-                                                    })
-                                                    console.log('this.state.user.wishList in if', this.state.user.wishList)
-                                                }
-                                                else {
-                                                    this.setState({
-                                                        ...this.state,
-                                                        user: {
-                                                            ...this.state.user,
-                                                            wishList: [...this.state.user.wishList, item._id]
-
-                                                        }
-                                                    })
-                                                    console.log('this.state.user.wishList', this.state.user.wishList)
-                                                    localStorage.setItem('user', this.state.user);
-                                                }
-                                            }}
-
+                                            
                                         // link={}
-                                        /></Card.Header>
+                                        />
+                                        {/* </a> */}
+                                        </div>
+                                        </Card.Header>
                                     {item.title ? <div><Card.Description>
                                         <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
                                     </Card.Description>
@@ -222,4 +381,4 @@ const mapStateToProps = (state) => ({
     vehicleAds: state.vehicle.publishedVehicleAdIds
 })
 
-export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById })(vehicleAdsView);
+export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById,userUpdate })(vehicleAdsView);

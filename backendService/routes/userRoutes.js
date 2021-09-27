@@ -77,20 +77,26 @@ router.post('/getUser',(req,res)=>{
 router.delete('/:id', (req, res) => {
     
     deleteUserById(req.params.id).then((user) => {
-        res.json(
-            user.name + ' is deleted'
-        )
+        if(user._id){
+            res.json(
+                user.name + ' is deleted'
+            )
+        }
+        else{
+            res.json('Action unscuccesful')
+        }
+        
     })
 })
 
 router.post('/update/:id', (req, res) => {
     req.body._id = req.params.id;
  console.log('in router post')
- console.log(req.body)
+ console.log('req.body',req.body)
     updateUserById(req.body)
         .then((user) => {
             if(user){
-                console.log('in router post in then')
+                console.log('in router post in then and user',user)
             const token = jsonwebtoken.sign({
                 _id:user._id,
                 name :user.name,
