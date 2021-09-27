@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon, Search, Grid } from 'semantic-ui-react';
+import './sample.css'
 
 class sparePartAdView extends Component {
     state = {
@@ -19,7 +20,8 @@ class sparePartAdView extends Component {
             totalPages: 1,
             disabled: true
         },
-        counter: 0
+        counter: 0,
+        filter: ""
     }
 
     sortAdsArray = () => {
@@ -83,13 +85,26 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
+    handleChange = event => {
+        this.setState({ filter: event.target.value })
+    }
+
 
     render() {
-        console.log(this.props.sparepartsAds)
+        console.log(this.props.sparepartsAds);
+        const { filter } = this.state;
         return (
-            <div >
+            <div>
+                <center>
+                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
+                </center>
+
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
+                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
+                        elem => {
+                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                        }
+                    ).map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
@@ -103,7 +118,7 @@ class sparePartAdView extends Component {
                                     : null}
                             </Card.Content>
                             <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
