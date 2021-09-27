@@ -34,8 +34,8 @@ class sparePartAdForm extends Component {
             negotiable: false,
             images: [],
             location: '',
-            userId: 'u1',
-            contactNumbers: [],
+            userId: this.props.user._id,
+            contactNumbers: [this.props.user.phoneNumber],
             status: 'pending'
         },
         code: '',
@@ -371,7 +371,8 @@ class sparePartAdForm extends Component {
 }
 
 const mapStateToProps = state => ({
-    categories: state.category.categories
+    categories: state.category.categories,
+    user: state.user.user
 })
 
 export default connect(mapStateToProps, { publishSparepartsAd, getAllCategories })(sparePartAdForm)
