@@ -129,7 +129,7 @@ class AdminSparepartsAdView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {!this.state.loading && this.props.sparepartsAd.length != 0 ? this.props.sparepartsAd.filter(sparePart => sparePart.status != 'published').map(sparepart => {
+                        {!this.state.loading && this.props.sparepartsAd.length != 0 ? this.state.payload.filter(sparePart => sparePart.status != 'published').map(sparepart => {
                             return (
                                 <Table.Row key={sparepart._id}>
                                     <Table.Cell collapsing selectable={false}>
