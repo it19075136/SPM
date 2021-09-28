@@ -3,6 +3,7 @@ import { Form, Input, TextArea, Button, Select, Segment, Divider, Header, Radio,
 import ImageUploading from 'react-images-uploading';
 import { connect } from 'react-redux';
 import {publishSparepartsAd} from '../redux/actions/sparepartsActions';
+import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,15 +34,31 @@ class sparePartAdForm extends Component {
             negotiable: false,
             images: [],
             location: '',
-            userId: 'u1',
-            contactNumbers: [],
+            userId: this.props.user._id,
+            contactNumbers: [this.props.user.phoneNumber],
             status: 'pending'
         },
         code: '',
         phone: '',
         success: false,
         error: false,
-        actionWaiting: false
+        actionWaiting: false,
+        categoryOption: [],
+        makeOption: []
+    }
+
+
+    componentDidMount = () => {
+        this.props.getAllCategories().then((res) => {
+            console.log(res)
+            res.filter(item => item.type == 'Spare Parts').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOption: [...this.state.categoryOption, {key: index, text: element.mainName, value: element.mainName}]}, () => {
+                    element.make.forEach((childrenElem) => {
+                        this.setState({...this.state, makeOption: [...this.state.makeOption, {key: element.mainName , text: childrenElem, value: childrenElem}]})
+                    })
+                })
+            })
+        })
     }
 
     addPhone = () => {
@@ -152,12 +169,13 @@ class sparePartAdForm extends Component {
                 <Form.Field required
                     width='16'
                     control={Select}
-                    options={partTypeOption}
+                    name="category"
+                    options={this.state.categoryOption}
                     label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
                     placeholder='Part or Accessory Type'
                     error={this.state.payload.category == ''}
                     search
-                    searchInput={{ id: 'accessoryType' }}
+                    searchInput={{ id: 'category' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
@@ -353,4 +371,9 @@ class sparePartAdForm extends Component {
     }
 }
 
-export default connect(null, { publishSparepartsAd })(sparePartAdForm)
+const mapStateToProps = state => ({
+    categories: state.category.categories,
+    user: state.user.user
+})
+
+export default connect(mapStateToProps, { publishSparepartsAd, getAllCategories })(sparePartAdForm)
