@@ -23,7 +23,8 @@ class vehicleAdsView extends Component {
             disabled: true
         },
         counter: 0,
-        user: null
+        user: null,
+        filter: ""
         // {
         //     _id:"",
         //     name:"",
@@ -261,7 +262,12 @@ class vehicleAdsView extends Component {
         window.location.href = `/vehicleAdDetail/${id}`
     }
 
+    handleChange = event => {
+        this.setState({ filter: event.target.value })
+    }
+
     render() {
+        const { filter } = this.state;
         const setwishList=(id)=>{
             
                 console.log('in set wishlist', id)
@@ -292,8 +298,15 @@ class vehicleAdsView extends Component {
         }
         return (
             <div >
+                <center>
+                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
+                </center>
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
+                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
+                        elem => {
+                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                        }
+                    ).map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
