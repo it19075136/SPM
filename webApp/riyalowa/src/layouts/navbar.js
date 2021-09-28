@@ -66,6 +66,34 @@ export default class navbar extends Component {
                     </Menu.Item>
                     {user ?                       <Menu.Item
                         className="item"
+                        name='Wish List'
+                        position='left'
+                        // active={activeItem === 'sign-out'}
+                        onClick={()=>{
+                            // const login = {
+                            //     login:false
+                            //   }
+                            //   localStorage.setItem('login',login);
+                            //   localStorage.removeItem("user");
+                              window.location.href = '/favorites'
+                        }}
+                    ></Menu.Item>:null}
+                    {user ?                       <Menu.Item
+                        className="item"
+                        name='MY Ads'
+                        position='left'
+                        // active={activeItem === 'sign-out'}
+                        onClick={()=>{
+                            // const login = {
+                            //     login:false
+                            //   }
+                            //   localStorage.setItem('login',login);
+                            //   localStorage.removeItem("user");
+                              window.location.href = '/myads'
+                        }}
+                    ></Menu.Item>:null}
+                    {user ?                       <Menu.Item
+                        className="item"
                         name='My Profile'
                         position='right'
                         // active={activeItem === 'sign-out'}
@@ -78,6 +106,7 @@ export default class navbar extends Component {
                               window.location.href = '/userProfile'
                         }}
                     ></Menu.Item>:null}
+                   
                     {user ?
                     ( login ?(
                     
