@@ -107,7 +107,7 @@ class AdminVehicleAdsView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {!this.state.loading && this.props.vehicleAds.length != 0 ? this.props.vehicleAds.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
+                        {!this.state.loading && this.props.vehicleAds.length != 0 ? this.state.payload.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
                             return (
                                 <Table.Row key={vehicleAd._id}>
                                     <Table.Cell collapsing selectable={false}>
