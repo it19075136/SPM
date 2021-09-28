@@ -239,6 +239,18 @@ export const userUpdate =(payload,decodeItem)=>dispatch =>{
 })
 }
 
+export const getAllSellers = () => dispatch => {
+  
+  return new Promise((resolve,reject) => {
+    axios.get('http://localhost:5000/user/sellers').then((res) => {
+      console.log(res.data)
+      resolve(res.data)
+    }).catch((err) => {
+      reject(err)
+    })
+  });
+}
+
 export const login = (payload) => dispatch => {
   dispatch({ type: 'ADD_USER', payload: payload })
 }
