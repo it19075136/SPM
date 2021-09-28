@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Search, Grid, Modal, Header, Form, Radio } from 'semantic-ui-react';
+import './sample.css'
 
 class sparePartAdView extends Component {
     state = {
@@ -22,7 +23,9 @@ class sparePartAdView extends Component {
             disabled: true
         },
         counter: 0,
-        user: null
+        user: null,
+        filter: "",
+        open: false
     }
 
     sortAdsArray = () => {
@@ -150,13 +153,40 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
+    handleChange = event => {
+        this.setState({ filter: event.target.value })
+    }
+
+    handleModal = (e, { name }) => {
+        switch (name) {
+            case 'close':
+                this.setState({ ...this.state, open: false })
+                break;
+            case 'open':
+                this.setState({ ...this.state, open: true })
+                break;
+            default:
+                throw new Error('Unsupported Action!')
+        }
+    }
+
 
     render() {
-        console.log(this.props.sparepartsAds)
+        console.log(this.props.sparepartsAds);
+        const { filter } = this.state;
         return (
-            <div >
+            <div>
+                <center>
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
+                    <Button circular size="big" color="blue" icon="filter" onClick={this.handleModal} name='open' />
+                </center>
+
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
+                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
+                        elem => {
+                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                        }
+                    ).map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
@@ -211,7 +241,7 @@ class sparePartAdView extends Component {
                                     : null}
                             </Card.Content>
                             <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
@@ -232,6 +262,52 @@ class sparePartAdView extends Component {
                         disabled={this.state.pagination.disabled}
                     />
                 </div>
+                <Modal
+                    open={this.state.open}
+                    onClose={() => this.setState({ ...this.state, open: false })}
+                    onOpen={() => this.setState({ ...this.state, open: true })}
+                    size="small"
+                >
+                    <Modal.Header>Filter Your Result</Modal.Header>
+                    <Modal.Content>
+                        <Header as="h5">Condition</Header>
+                        <Form.Group inline>
+                            <Form.Field
+                                control={Radio}
+                                label="New"
+                                name="new"
+                                value="1"
+                            />
+                            <Form.Field
+                                control={Radio}
+                                label="Used"
+                                name="used"
+                                value="2"
+                            />
+                            <Form.Field
+                                control={Radio}
+                                label="Recondition"
+                                name="recondition"
+                                value="3"
+                            />
+                        </Form.Group>
+                        <Header as="h5">Sparepart Category</Header>
+                        <Form.Field required
+                            width='16'
+                            control={Select}
+                            placeholder='Part or Accessory Type'
+                            search
+                        />
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button negative onClick={() => this.setState({ ...this.state, open: false })}>
+                            Cancel
+                        </Button>
+                        <Button color="blue" >
+                            Filter
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
             </div>
         )
     }
