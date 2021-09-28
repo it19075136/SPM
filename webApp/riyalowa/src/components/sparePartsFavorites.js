@@ -43,9 +43,9 @@ class sparePartAdView extends Component {
 
         this.setState({
             ...this.state,
-            sparepartsAds: this.props.sparepartsAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+            sparepartsAds: this.state.sparepartsAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
         }, () => {
-            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.state.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
                 console.log(this.state.pagination.indexOfFirstCard, (this.state.sparepartsAds.length - this.state.pagination.indexOfFirstCard))
                 for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
                     this.props.getSparepartAdById(this.state.sparepartsAds[index]._id).then((res) => {
@@ -56,7 +56,7 @@ class sparePartAdView extends Component {
         });
 
     }
-    componentDidUpdate=()=>{
+    removeFavorite=()=>{
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
         console.log('componentDidUpdate',this.state)
@@ -66,6 +66,12 @@ class sparePartAdView extends Component {
                 const { token } = res;
                 if (token) {
                     console.log(token,"token")
+                    const user = jwt.decode(token);
+                    this.setState({
+                        ...this.state,
+                        sparepartsAds: this.state.sparepartsAds.filter((sparePart)=> user.wishList.includes(sparePart._id)),
+                        user:user
+                    })
                     // setAction(({
                     //     success:true
                     //  }));
@@ -124,14 +130,23 @@ class sparePartAdView extends Component {
             const users = jwt.decode(userdetais);
             this.setState({
                 ...this.state,
-                pagination: {
-                    ...this.state.pagination,
-                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-                    indexOfLastCard: (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
-                },
-                user:users
+                user:users,
+                sparepartsAds:this.props.sparepartsAds.filter((spareparts)=> users.wishList.includes(spareparts._id))
+            },()=>{
+                this.setState({
+                    ...this.state,
+                    pagination: {
+                        ...this.state.pagination,
+                        indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                        indexOfLastCard: (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                    },
+                    
+                },() => {
+                    console.log(this.state.vehicleAds)
+                    this.setAdsForPage()
+                })
             })
-            this.setAdsForPage()
+            
         }).catch((err) => {
             alert('Connection error!')
         })
@@ -140,7 +155,7 @@ class sparePartAdView extends Component {
     handlePaginationChange = (e, { activePage }) => this.setState({
         ...this.state, sparepartsAds: [], counter: 0, pagination: {
             ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-            indexOfLastCard: (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
+            indexOfLastCard: (this.state.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
         }
     }, () => {
         this.setAdsForPage(this.state);
@@ -152,7 +167,7 @@ class sparePartAdView extends Component {
 
 
     render() {
-        console.log(this.props.sparepartsAds)
+        console.log(this.state.sparepartsAds)
         return (
             <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
@@ -174,21 +189,23 @@ class sparePartAdView extends Component {
                         wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
                     }
+                },()=>{
+                    this.removeFavorite()
                 })
                 console.log('this.state.user.wishList in if', this.state.user.wishList)
             }
-            else {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: [...this.state.user.wishList, item._id]
+            // else {
+            //     this.setState({
+            //         ...this.state,
+            //         user: {
+            //             ...this.state.user,
+            //             wishList: [...this.state.user.wishList, item._id]
 
-                    }
-                })
-                console.log('this.state.user.wishList', this.state.user.wishList)
-                localStorage.setItem('user', this.state.user);
-            }
+            //         }
+            //     })
+            //     console.log('this.state.user.wishList', this.state.user.wishList)
+            //     localStorage.setItem('user', this.state.user);
+            // }
           
     }} >
                                     {/* <a onclick = {setwishList(item._id)}> */}

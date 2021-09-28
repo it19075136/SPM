@@ -160,7 +160,7 @@ var nodemailer = require('nodemailer');
           service:'gmail',
           auth:{
             user:'tweb4172@gmail.com',
-            pass:'#sliit1234'
+            pass:'kzcdkvnquffnoyyq'
           }
         })
         var mailOptions ={

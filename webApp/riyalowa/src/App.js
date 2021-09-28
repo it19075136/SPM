@@ -22,10 +22,12 @@ import errorPage from './components/404Error';
 import AdminSparepartsAdView from './components/AdminSparepartsAdView';
 import vehicleAdDetails from './components/vehicleAdDetails';
 import sparepartAdDetails from './components/sparepartAdDetails';
-import myads from './components/myads';
+import myAdsTab from './components/myAdsTab';
 import AdminVehicleAdsView from './components/AdminVehicleAdsView';
 import { login } from './redux/actions/userActions';
 import jwt from 'jsonwebtoken'
+// import favorites from './components/favorites';
+import TabExampleLoading from './components/favoritestab';
 
 if(localStorage.user){
   store.dispatch(login(jwt.decode(localStorage.user)));
@@ -55,8 +57,9 @@ function App() {
         <Route exact path='/category/update' component={updateCategoryForm} />
         <Route exact path='/forgetPassword' component={ForgetPassword} />
         <Route exact path='/category/list' component={categoryList} />
-        <Route exact path='/myads' component={myads} />
+        <Route exact path='/myads' component={myAdsTab} />
         <Route exact path='/' component={homepage} />
+        <Route exact path="/favorites" component={TabExampleLoading} />   
         <Route exact path="/404Error" component={errorPage} />
 
         {/* Add components */}
