@@ -169,12 +169,13 @@ class sparePartAdForm extends Component {
                 <Form.Field required
                     width='16'
                     control={Select}
+                    name="category"
                     options={this.state.categoryOption}
                     label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
                     placeholder='Part or Accessory Type'
                     error={this.state.payload.category == ''}
                     search
-                    searchInput={{ id: 'accessoryType' }}
+                    searchInput={{ id: 'category' }}
                     onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
                         console.log(this.state)
                     })}
