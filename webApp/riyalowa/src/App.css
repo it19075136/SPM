@@ -419,11 +419,14 @@ margin: 0px 10px 0px 10px !important;
 }
 
 .search-bar-cat-list{
-  width: 100% !important;
-  border: 1px solid rgb(92, 112, 156) !important;
-  border-radius: 10px !important;
-  height: 30px;
+  margin-left: 30% !important;
+  margin-right: 30% !important;
+  width: 50% !important;
+  border: 3px solid rgb(60, 91, 158) !important;
+  border-radius: 40px !important;
+  height: 40px;
   text-align: center !important;
+  box-shadow: 2px 2px 5px #8a8484;
 }
 
 .add-category-btn{
@@ -455,4 +458,39 @@ margin: 0px 10px 0px 10px !important;
 
 .export-btn :hover{
   background-color:#0249a0 !important
+}
+
+.intro-card-homepage{
+  margin-top: 20px;
+  width: 100% !important;
+  height: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 1px 2px 9px rgb(44, 150, 211);
+  display: flex !important;
+  flex-direction: column;
+
+}
+
+.top-intro-car{
+  height: 300px !important;
+  width: 100% !important;
+  background-color: #39ac31 !important;
+}
+
+.below-intro-card{
+  height: 300px !important;
+  width: 100% !important;
+  background-color: #4c31ac !important;
+}
+
+.export-btn-category{
+  background-color:#0e6597 !important;
+  color: rgb(255, 255, 255) !important;
+  border:1px solid rgb(96, 130, 202) !important;
+  padding: 10px !important;
+  float: right !important;
+  border-radius: 8px !important;
+  margin:5px 5px 5px !important;
+  box-shadow:2px 2px 4px #aa9191;
 }
