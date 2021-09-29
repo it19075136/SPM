@@ -1,4 +1,4 @@
-import { ADD_VEHICLE_AD, DELETE_VEHICLE_AD, GET_ALL_VEHICLE_ADS, GET_PUBLISHED_VEHICLE_ADS, GET_VEHICLE_AD_BY_ID, UPDATE_VEHICLE_AD } from '../../utils/constants'
+import { ADD_VEHICLE_AD, DELETE_VEHICLE_AD, GET_ALL_VEHICLE_ADS, GET_PUBLISHED_VEHICLE_ADS, GET_VEHICLE_AD_BY_ID, UPDATE_PENDING_VEHICLE_ADS, UPDATE_VEHICLE_AD } from '../../utils/constants'
 
 const initstate = {
     vehicleAds: [],
@@ -19,6 +19,11 @@ export default function (state = initstate, action) {
             return {
                 ...state,
                 vehicleAds: [...state.vehicleAds.filter(vehicleAd => vehicleAd._id != action.payload._id), action.payload]
+            }
+        case UPDATE_PENDING_VEHICLE_ADS:
+            return {
+                ...state,
+                vehicleAds: action.payload
             }
         case GET_VEHICLE_AD_BY_ID:
             return {
