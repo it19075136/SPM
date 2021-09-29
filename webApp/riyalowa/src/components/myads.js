@@ -195,13 +195,44 @@ import jwt from 'jsonwebtoken'
 import { Button, Container, Divider, Grid, Header, Icon, Image, List, Loader,Dimmer } from 'semantic-ui-react'
 import ImageGallery from 'react-image-gallery';
 import { connect } from 'react-redux'
+import { CSVLink } from "react-csv";
 
 class myads extends Component {
+    headers = [
+        { label: "Ad title", key: "_id" },
+        { label: "Ad title", key: "title" },
+        { label: "description", key: "description" },
+        { label: "year", key: "year" },
+        { label: "Status", key: "status" },
+        { label: "make", key: "make" },
+        { label: "model", key: "model" },
+        { label: "location", key: "location" },
+        { label: "category", key: "category" },
+        { label: "bodyType", key: "bodyType" },
+        { label: "condition", key: "condition" },
+        { label: "engineCapacity", key: "engineCapacity" },
+        { label: "transmission", key: "transmission" },
+        { label: "fuelType", key: "fuelType" },
+        { label: "condition", key: "condition" },
+        { label: "mileage", key: "mileage" },
+        { label: "price", key: "price" },
+        { label: "negotiable", key: "negotiable" },
+        { label: "images", key: "images" },
+        { label: "userId", key: "userId" },
+        { label: "contactNumbers", key: "contactNumbers" },
+        { label: "createdAt", key: "createdAt" },
+        { label: "updatedAt", key: "updatedAt" }
+    ];
     state = {
         vehicleAdDetails: [],
         loading: true,
         images: [],
-        user:null
+        user:null,
+        csvReport: {
+            data: [],
+            headers: this.headers,
+            filename: 'VehicleMyAds.csv'
+        }
     }
 
     componentDidMount = () => {
@@ -227,6 +258,15 @@ class myads extends Component {
                 })
                 // this.state.vehicleAdDetails.map(vehicleDetails=)
                 console.log('this.state.vehicleAdDetails',this.state.vehicleAdDetails)
+        },()=>{
+            this.setState({
+                ...this.state,
+                csvReport: {
+                    ...this.csvReport,
+                    data: [...this.state.vehicleAdDetails]
+                }
+            })
+            console.log("this.state.csvReport",this.state.csvReport)
         }).catch(err=>{
             // console.log(err)
             alert('Connection error pas!')
@@ -235,7 +275,8 @@ class myads extends Component {
     render() {
         return (
             <div>
-            {this.state.vehicleAdDetails.length >0 ? (
+                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.vehicleAdDetails.length < 1}>Export to CSV</CSVLink> 
+            {/* {this.state.vehicleAdDetails.length >0 ? ( */}
             <div>
             {this.state.vehicleAdDetails ? this.state.vehicleAdDetails.map(vehicleAdDetails=>{
                 return <div style={{ margin: '0 auto' }}>
@@ -321,7 +362,7 @@ class myads extends Component {
         }
             
             </div>
-             ):<h1>NO Ads TO Display</h1>}
+             {/* ):<h1>NO Ads TO Display</h1>} */}
              </div>
         )
     }
