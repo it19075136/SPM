@@ -249,7 +249,7 @@ class sparePartAdView extends Component {
                                                 }
                                             })
                                             console.log('this.state.user.wishList', this.state.user.wishList)
-                                            localStorage.setItem('user', this.state.user);
+                                            localStorage.setItem('user', jwt.sign(this.state.user, "user"));
                                         }
 
                                     }} >

@@ -218,6 +218,7 @@ class vehicleAdForm extends Component {
             progress: undefined,
         }) : null
 
+        console.log(this.state.makeOptions)
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
@@ -487,7 +488,7 @@ class vehicleAdForm extends Component {
                                 <Button
                                     color='red'
                                     type='button'
-                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                    disabled={this.state.payload.contactNumbers.length === 1}
                                     icon='trash'
                                     onClick={this.deletePhone}
                                 />

@@ -261,7 +261,7 @@ class favorites extends Component {
                 })
             })
         }).catch((err) => {
-            alert('Connection error!')
+            console.log('error test1',err)
         })
     }
 
