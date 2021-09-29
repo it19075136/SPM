@@ -4,14 +4,38 @@ import { connect } from 'react-redux'
 import {getAllSparePartsAds } from '../redux/actions/sparepartsActions'
 import ImageGallery from 'react-image-gallery';
 import jwt from 'jsonwebtoken'
+import { CSVLink } from "react-csv";
 
 class sparepartAdDetails extends Component {
+
+    headers = [
+        { label: "_id", key: "_id" },
+        { label: "Ad title", key: "title" },
+        { label: "description", key: "description" },
+        { label: "delivery", key: "delivery" },
+        { label: "Status", key: "status" },
+        { label: "location", key: "location" },
+        { label: "category", key: "category" },
+        { label: "condition", key: "condition" },
+        { label: "price", key: "price" },
+        { label: "negotiable", key: "negotiable" },
+        { label: "images", key: "images" },
+        { label: "userId", key: "userId" },
+        { label: "contactNumbers", key: "contactNumbers" },
+        { label: "createdAt", key: "createdAt" },
+        { label: "updatedAt", key: "updatedAt" }
+    ];
 
     state = {
         sparepartAdDetails: null,
         loading: true,
         images: [],
-        user:null
+        user:null,
+        csvReport: {
+            data: [],
+            headers: this.headers,
+            filename: 'SparepartsMyAds.csv'
+        }
     }
 
     componentDidMount = () => {
@@ -22,9 +46,14 @@ class sparepartAdDetails extends Component {
             this.setState({
                 ...this.state,
                 user:users,
-                sparepartAdDetails:res.filter(sparePart=> sparePart.userId ==users._id)
+                sparepartAdDetails:res.filter(sparePart=> sparePart.userId ==users._id),
+                csvReport: {
+                    ...this.state.csvReport,
+                    data:res.filter(spareParts=> spareParts.userId ==users._id)
+                }
             })
             // this.setAdsForPage()
+            console.log('this.state.vehicleAdDetails',this.state.vehicleAdDetails)
         }).catch((err) => {
             alert('Connection error pas!')
         })
@@ -33,7 +62,10 @@ class sparepartAdDetails extends Component {
     render() {
         return (
             <div>
-            {/* {this.state.sparepartAdDetails  ? ( */}
+                 {this.state.sparepartAdDetails  ? (
+                     <div>
+                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.sparepartAdDetails.length < 1 }  >Export to CSV</CSVLink> 
+           
             <div>  
             {this.state.sparepartAdDetails ? this.state.sparepartAdDetails.map(sparepartAdDetails=>{            
             return<div style={{ margin: '0 auto' }}>
@@ -105,7 +137,8 @@ class sparepartAdDetails extends Component {
         }
        
             </div>
-             {/* ):<h1>NO Ads TO Display</h1>} */}
+            </div>
+             ):<h1>NO Ads TO Display</h1>}
             </div>
         )
     }
