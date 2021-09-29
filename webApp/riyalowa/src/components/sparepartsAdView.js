@@ -90,10 +90,10 @@ class sparePartAdView extends Component {
     //                 //     image:userResponds.image,
     //                 //     password:userResponds.password
     //                 // }
-                   
+
     //                 // console.log(userDetails);
-    
-                    
+
+
     //                 // dispatch({type:'ADD_USER',payload:userDetails});
     //                 // resolve(userDetails);
     //             }
@@ -107,7 +107,7 @@ class sparePartAdView extends Component {
     //             // setAction(({
     //             //     success:false
     //             //  }));
-               
+
     //         }).catch((err) => {
     //             // reject(err)
     //             // setAction(({
@@ -120,7 +120,7 @@ class sparePartAdView extends Component {
     //             //   notify();
     //         })
     //     }
-        
+
     // }
     componentDidMount = () => {
         this.props.getPublishedSparepartsAds().then((res) => {
@@ -133,7 +133,7 @@ class sparePartAdView extends Component {
                     indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
                     indexOfLastCard: (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                 },
-                user:users
+                user: users
             })
             this.setAdsForPage()
         }).catch((err) => {
@@ -154,7 +154,7 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
-    handleChange =(context,event)=> {
+    handleChange = (context, event) => {
         console.log("in filter")
         switch (context) {
             case "CONDITION":
@@ -163,9 +163,10 @@ class sparePartAdView extends Component {
                 })
                 break;
             case "TYPE":
-                    console.log(event.target)
+                console.log(event.target)
                 break;
             default:
+                this.setState({...this.state, filter: event.target.value })
                 break;
         }
     }
@@ -190,8 +191,8 @@ class sparePartAdView extends Component {
         return (
             <div>
                 <center>
-                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
-                    <Button circular size="medium" color="blue" icon="filter" style={{marginLeft: 5}} onClick={this.handleModal} name='open' />
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this,null)} />
+                    <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
                 </center>
 
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
@@ -199,7 +200,7 @@ class sparePartAdView extends Component {
                         elem => {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`) 
-                                &&  this.state.conditionFilter ? elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase() : elem 
+                                &&  ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
                             )
                         }
                     ).map((item) => {
@@ -209,46 +210,46 @@ class sparePartAdView extends Component {
                             </Placeholder>}
                             <Card.Content>
                                 <Card.Header>{item.title}
-                                <div  hidden={this.state.user ? false:true} onClick={()=>{
-            
-            console.log('in set wishlist', item._id)
-            if (this.state.user.wishList.includes(item._id)) {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+                                    <div hidden={this.state.user ? false : true} onClick={() => {
 
-                    }
-                })
-                console.log('this.state.user.wishList in if', this.state.user.wishList)
-            }
-            else {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: [...this.state.user.wishList, item._id]
+                                        console.log('in set wishlist', item._id)
+                                        if (this.state.user.wishList.includes(item._id)) {
+                                            this.setState({
+                                                ...this.state,
+                                                user: {
+                                                    ...this.state.user,
+                                                    wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
-                    }
-                })
-                console.log('this.state.user.wishList', this.state.user.wishList)
-                localStorage.setItem('user', this.state.user);
-            }
-          
-    }} >
-                                    {/* <a onclick = {setwishList(item._id)}> */}
+                                                }
+                                            })
+                                            console.log('this.state.user.wishList in if', this.state.user.wishList)
+                                        }
+                                        else {
+                                            this.setState({
+                                                ...this.state,
+                                                user: {
+                                                    ...this.state.user,
+                                                    wishList: [...this.state.user.wishList, item._id]
+
+                                                }
+                                            })
+                                            console.log('this.state.user.wishList', this.state.user.wishList)
+                                            localStorage.setItem('user', this.state.user);
+                                        }
+
+                                    }} >
+                                        {/* <a onclick = {setwishList(item._id)}> */}
                                         <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
                                             corner="bottom right"
-                                            style={{float: 'right'}}
+                                            style={{ float: 'right' }}
                                             // user.wishList.map(list=>{ return list==item._id})
-                                            color={this.state.user ?(this.state.user.wishList.includes(item._id) ? "red" : "brown"):"brown"}
+                                            color={this.state.user ? (this.state.user.wishList.includes(item._id) ? "red" : "brown") : "brown"}
                                             size="big"
-                                            
+
                                         // link={}
                                         />
                                         {/* </a> */}
-                                        </div>
+                                    </div>
                                 </Card.Header>
                                 {item.title ? <div><Card.Description>
                                     <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
@@ -293,21 +294,21 @@ class sparePartAdView extends Component {
                                 label="New"
                                 name="new"
                                 checked={this.state.conditionFilter == 'New'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                             <Form.Field
                                 control={Radio}
                                 label="Used"
                                 name="used"
                                 checked={this.state.conditionFilter == 'Used'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                             <Form.Field
                                 control={Radio}
                                 label="Recondition"
                                 name="recondition"
                                 checked={this.state.conditionFilter == 'Recondition'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                         </Form.Group>
                         <Header as="h5">Sparepart Category</Header>
@@ -315,7 +316,7 @@ class sparePartAdView extends Component {
                             width='16'
                             control={Select}
                             placeholder='Part or Accessory Type'
-                            onChange={this.handleChange.bind(this,"TYPE")}
+                            onChange={this.handleChange.bind(this, "TYPE")}
                             search
                         />
                     </Modal.Content>
@@ -339,4 +340,4 @@ const mapStateToProps = (state) => ({
     sparepartsAds: state.sparepart.publishSparepartAdIds
 })
 
-export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById,userUpdate })(sparePartAdView);
+export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate })(sparePartAdView);

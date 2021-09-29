@@ -262,6 +262,7 @@ class vehicleAdsView extends Component {
                     console.log(event.target)
                 break;
             default:
+                this.setState({...this.state, filter: event.target.value})
                 break;
         }
     }
@@ -312,15 +313,17 @@ class vehicleAdsView extends Component {
         return (
             <div >
                 <center>
-                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
+                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this,null)} />
                 <Button circular size="medium" color="blue" icon="filter" style={{marginLeft: 5}} onClick={this.handleModal} name='open' />
                 </center>
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
                         elem => {
-                            return (elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
-                            &&  this.state.conditionFilter && elem.condition ? elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase() : elem 
-                            )}
+                            return (
+                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`) 
+                                &&  ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                            )
+                        }
                     ).map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
