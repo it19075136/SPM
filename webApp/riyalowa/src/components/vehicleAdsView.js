@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon, Modal, Header, Form, Radio, Select } from 'semantic-ui-react';
+import { getAllCategories } from '../redux/actions/categoryActions';
 
 class vehicleAdsView extends Component {
 
@@ -24,17 +25,11 @@ class vehicleAdsView extends Component {
         },
         counter: 0,
         user: null,
-        filter: ""
-        // {
-        //     _id:"",
-        //     name:"",
-        //     email:"",
-        //     type:"",
-        //     phoneNumber:"",
-        //     image:[],
-        //     wishList:[],
-        //     password:"",
-        // }
+        filter: "",
+        open: false,
+        conditionFilter: null,
+        categoryOptions: [],
+        makeOptions: []
     }
 
     sortAdsArray = () => {
@@ -247,6 +242,16 @@ class vehicleAdsView extends Component {
         }).catch((err) => {
             alert('Connection error!')
         })
+
+        this.props.getAllCategories().then((res) => {
+            res.filter(item => item.type == 'Vehicles').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOptions: [...this.state.categoryOptions, { key: index, text: element.mainName, value: element.mainName }] }, () => {
+                    element.make.forEach((childElem) => {
+                        this.setState({ ...this.state, makeOptions: [...this.state.makeOptions, { key: element.mainName, text: childElem, value: childElem }] })
+                    })
+                })
+            })
+        })
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -261,9 +266,31 @@ class vehicleAdsView extends Component {
     navigateToDetails = (id) => {
         window.location.href = `/vehicleAdDetail/${id}`
     }
+    handleChange = (context, event) => {
+        switch (context) {
+            case "CONDITION":
+                this.setState({ conditionFilter: this.state.conditionFilter == event.target.textContent ? null : event.target.textContent });
+                break;
+            case "TYPE":
+                console.log(event.target)
+                break;
+            default:
+                this.setState({ ...this.state, filter: event.target.value })
+                break;
+        }
+    }
 
-    handleChange = event => {
-        this.setState({ filter: event.target.value })
+    handleModal = (e, { name }) => {
+        switch (name) {
+            case 'close':
+                this.setState({ ...this.state, open: false })
+                break;
+            case 'open':
+                this.setState({ ...this.state, open: true })
+                break;
+            default:
+                throw new Error('Unsupported Action!')
+        }
     }
 
     render() {
@@ -299,12 +326,16 @@ class vehicleAdsView extends Component {
         return (
             <div >
                 <center>
-                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this, null)} />
+                    <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
                 </center>
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
                         elem => {
-                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                            return (
+                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                                && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                            )
                         }
                     ).map((item) => {
                         return <Card>
@@ -385,13 +416,70 @@ class vehicleAdsView extends Component {
                         disabled={this.state.pagination.disabled}
                     />
                 </div>
+                <Modal
+                    open={this.state.open}
+                    onClose={() => this.setState({ ...this.state, open: false })}
+                    onOpen={() => this.setState({ ...this.state, open: true })}
+                    size="small"
+                >
+                    <Modal.Header>Filter Your Result</Modal.Header>
+                    <Modal.Content>
+                        <Header as="h5">Condition</Header>
+                        <Form.Group inline>
+                            <Form.Field
+                                control={Radio}
+                                label="Unregistered"
+                                name="Unregistered"
+                                checked={this.state.conditionFilter == 'Unregistered'}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
+                            />
+                            <Form.Field
+                                control={Radio}
+                                label="Registered"
+                                name="Registered"
+                                checked={this.state.conditionFilter == 'Registered'}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
+                            />
+                        </Form.Group>
+                        <Header as="h5">Vehicle Category</Header>
+                        {/* <Form.Field required
+                            width='16'
+                            control={Select}
+                            placeholder='Vehicle Type'
+                            onChange={this.handleChange.bind(this,"TYPE")}
+                            search
+                        /> */}
+                        <Form.Field required
+                            id='category'
+                            name="category"
+                            width='16'
+                            control={Select}
+                            options={this.state.categoryOptions} // get categories
+                            // label={{ children: 'Category', htmlFor: 'category' }}
+                            placeholder='Vehicle Category'
+                            search
+                            searchInput={{ id: 'category' }}
+                            onChange={this.handleChange.bind(this, "TYPE")}
+                        />
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button negative onClick={() => this.setState({ ...this.state, open: false })}>
+                            Cancel
+                        </Button>
+                        <Button color="blue" onClick={() => this.setState({ ...this.state, open: false })}>
+                            Filter
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
+
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    vehicleAds: state.vehicle.publishedVehicleAdIds
+    vehicleAds: state.vehicle.publishedVehicleAdIds,
+    categories: state.category.categories
 })
 
-export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById, userUpdate })(vehicleAdsView);
+export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById, userUpdate, getAllCategories })(vehicleAdsView);

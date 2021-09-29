@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
 import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Search, Grid, Modal, Header, Form, Radio } from 'semantic-ui-react';
 import './sample.css'
+import { getAllCategories } from '../redux/actions/categoryActions';
 
 class sparePartAdView extends Component {
     state = {
@@ -25,7 +26,10 @@ class sparePartAdView extends Component {
         counter: 0,
         user: null,
         filter: "",
-        open: false
+        open: false,
+        conditionFilter: null,
+        categoryOption: [],
+        makeOption: []
     }
 
     sortAdsArray = () => {
@@ -59,68 +63,68 @@ class sparePartAdView extends Component {
         });
 
     }
-    componentDidUpdate = () => {
-        // const userdetais = localStorage.getItem("user");
-        // const decodeItem = jwt.decode(userdetais);
-        console.log('componentDidUpdate', this.state)
-        if (this.state.user) {
-            this.props.userUpdate(this.state.user, this.state.user).then((res) => {
-                console.log('in post');
-                const { token } = res;
-                if (token) {
-                    console.log(token, "token")
-                    // setAction(({
-                    //     success:true
-                    //  }));
-                    // this.setState({
-                    //     ...this.state,
-                    //     action:true
-                    //   })
-                    //   notify();
-                    // localStorage.setItem('user',token);
-                    // const userResponds = jwt.decode(token);
-                    // const userDetails = {
-                    //     _id: userResponds._id,
-                    //     name: userResponds.name,
-                    //     email: userResponds.email,
-                    //     type: userResponds.type,
-                    //     phoneNumber: userResponds.phoneNumber,
-                    //     wishList:userResponds.wishList,
-                    //     image:userResponds.image,
-                    //     password:userResponds.password
-                    // }
+    // componentDidUpdate=()=>{
+    //     // const userdetais = localStorage.getItem("user");
+    //     // const decodeItem = jwt.decode(userdetais);
+    //     console.log('componentDidUpdate',this.state)
+    //     if(this.state.user){
+    //         this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+    //             console.log('in post');
+    //             const { token } = res;
+    //             if (token) {
+    //                 console.log(token,"token")
+    //                 // setAction(({
+    //                 //     success:true
+    //                 //  }));
+    //                 // this.setState({
+    //                 //     ...this.state,
+    //                 //     action:true
+    //                 //   })
+    //                 //   notify();
+    //                 // localStorage.setItem('user',token);
+    //                 // const userResponds = jwt.decode(token);
+    //                 // const userDetails = {
+    //                 //     _id: userResponds._id,
+    //                 //     name: userResponds.name,
+    //                 //     email: userResponds.email,
+    //                 //     type: userResponds.type,
+    //                 //     phoneNumber: userResponds.phoneNumber,
+    //                 //     wishList:userResponds.wishList,
+    //                 //     image:userResponds.image,
+    //                 //     password:userResponds.password
+    //                 // }
 
-                    // console.log(userDetails);
+    //                 // console.log(userDetails);
 
 
-                    // dispatch({type:'ADD_USER',payload:userDetails});
-                    // resolve(userDetails);
-                }
-                else {
-                    // this.setState({
-                    //     ...this.state,
-                    //     action:false
-                    //   })
-                    //   notify();
-                }
-                // setAction(({
-                //     success:false
-                //  }));
+    //                 // dispatch({type:'ADD_USER',payload:userDetails});
+    //                 // resolve(userDetails);
+    //             }
+    //             else{
+    //                 // this.setState({
+    //                 //     ...this.state,
+    //                 //     action:false
+    //                 //   })
+    //                 //   notify();
+    //             }
+    //             // setAction(({
+    //             //     success:false
+    //             //  }));
 
-            }).catch((err) => {
-                // reject(err)
-                // setAction(({
-                //     success:false
-                //  }));
-                // this.setState({
-                //     ...this.state,
-                //     action:false
-                //   })
-                //   notify();
-            })
-        }
+    //         }).catch((err) => {
+    //             // reject(err)
+    //             // setAction(({
+    //             //     success:false
+    //             //  }));
+    //             // this.setState({
+    //             //     ...this.state,
+    //             //     action:false
+    //             //   })
+    //             //   notify();
+    //         })
+    //     }
 
-    }
+    // }
     componentDidMount = () => {
         this.props.getPublishedSparepartsAds().then((res) => {
             const userdetais = localStorage.getItem("user");
@@ -138,6 +142,18 @@ class sparePartAdView extends Component {
         }).catch((err) => {
             alert('Connection error!')
         })
+
+        this.props.getAllCategories().then((res) => {
+            console.log(res)
+            res.filter(item => item.type == 'Spare Parts').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOption: [...this.state.categoryOption, { key: index, text: element.mainName, value: element.mainName }] }, () => {
+                    element.make.forEach((childrenElem) => {
+                        this.setState({ ...this.state, makeOption: [...this.state.makeOption, { key: element.mainName, text: childrenElem, value: childrenElem }] })
+                    })
+                })
+            })
+        })
+
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -153,8 +169,21 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
-    handleChange = event => {
-        this.setState({ filter: event.target.value })
+    handleChange = (context, event) => {
+        console.log("in filter")
+        switch (context) {
+            case "CONDITION":
+                this.setState({ conditionFilter: this.state.conditionFilter == event.target.textContent ? null : event.target.textContent }, () => {
+                    console.log(this.state.conditionFilter)
+                })
+                break;
+            case "TYPE":
+                console.log(event.target)
+                break;
+            default:
+                this.setState({ ...this.state, filter: event.target.value })
+                break;
+        }
     }
 
     handleModal = (e, { name }) => {
@@ -172,19 +201,22 @@ class sparePartAdView extends Component {
 
 
     render() {
-        console.log(this.props.sparepartsAds);
+        console.log(this.state.sparepartsAds);
         const { filter } = this.state;
         return (
             <div>
                 <center>
-                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
-                    <Button circular size="big" color="blue" icon="filter" onClick={this.handleModal} name='open' />
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this, null)} />
+                    <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
                 </center>
 
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
                         elem => {
-                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                            return (
+                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                                && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                            )
                         }
                     ).map((item) => {
                         return <Card>
@@ -276,34 +308,41 @@ class sparePartAdView extends Component {
                                 control={Radio}
                                 label="New"
                                 name="new"
-                                value="1"
+                                checked={this.state.conditionFilter == 'New'}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                             <Form.Field
                                 control={Radio}
                                 label="Used"
                                 name="used"
-                                value="2"
+                                checked={this.state.conditionFilter == 'Used'}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                             <Form.Field
                                 control={Radio}
                                 label="Recondition"
                                 name="recondition"
-                                value="3"
+                                checked={this.state.conditionFilter == 'Recondition'}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                         </Form.Group>
                         <Header as="h5">Sparepart Category</Header>
                         <Form.Field required
                             width='16'
                             control={Select}
+                            name="category"
+                            options={this.state.categoryOption}
                             placeholder='Part or Accessory Type'
                             search
+                            searchInput={{ id: 'category' }}
+                            onChange={this.handleChange.bind(this, "TYPE")}
                         />
                     </Modal.Content>
                     <Modal.Actions>
                         <Button negative onClick={() => this.setState({ ...this.state, open: false })}>
                             Cancel
                         </Button>
-                        <Button color="blue" >
+                        <Button color="blue" onClick={() => this.setState({ ...this.state, open: false })}>
                             Filter
                         </Button>
                     </Modal.Actions>
@@ -316,7 +355,8 @@ class sparePartAdView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    sparepartsAds: state.sparepart.publishSparepartAdIds
+    sparepartsAds: state.sparepart.publishSparepartAdIds,
+    categories: state.category.categories
 })
 
-export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate })(sparePartAdView);
+export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate, getAllCategories })(sparePartAdView);
