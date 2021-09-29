@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Search, Grid, Modal, Header, Form, Radio } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Modal, Header, Form, Radio } from 'semantic-ui-react';
 import './sample.css'
 import { getAllCategories } from '../redux/actions/categoryActions';
 
