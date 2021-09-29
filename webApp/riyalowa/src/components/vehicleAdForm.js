@@ -98,25 +98,27 @@ class vehicleAdForm extends Component {
         // }
     }
 
+    arrangeCategories = (categories) => {
+
+        let cats = []
+        for (let index = 0; index < categories.length; index++)
+            cats.push({ key: index, text: categories[index].mainName, value: categories[index].mainName })
+
+        let makes = []
+        categories.forEach(elem => {
+            elem.make.forEach(child => {
+                makes.push({ key: elem.mainName, text: child, value: child })
+            })
+        })
+
+        this.setState({...this.state, categoryOptions: cats, makeOptions: makes},() => console.log(this.state))
+    }
+
     componentDidMount = () => {
 
         this.props.getAllCategories().then((res) => {
-            res.filter(item => item.type == 'Vehicles').forEach((element, index) => {
-                this.setState({ ...this.state, categoryOptions: [...this.state.categoryOptions, { key: index, text: element.mainName, value: element.mainName }] }, () => {
-                    element.make.forEach((childElem) => {
-                        this.setState({ ...this.state, makeOptions: [...this.state.makeOptions,{key: element.mainName , text: childElem, value: childElem}]})
-                    })
-                })
-            })
+                this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"))
         })
-        // axios.get('http://localhost:5000/category').then((categoryList) => {
-        //     categoryList.data.map((category) => {
-        //         categoryOptions.push({ key: category._id, text: category.mainName, value: category.mainName });
-        //         category.childCategory.map((child,index) => {
-        //             vehicleMakeOptions.push({ key: category._id||index, text: child.mainName, value: child.mainName });
-        //         })
-        //     })
-        // });
     }
 
     // validateFields(payload) {
@@ -169,23 +171,18 @@ class vehicleAdForm extends Component {
     render() {
 
         const handleChange = (e) => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } }, () => {
-                console.log(this.state);
-            });
+            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value }});
         }
 
         const handleSubmit = (e) => {
-            console.log(this.state);
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
                 this.props.publishVehicleAd(this.state.payload).then((res) => {
-                    console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
                         this.setState({ ...this.state, success: false, actionWaiting: false })
                     })
                 }).catch((err) => {
-                    console.log(err);
                     this.setState({ ...this.state, error: true }, () => {
                         notify();
                         this.setState({ ...this.state, error: false, actionWaiting: false })
@@ -218,7 +215,6 @@ class vehicleAdForm extends Component {
             progress: undefined,
         }) : null
 
-        console.log(this.state.makeOptions)
         return (
             <Form className='form-centered' onSubmit={handleSubmit}>
                 <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
@@ -243,9 +239,7 @@ class vehicleAdForm extends Component {
                     placeholder='Select location'
                     search
                     searchInput={{ id: 'location' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, location: e.target.innerText } })}
                 />
                 <Form.Field required
                     id='category'
@@ -258,9 +252,7 @@ class vehicleAdForm extends Component {
                     error={this.state.payload.category == ''}
                     search
                     searchInput={{ id: 'category' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, category: e.target.innerText } })}
                 />
                 <Form.Field required
                     name="make"
@@ -272,9 +264,7 @@ class vehicleAdForm extends Component {
                     placeholder='Vehicle Make'
                     search
                     searchInput={{ id: 'vehicleMake' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText }})}
                 />
                 <Form.Field required
                     name="model"
@@ -286,9 +276,7 @@ class vehicleAdForm extends Component {
                     error={this.state.payload.model == ''}
                     search
                     searchInput={{ id: 'vehicleModel' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } })}
                 />
                 <Form.Field required
                     name='year'
@@ -301,9 +289,7 @@ class vehicleAdForm extends Component {
                     placeholder='Manufacture Date'
                     search
                     searchInput={{ id: 'year' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })} />
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText }})} />
                 <Form.Field required
                     name='bodyType'
                     width='16'
@@ -314,9 +300,7 @@ class vehicleAdForm extends Component {
                     error={this.state.payload.bodyType == ''}
                     search
                     searchInput={{ id: 'bodyType' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, bodyType: e.target.innerText } })}
                 />
                 <Form.Field required
                     name='transmission'
@@ -328,9 +312,7 @@ class vehicleAdForm extends Component {
                     error={this.state.payload.transmission == ''}
                     search
                     searchInput={{ id: 'transmission' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } }, () => {
-                        console.log(this.state)
-                    })}
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, transmission: e.target.innerText } })}
                 />
                 <Form.Group>
                     <Form.Field required
@@ -351,9 +333,7 @@ class vehicleAdForm extends Component {
                         error={this.state.payload.fuelType == ''}
                         search
                         searchInput={{ id: 'fuelType' }}
-                        onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } }, () => {
-                            console.log(this.state)
-                        })}
+                        onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText }})}
                     />
                 </Form.Group>
                 <Form.Field required
@@ -390,17 +370,13 @@ class vehicleAdForm extends Component {
                         name='registered'
                         label='Registered'
                         checked={this.state.payload.condition === 'registered'}
-                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'registered' } }, () => {
-                            console.log(this.state)
-                        })}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'registered' } })}
                     />
                     <Form.Radio
                         name='unregistered'
                         label='Unregistered'
                         checked={this.state.payload.condition === 'unregistered'}
-                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'unregistered' } }, () => {
-                            console.log(this.state)
-                        })}
+                        onChange={() => this.setState({ ...this.state, payload: { ...this.state.payload, condition: 'unregistered' } })}
                     />
                     <Form.Checkbox label='Negotiable'
                         name='negotiable'
@@ -471,9 +447,7 @@ class vehicleAdForm extends Component {
                         options={phoneOptions}
                         label='Code'
                         placeholder='Code'
-                        onChange={(e) => this.setState({ ...this.state, code: e.target.innerText }, () => {
-                            console.log(this.state)
-                        })}
+                        onChange={(e) => this.setState({ ...this.state, code: e.target.innerText })}
                     />
                     <Form.Field
                         action={
