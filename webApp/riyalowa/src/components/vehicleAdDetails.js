@@ -3,11 +3,13 @@ import { Button, Container, Divider, Grid, Header, Icon, Image, List, Loader } f
 import { connect } from 'react-redux'
 import { getVehicleAdById } from '../redux/actions/vehicleAdActions'
 import ImageGallery from 'react-image-gallery';
+import axios from 'axios';
 
 class vehicleAdDetails extends Component {
 
     state = {
         vehicleAdDetails: null,
+        sellerMail: null,
         loading: true,
         images: []
     }
@@ -19,6 +21,11 @@ class vehicleAdDetails extends Component {
                 for (let index = 0; index < res.images.length; index++) {
                     this.setState({ ...this.state, images: [...this.state.images, { original: res.images[index]['data_url'], thumbnail: res.images[index]['data_url'] }] })
                 }
+                axios.get(`http://localhost:5000/user/${this.state.vehicleAdDetails.userId}`).then((res) => {
+                    this.setState({...this.state,sellerMail: res.data.email}, () => console.log('sellerMail',this.state.sellerMail))
+                }).catch((err) => {
+                    alert(String.toString(err))
+                })
             })
         }).catch(err => {
             console.log(err)
@@ -26,6 +33,7 @@ class vehicleAdDetails extends Component {
     }
 
     render() {
+        console.log(this.state.vehicleAdDetails)
         return (
             this.state.loading ? <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} /> :
             <div style={{ margin: '0 auto' }}>
@@ -74,12 +82,12 @@ class vehicleAdDetails extends Component {
                             </Container>
                         </Grid.Row>
                         <Grid.Row style={{ padding: '10px' }} >
-                        <a href={'tel:'+this.state.vehicleAdDetails.contactNumbers[0].split(')')[1]} ><Button icon labelPosition='left' color='blue'>
+                        {this.state.vehicleAdDetails.contactNumbers.length > 0 ? 
+                        <a href={'tel:'+ this.state.vehicleAdDetails.contactNumbers[0].contains(')') ? this.state.vehicleAdDetails.contactNumbers[0].split(')')[1]:this.state.vehicleAdDetails.contactNumbers[0]} ><Button icon labelPosition='left' color='blue'>
                             <Icon name='phone' />
                             CONTACT SELLER
-                        </Button></a>
-                         {/* add mail from user when available */}
-                        <a href={'mailto:'+this.state.vehicleAdDetails.contactNumbers[0].split(')')[1]}><Button icon labelPosition='left' color='orange'>
+                        </Button></a> : null}
+                        <a href={'mailto:'+ this.state.sellerMail ? this.state.sellerMail : ''}><Button icon labelPosition='left' color='orange'>
                             <Icon name='mail' />
                             EMAIL
                         </Button></a>

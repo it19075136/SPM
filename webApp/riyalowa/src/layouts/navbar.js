@@ -6,11 +6,11 @@ import jwt from 'jsonwebtoken'
 
 export default class navbar extends Component {
     state = {
-        open: false
+        open: false,
+        activeItem: this.props.name
     }
 
-    handleItemClick = (e, { name }) => {
-        this.setState({ activeItem: name })
+    handleItemClick = (name,e) => {
         switch (name) {
             case 'publishAd':
                 this.setState({ ...this.state, open: true })
@@ -50,25 +50,40 @@ export default class navbar extends Component {
                     <Menu.Item
                         className="item"
                         name='home'
-                        active={activeItem === 'home'}
-                        onClick={this.handleItemClick}
+                        active={this.state.activeItem === '/'}
+                        onClick={this.handleItemClick.bind(this,"home")}
                     >
                         Home
                     </Menu.Item>
-
-                    <Menu.Item
+                    {user && user.type == 'admin' ? <Menu.Item
                         className="item"
-                        name='testimonials'
-                        active={activeItem === 'testimonials'}
-                        onClick={this.handleItemClick}
-                    >
-                        Testimonials
-                    </Menu.Item>
+                        name='Categories'
+                        active={this.state.activeItem  === '/category/list'}
+                        onClick={()=>{
+                              window.location.href = '/category/list'
+                        }}
+                    ></Menu.Item>:null}
+                    {user && user.type == 'admin' ? <Menu.Item
+                        className="item"
+                        name='Vehicle ads management'
+                        active={this.state.activeItem  === '/adminVehicleAds'}
+                        onClick={()=>{
+                              window.location.href = '/adminVehicleAds'
+                        }}
+                    ></Menu.Item>:null}
+                    {user && user.type == 'admin' ? <Menu.Item
+                        className="item"
+                        name='Spare part ads management'
+                        active={this.state.activeItem  === '/adminsparePartsAds'}
+                        onClick={()=>{
+                              window.location.href = '/adminsparePartsAds'
+                        }}
+                    ></Menu.Item>:null}
                     {user ?                       <Menu.Item
                         className="item"
                         name='Wish List'
-                        position='left'
-                        // active={activeItem === 'sign-out'}
+                        position='right'
+                        active={this.state.activeItem  === '/favorites'}
                         onClick={()=>{
                             // const login = {
                             //     login:false
@@ -80,9 +95,8 @@ export default class navbar extends Component {
                     ></Menu.Item>:null}
                     {user ?                       <Menu.Item
                         className="item"
-                        name='MY Ads'
-                        position='left'
-                        // active={activeItem === 'sign-out'}
+                        name='My Ads'
+                        active={this.state.activeItem  === '/myads'}
                         onClick={()=>{
                             // const login = {
                             //     login:false
@@ -95,8 +109,7 @@ export default class navbar extends Component {
                     {user ?                       <Menu.Item
                         className="item"
                         name='My Profile'
-                        position='right'
-                        // active={activeItem === 'sign-out'}
+                        active={this.state.activeItem  === '/userProfile'}
                         onClick={()=>{
                             // const login = {
                             //     login:false
@@ -143,8 +156,8 @@ export default class navbar extends Component {
                     (<Menu.Item
                         className="item"
                         name='sign-out'
-                        active={activeItem === 'sign-out'}
-                        onClick={this.handleItemClick}
+                        active={this.state.activeItem === 'sign-out'}
+                        onClick={this.handleItemClick.bind(this,'sign-out')}
                     >
                         Sign-out
                     </Menu.Item>
@@ -156,8 +169,8 @@ export default class navbar extends Component {
                             className="item"
                             name='sign-in'
                             position='right'
-                            active={activeItem === 'sign-in'}
-                            onClick={this.handleItemClick}
+                            active={this.state.activeItem === '/signin'}
+                            onClick={this.handleItemClick.bind(this,'sign-in')}
                         >
                             Sign-in
                         </Menu.Item>
@@ -168,8 +181,8 @@ export default class navbar extends Component {
                         className="item"
                         style={{ color: 'orange' }}
                         name='publishAd'
-                        active={activeItem === 'publishAd'}
-                        onClick={this.handleItemClick}
+                        active={(this.state.activeItem === '/vehicleAd/create') || (this.state.activeItem === '/sparePartsAd/create')}
+                        onClick={this.handleItemClick.bind(this,'publishAd')}
                     >
                         Publish ad for free
                     </Menu.Item>
@@ -183,8 +196,9 @@ export default class navbar extends Component {
                 >
                     <Header icon>
                         <Icon name='car' />
-                        Choose Your Advertisement Type
+                        {jwt.decode(localStorage.getItem("user")) ? "Choose Your Advertisement Type" : null}
                     </Header>
+                    {jwt.decode(localStorage.getItem("user")) ? <div>
                     <Modal.Content className='publish-add-action-btns'>
                         <Button color='blue' size='big' inverted onClick={() => window.location.href = '/vehicleAd/create'}>
                             <Icon name='car' /> Vehicle
@@ -192,7 +206,7 @@ export default class navbar extends Component {
                         <Button color='green' size='big' inverted onClick={() => window.location.href = '/sparePartsAd/create'}>
                             <Icon name='settings' /> Spare Parts
                         </Button>
-                    </Modal.Content>
+                    </Modal.Content></div> : <Header><Icon name='warning sign' />Please login to publish your ads</Header> }
                     <Modal.Actions>
                         <Button color='red' inverted onClick={() => this.setState({ ...this.state, open: false })}>
                             <Icon name='remove' /> Cancel

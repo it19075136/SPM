@@ -38,7 +38,7 @@ function App() {
   return (
     <Provider store={store}>
     <BrowserRouter className="App">
-      <NavBar/>
+      <NavBar name={window.location.pathname} />
       <Switch>
         <Route exact path='/vehicleAd/create' component={vehicleAdForm} />
         <Route exact path='/vehicleAd/update/:id' component={updateVehicleAdForm} />
