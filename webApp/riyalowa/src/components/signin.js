@@ -165,11 +165,11 @@ class signin extends Component  {
 
       const { password } = res;
       // password = jwt.decode(password);
-      console.log('res.data', res.data);
+      console.log('res.data', res);
       // console.log('token', token);
       console.log('password', password);
-      console.log(Password);
-      if (passwordHash.verify(Password, password)) {
+      console.log('Password',Password);
+      if(passwordHash.verify(Password,password)) {
         // const userResponds =jwt.decode(token);
         // const userDetails ={
         //     _id:userResponds._id,
@@ -205,7 +205,7 @@ class signin extends Component  {
         window.location.href = '/'
         notify();
       }
-      else {
+      else{
       //   setAction(({
       //     success:false
       //  }));

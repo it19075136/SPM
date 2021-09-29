@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Search, Grid, Modal, Header, Form, Radio } from 'semantic-ui-react';
-import './sample.css'
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
 class sparePartAdView extends Component {
     state = {
@@ -23,9 +22,7 @@ class sparePartAdView extends Component {
             disabled: true
         },
         counter: 0,
-        user: null,
-        filter: "",
-        open: false
+        user: null
     }
 
     sortAdsArray = () => {
@@ -46,9 +43,9 @@ class sparePartAdView extends Component {
 
         this.setState({
             ...this.state,
-            sparepartsAds: this.props.sparepartsAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+            sparepartsAds: this.state.sparepartsAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
         }, () => {
-            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.state.sparepartsAds.length / this.state.pagination.cardsPerPage } }, () => {
                 console.log(this.state.pagination.indexOfFirstCard, (this.state.sparepartsAds.length - this.state.pagination.indexOfFirstCard))
                 for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
                     this.props.getSparepartAdById(this.state.sparepartsAds[index]._id).then((res) => {
@@ -59,7 +56,7 @@ class sparePartAdView extends Component {
         });
 
     }
-    componentDidUpdate=()=>{
+    removeFavorite=()=>{
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
         console.log('componentDidUpdate',this.state)
@@ -69,6 +66,12 @@ class sparePartAdView extends Component {
                 const { token } = res;
                 if (token) {
                     console.log(token,"token")
+                    const user = jwt.decode(token);
+                    this.setState({
+                        ...this.state,
+                        sparepartsAds: this.state.sparepartsAds.filter((sparePart)=> user.wishList.includes(sparePart._id)),
+                        user:user
+                    })
                     // setAction(({
                     //     success:true
                     //  }));
@@ -127,14 +130,23 @@ class sparePartAdView extends Component {
             const users = jwt.decode(userdetais);
             this.setState({
                 ...this.state,
-                pagination: {
-                    ...this.state.pagination,
-                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-                    indexOfLastCard: (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
-                },
-                user:users
+                user:users,
+                sparepartsAds:this.props.sparepartsAds.filter((spareparts)=> users.wishList.includes(spareparts._id))
+            },()=>{
+                this.setState({
+                    ...this.state,
+                    pagination: {
+                        ...this.state.pagination,
+                        indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                        indexOfLastCard: (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                    },
+                    
+                },() => {
+                    console.log(this.state.vehicleAds)
+                    this.setAdsForPage()
+                })
             })
-            this.setAdsForPage()
+            
         }).catch((err) => {
             alert('Connection error!')
         })
@@ -143,7 +155,7 @@ class sparePartAdView extends Component {
     handlePaginationChange = (e, { activePage }) => this.setState({
         ...this.state, sparepartsAds: [], counter: 0, pagination: {
             ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-            indexOfLastCard: (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
+            indexOfLastCard: (this.state.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.sparepartsAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
         }
     }, () => {
         this.setAdsForPage(this.state);
@@ -153,40 +165,13 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
-    handleChange = event => {
-        this.setState({ filter: event.target.value })
-    }
-
-    handleModal = (e, { name }) => {
-        switch (name) {
-            case 'close':
-                this.setState({ ...this.state, open: false })
-                break;
-            case 'open':
-                this.setState({ ...this.state, open: true })
-                break;
-            default:
-                throw new Error('Unsupported Action!')
-        }
-    }
-
 
     render() {
-        console.log(this.props.sparepartsAds);
-        const { filter } = this.state;
+        console.log(this.state.sparepartsAds)
         return (
-            <div>
-                <center>
-                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
-                    <Button circular size="big" color="blue" icon="filter" onClick={this.handleModal} name='open' />
-                </center>
-
+            <div >
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
-                        elem => {
-                            return elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
-                        }
-                    ).map((item) => {
+                    {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
@@ -204,21 +189,23 @@ class sparePartAdView extends Component {
                         wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
                     }
+                },()=>{
+                    this.removeFavorite()
                 })
                 console.log('this.state.user.wishList in if', this.state.user.wishList)
             }
-            else {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: [...this.state.user.wishList, item._id]
+            // else {
+            //     this.setState({
+            //         ...this.state,
+            //         user: {
+            //             ...this.state.user,
+            //             wishList: [...this.state.user.wishList, item._id]
 
-                    }
-                })
-                console.log('this.state.user.wishList', this.state.user.wishList)
-                localStorage.setItem('user', this.state.user);
-            }
+            //         }
+            //     })
+            //     console.log('this.state.user.wishList', this.state.user.wishList)
+            //     localStorage.setItem('user', this.state.user);
+            // }
           
     }} >
                                     {/* <a onclick = {setwishList(item._id)}> */}
@@ -241,7 +228,7 @@ class sparePartAdView extends Component {
                                     : null}
                             </Card.Content>
                             <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
@@ -262,52 +249,6 @@ class sparePartAdView extends Component {
                         disabled={this.state.pagination.disabled}
                     />
                 </div>
-                <Modal
-                    open={this.state.open}
-                    onClose={() => this.setState({ ...this.state, open: false })}
-                    onOpen={() => this.setState({ ...this.state, open: true })}
-                    size="small"
-                >
-                    <Modal.Header>Filter Your Result</Modal.Header>
-                    <Modal.Content>
-                        <Header as="h5">Condition</Header>
-                        <Form.Group inline>
-                            <Form.Field
-                                control={Radio}
-                                label="New"
-                                name="new"
-                                value="1"
-                            />
-                            <Form.Field
-                                control={Radio}
-                                label="Used"
-                                name="used"
-                                value="2"
-                            />
-                            <Form.Field
-                                control={Radio}
-                                label="Recondition"
-                                name="recondition"
-                                value="3"
-                            />
-                        </Form.Group>
-                        <Header as="h5">Sparepart Category</Header>
-                        <Form.Field required
-                            width='16'
-                            control={Select}
-                            placeholder='Part or Accessory Type'
-                            search
-                        />
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button negative onClick={() => this.setState({ ...this.state, open: false })}>
-                            Cancel
-                        </Button>
-                        <Button color="blue" >
-                            Filter
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
             </div>
         )
     }

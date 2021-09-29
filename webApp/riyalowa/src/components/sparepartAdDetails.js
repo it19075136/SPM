@@ -75,7 +75,6 @@ class sparepartAdDetails extends Component {
                     <Grid.Column width={4}>
                         <Grid.Row style={{ padding: '10px' }} >
                             <Header>Seller: abc</Header>
-
                         </Grid.Row>
                         <Grid.Row style={{ padding: '10px' }} >
                             <Header>Location: {this.state.sparepartAdDetails.location} </Header> <Icon name='map marker alternate' size="big" style={{marginTop: '-10px'}}  color="blue"/>
