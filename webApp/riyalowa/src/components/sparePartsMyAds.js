@@ -33,6 +33,8 @@ class sparepartAdDetails extends Component {
     render() {
         return (
             <div>
+            {/* {this.state.sparepartAdDetails  ? ( */}
+            <div>  
             {this.state.sparepartAdDetails ? this.state.sparepartAdDetails.map(sparepartAdDetails=>{            
             return<div style={{ margin: '0 auto' }}>
                 <Grid style={{ margin: '0 auto' }}>
@@ -101,7 +103,9 @@ class sparepartAdDetails extends Component {
             </Dimmer>
         // <ToastContainer style={{ fontSize: '20px' }} />
         }
-            
+       
+            </div>
+             {/* ):<h1>NO Ads TO Display</h1>} */}
             </div>
         )
     }

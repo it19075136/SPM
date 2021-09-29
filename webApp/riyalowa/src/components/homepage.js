@@ -77,15 +77,15 @@ class homepage extends Component {
         <div className="header-text-homepage-riyapola">
           Riyalowa
           <br></br>
-          <br></br>
-          <br></br>
+          {/* <br></br> */}
+          {/* <br></br> */}
         </div>
-        <div className="header-text-homepage">
+        {/* <div className="header-text-homepage">
           Affordability at your fingertip
           <br></br>
           <br></br>
           <br></br>& Best cars in town.
-        </div>
+        </div> */}
         {/* Slider Goes Here  */}
         <div id="slider">
           <figure>

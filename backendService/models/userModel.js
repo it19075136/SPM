@@ -7,7 +7,7 @@ const userSchema  = new Schema ({
         email : {type : String, required : true},
         password : {type : String},
         type : {type : String , required :true},
-        phoneNumber : {type : String},
+        phoneNumber : {type : String, required :true},
         wishList:{type:Array},
         image:{type: Array}
 
