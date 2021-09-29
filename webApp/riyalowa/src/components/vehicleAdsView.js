@@ -124,98 +124,7 @@ class vehicleAdsView extends Component {
         }
 
     }
-    // componentWillUnmount=()=>{
-    //     console.log('componentWillUnmount',this.state)
-    //     if(this.state.user){
-    //         this.props.userUpdate(this.state.user,this.state.user).then((res) => {
-    //             console.log('in post');
-    //             const { token } = res;
-    //             // if (token) {
-    //                 // setAction(({
-    //                 //     success:true
-    //                 //  }));
-    //                 // this.setState({
-    //                 //     ...this.state,
-    //                 //     action:true
-    //                 //   })
-    //                 //   notify();
-    //                 // localStorage.setItem('user',token);
-    //                 // const userResponds = jwt.decode(token);
-    //                 // const userDetails = {
-    //                 //     _id: userResponds._id,
-    //                 //     name: userResponds.name,
-    //                 //     email: userResponds.email,
-    //                 //     type: userResponds.type,
-    //                 //     phoneNumber: userResponds.phoneNumber,
-    //                 //     wishList:userResponds.wishList,
-    //                 //     image:userResponds.image,
-    //                 //     password:userResponds.password
-    //                 // }
-
-    //                 // console.log(userDetails);
-
-
-    //                 // dispatch({type:'ADD_USER',payload:userDetails});
-    //                 // resolve(userDetails);
-    //             // }
-    //             // else{
-    //             //     this.setState({
-    //             //         ...this.state,
-    //             //         action:false
-    //             //       })
-    //             //       notify();
-    //             // }
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-
-    //         }).catch((err) => {
-    //             // reject(err)
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-    //             // this.setState({
-    //             //     ...this.state,
-    //             //     action:false
-    //             //   })
-    //             //   notify();
-    //         })
-    //     }
-
-    //     // window.location.href = ``
-    // }
-    // componentDidUpdate=()=>{
-    //     console.log('componentDidUpdate',this.state)
-    // }
-    // componentDidCatch=()=>{
-    //     console.log('componentDidCatch',this.state)
-    // }
-    // componentWillMount=()=>{
-    //     console.log('componentWillMount',this.state)
-    // }
     componentDidMount = () => {
-        // const userdetais = localStorage.getItem("user");
-        // const users = jwt.decode(userdetais);
-        // this.setState({
-        //     ...this.state,
-        //     pagination: {...this.state.pagination,
-        //         indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
-        //         indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
-        //     },
-        //     user:{
-        //         _id:users._id,
-        //         name:users.name,
-        //         email:users.email,
-        //         type:users.type,
-        //         phoneNumber:users.phoneNumber,
-        //         image:users.image,
-        //         wishList:users.wishList,
-        //         password:users.password
-        //     }
-        // })
-        // this.setAdsForPage()
-        // console.log('in componentDidMount')
-
         this.props.getPublishedVehicleAds().then((res) => {
             const userdetais = localStorage.getItem("user");
             const users = jwt.decode(userdetais);
@@ -227,16 +136,6 @@ class vehicleAdsView extends Component {
                     indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                 },
                 user: users
-                // {
-                //     _id:users._id,
-                //     name:users.name,
-                //     email:users.email,
-                //     type:users.type,
-                //     phoneNumber:users.phoneNumber,
-                //     image:users.image,
-                //     wishList:users.wishList,
-                //     password:users.password
-                // }
             }, () => this.setAdsForPage()
             )
         }).catch((err) => {
@@ -266,6 +165,7 @@ class vehicleAdsView extends Component {
     navigateToDetails = (id) => {
         window.location.href = `/vehicleAdDetail/${id}`
     }
+
     handleChange = (context, event) => {
         switch (context) {
             case "CONDITION":
@@ -294,35 +194,8 @@ class vehicleAdsView extends Component {
     }
 
     render() {
+        
         const { filter } = this.state;
-        const setwishList = (id) => {
-
-            console.log('in set wishlist', id)
-            if (this.state.user.wishList.includes(id)) {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: this.state.user.wishList.filter(Wish => Wish != id)
-
-                    }
-                })
-                console.log('this.state.user.wishList in if', this.state.user.wishList)
-            }
-            else {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: [...this.state.user.wishList, id]
-
-                    }
-                })
-                console.log('this.state.user.wishList', this.state.user.wishList)
-                localStorage.setItem('user', this.state.user);
-            }
-
-        }
         return (
             <div >
                 <center>
