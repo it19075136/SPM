@@ -1,24 +1,40 @@
 import React, { Component } from 'react';
 import { updateSparepartsAd, deleteSparepartsAd, getPendingSparepartsAds } from '../redux/actions/sparepartsActions';
+import { getAllSellers } from '../redux/actions/userActions';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Icon, Table, Header, Loader } from 'semantic-ui-react';
+import { CSVLink } from "react-csv";
 
 
 class AdminSparepartsAdView extends Component {
+    
+    headers = [
+        { label: "Ad title", key: "title" },
+        { label: "Posted Date", key: "updatedAt" },
+        { label: "Seller's Name", key: "userId" },
+        { label: "Status", key: "status" }
+    ];
+
     state = {
         payload: this.props.sparepartsAd,
         success: false,
         error: false,
         loading: true,
         actionWaiting: false,
-        approvedPayload: []
+        approvedPayload: [],
+        csvReport: {
+            data: [],
+            headers: this.headers,
+            filename: 'pendingSparePartAds.csv'
+        }
     }
 
     componentDidMount = () => {
         this.props.getPendingSparepartsAds().then((data) => {
-            console.log(data);
-            this.setState({ ...this.state, payload: data, loading: false }, () => {
-                console.log(this.state)
+            this.setState({ ...this.state, payload: data }, () => {
+                this.props.getAllSellers("SPAREPART",this.props.sparepartsAd).then((res) => {
+                    this.setState({ ...this.state, csvReport: {...this.csvReport,data: [...res]}, loading: false })
+                });
             })
         }).catch((err) => {
             console.log(err);
@@ -96,7 +112,8 @@ class AdminSparepartsAdView extends Component {
                 <Header size='huge' textAlign="center">Spare Part Ads Management</Header>
                 <br />
                 <br />
-                <Table compact celled definition color="blue" inverted>
+                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.props.sparepartsAd.length < 1}>Export to CSV</CSVLink>
+                {this.props.sparepartsAd.length != 0 ? <Table compact celled definition color="blue" inverted>
                     <Table.Header>
                         <Table.Row textAlign="center">
                             <Table.HeaderCell />
@@ -108,25 +125,24 @@ class AdminSparepartsAdView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                    <Loader indeterminate active={this.state.loading} />
-                        {this.props.sparepartsAd.length != 0 ? this.props.sparepartsAd.filter(sparePart => sparePart.status != 'published').map(sparepart => {
+                        {!this.state.loading && this.props.sparepartsAd.length != 0 ? this.props.sparepartsAd.filter(sparePart => sparePart.status != 'published').map(sparepart => {
                             return (
                                 <Table.Row key={sparepart._id}>
                                     <Table.Cell collapsing selectable={false}>
                                         <Checkbox slider onChange={this.handleSelect} id={sparepart._id} checked={this.state.approvedPayload.find(item => item == sparepart._id) ? true:false} />
                                     </Table.Cell>
-                                    <Table.Cell>{sparepart.title}</Table.Cell>
+                                    <Table.Cell textAlign="center">{sparepart.title}</Table.Cell>
                                     <Table.Cell textAlign="center">{sparepart.updatedAt.split('T')[0]}</Table.Cell>
-                                    <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
+                                    <Table.Cell textAlign="center">{sparepart.userId}</Table.Cell>
                                     <Table.Cell textAlign="center">
                                         <Button icon onClick={this.navigateToDetails.bind(this, sparepart._id)}>
-                                            <Icon name='info'  color="blue" circular inverted/>
+                                            <Icon name='info' color="blue" circular  size='tiny' inverted/>
                                         </Button>
-                                        <Button color="blue" type="button" size='small' onClick={this.handleApprove.bind(this, sparepart._id)}>Approve</Button>
+                                        <Button color="white" type="button" size='small' onClick={this.handleApprove.bind(this, sparepart._id)}>Approve</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             )
-                        }) : !this.state.loading ? <Table.Row style={{textAlign:'right',color: 'black', fontSize: '24px'}}>No Ads pending approval</Table.Row>:null}
+                        }) : <Loader indeterminate active={this.state.loading} />}
 
                     </Table.Body>
 
@@ -139,7 +155,7 @@ class AdminSparepartsAdView extends Component {
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Footer>
-                </Table>
+                    </Table> : <Header style={{ textAlign: 'center',fontWeight: 'bold', fontSize: '24px' }}> - No Ads pending approval -</Header> }
             </div>
         )
     }
@@ -150,5 +166,5 @@ const mapStateToProps = state => ({
     sparepartsAd: state.sparepart.sparepartsAds
 });
 
-export default connect(mapStateToProps, { updateSparepartsAd, deleteSparepartsAd, getPendingSparepartsAds })(AdminSparepartsAdView)
+export default connect(mapStateToProps, { updateSparepartsAd, deleteSparepartsAd, getPendingSparepartsAds, getAllSellers })(AdminSparepartsAdView)
 

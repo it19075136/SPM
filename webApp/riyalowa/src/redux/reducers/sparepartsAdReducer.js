@@ -8,7 +8,7 @@ const initstate = {
 }
 
 export default function (state = initstate, action) {
-    switch(action.type) {
+    switch (action.type) {
         case actionType.ADD_SPAREPARTS_AD:
             return {
                 ...state,
@@ -18,6 +18,11 @@ export default function (state = initstate, action) {
             return {
                 ...state,
                 sparepartsAds: [...state.sparepartsAds.filter(sparepartAd => sparepartAd._id != action.payload._id), action.payload]
+            }
+        case actionType.UPDATE_PENDING_SPAREPARTS_ADS:
+            return {
+                ...state,
+                sparepartsAds: action.payload
             }
         case actionType.GET_SPAREPARTS_AD_BY_ID:
             return {
