@@ -24,16 +24,7 @@ class favorites extends Component {
         },
         counter: 0,
         user: null
-        // {
-        //     _id:"",
-        //     name:"",
-        //     email:"",
-        //     type:"",
-        //     phoneNumber:"",
-        //     image:[],
-        //     wishList:[],
-        //     password:"",
-        // }
+      
     }
 
     sortAdsArray = () => {
@@ -66,21 +57,21 @@ class favorites extends Component {
             })
         });
     }
-    removeFavorite =()=>{
+    removeFavorite = () => {
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
-        console.log('componentDidUpdate',this.state)
-        if(this.state.user){
-            this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+        console.log('componentDidUpdate', this.state)
+        if (this.state.user) {
+            this.props.userUpdate(this.state.user, this.state.user).then((res) => {
                 console.log('in post');
                 const { token } = res;
                 if (token) {
-                    console.log(token,"token")
+                    console.log(token, "token")
                     const user = jwt.decode(token);
                     this.setState({
                         ...this.state,
-                        vehicleAds: this.state.vehicleAds.filter((vehicle)=> user.wishList.includes(vehicle._id)),
-                        user:user
+                        vehicleAds: this.state.vehicleAds.filter((vehicle) => user.wishList.includes(vehicle._id)),
+                        user: user
                     })
                     // setAction(({
                     //     success:true
@@ -102,14 +93,14 @@ class favorites extends Component {
                     //     image:userResponds.image,
                     //     password:userResponds.password
                     // }
-                   
+
                     // console.log(userDetails);
-    
-                    
+
+
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
                 }
-                else{
+                else {
                     // this.setState({
                     //     ...this.state,
                     //     action:false
@@ -119,7 +110,7 @@ class favorites extends Component {
                 // setAction(({
                 //     success:false
                 //  }));
-               
+
             }).catch((err) => {
                 // reject(err)
                 // setAction(({
@@ -132,121 +123,21 @@ class favorites extends Component {
                 //   notify();
             })
         }
-        
-    }
-    // componentWillUnmount=()=>{
-    //     console.log('componentWillUnmount',this.state)
-    //     if(this.state.user){
-    //         this.props.userUpdate(this.state.user,this.state.user).then((res) => {
-    //             console.log('in post');
-    //             const { token } = res;
-    //             // if (token) {
-    //                 // setAction(({
-    //                 //     success:true
-    //                 //  }));
-    //                 // this.setState({
-    //                 //     ...this.state,
-    //                 //     action:true
-    //                 //   })
-    //                 //   notify();
-    //                 // localStorage.setItem('user',token);
-    //                 // const userResponds = jwt.decode(token);
-    //                 // const userDetails = {
-    //                 //     _id: userResponds._id,
-    //                 //     name: userResponds.name,
-    //                 //     email: userResponds.email,
-    //                 //     type: userResponds.type,
-    //                 //     phoneNumber: userResponds.phoneNumber,
-    //                 //     wishList:userResponds.wishList,
-    //                 //     image:userResponds.image,
-    //                 //     password:userResponds.password
-    //                 // }
-                   
-    //                 // console.log(userDetails);
-    
-                    
-    //                 // dispatch({type:'ADD_USER',payload:userDetails});
-    //                 // resolve(userDetails);
-    //             // }
-    //             // else{
-    //             //     this.setState({
-    //             //         ...this.state,
-    //             //         action:false
-    //             //       })
-    //             //       notify();
-    //             // }
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-               
-    //         }).catch((err) => {
-    //             // reject(err)
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-    //             // this.setState({
-    //             //     ...this.state,
-    //             //     action:false
-    //             //   })
-    //             //   notify();
-    //         })
-    //     }
-        
-    //     // window.location.href = ``
-    // }
-    // componentDidUpdate=()=>{
-    //     console.log('componentDidUpdate',this.state)
-    // }
-    // componentDidCatch=()=>{
-    //     console.log('componentDidCatch',this.state)
-    // }
-    // componentWillMount=()=>{
-    //     console.log('componentWillMount',this.state)
-    // }
-    componentDidMount = () => {
-        // const userdetais = localStorage.getItem("user");
-        // const users = jwt.decode(userdetais);
-        // this.setState({
-        //     ...this.state,
-        //     pagination: {...this.state.pagination,
-        //         indexOfFirstCard: this.state.pagination.indexOfLastCard - this.state.pagination.cardsPerPage,
-        //         indexOfLastCard: this.state.pagination.activePage * this.state.pagination.cardsPerPage,
-        //     },
-        //     user:{
-        //         _id:users._id,
-        //         name:users.name,
-        //         email:users.email,
-        //         type:users.type,
-        //         phoneNumber:users.phoneNumber,
-        //         image:users.image,
-        //         wishList:users.wishList,
-        //         password:users.password
-        //     }
-        // })
-        // this.setAdsForPage()
-        // console.log('in componentDidMount')
 
+    }
+
+    componentDidMount = () => {
         this.props.getPublishedVehicleAds().then((res) => {
             const userdetais = localStorage.getItem("user");
             const users = jwt.decode(userdetais);
 
-            console.log("users",users);
-            console.log("vehicles",this.props.vehicleAds)
+            console.log("users", users);
+            console.log("vehicles", this.props.vehicleAds)
 
             this.setState({
                 ...this.state,
                 user: users,
-                vehicleAds: this.props.vehicleAds.filter((vehicle)=> users.wishList.includes(vehicle._id))
-                // {
-                //     _id:users._id,
-                //     name:users.name,
-                //     email:users.email,
-                //     type:users.type,
-                //     phoneNumber:users.phoneNumber,
-                //     image:users.image,
-                //     wishList:users.wishList,
-                //     password:users.password
-                // }
+                vehicleAds: this.props.vehicleAds.filter((vehicle) => users.wishList.includes(vehicle._id))
             }, () => {
                 this.setState({
                     ...this.state,
@@ -255,13 +146,13 @@ class favorites extends Component {
                         indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
                         indexOfLastCard: (this.state.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                     }
-                },() => {
+                }, () => {
                     console.log(this.state.vehicleAds)
                     this.setAdsForPage()
                 })
             })
         }).catch((err) => {
-            console.log('error test1',err)
+            console.log('error test1', err)
         })
     }
 
@@ -279,38 +170,10 @@ class favorites extends Component {
     }
 
     render() {
-        console.log("veh",this.state.vehicleAds)
-        const setwishList=(id)=>{
-            
-                console.log('in set wishlist', id)
-                if (this.state.user.wishList.includes(id)) {
-                    this.setState({
-                        ...this.state,
-                        user: {
-                            ...this.state.user,
-                            wishList: this.state.user.wishList.filter(Wish => Wish != id)
-
-                        }
-                    })
-                    console.log('this.state.user.wishList in if', this.state.user.wishList)
-                }
-                else {
-                    this.setState({
-                        ...this.state,
-                        user: {
-                            ...this.state.user,
-                            wishList: [...this.state.user.wishList, id]
-
-                        }
-                    })
-                    console.log('this.state.user.wishList', this.state.user.wishList)
-                    localStorage.setItem('user', this.state.user);
-                }
-              
-        }
+        console.log("veh", this.state.vehicleAds)
         return (
             <div >
-                {/* {this.state.vehicleAds.length >0 ? ( */}
+                {this.state.vehicleAds.length >0 ? (
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
@@ -320,49 +183,49 @@ class favorites extends Component {
                             <Card.Content>
                                 <Card.Content>
                                     <Card.Header>{item.title}
-                                    <div  hidden={this.state.user ? false:true} onClick={()=>{
-            
-            console.log('in set wishlist', item._id)
-            if (this.state.user.wishList.includes(item._id)) {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+                                        <div hidden={this.state.user ? false : true} onClick={() => {
 
-                    }
-                },()=>{
-                    this.removeFavorite()
-                })
-                console.log('this.state.user.wishList in if', this.state.user.wishList)
-            }
-            // else {
-            //     this.setState({
-            //         ...this.state,
-            //         user: {
-            //             ...this.state.user,
-            //             wishList: [...this.state.user.wishList, item._id]
+                                            console.log('in set wishlist', item._id)
+                                            if (this.state.user.wishList.includes(item._id)) {
+                                                this.setState({
+                                                    ...this.state,
+                                                    user: {
+                                                        ...this.state.user,
+                                                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
-            //         }
-            //     })
-            //     console.log('this.state.user.wishList', this.state.user.wishList)
-            //     localStorage.setItem('user', this.state.user);
-            // }
-          
-    }} >
-                                    {/* <a onclick = {setwishList(item._id)}> */}
-                                        <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
-                                            corner="bottom right"
-                                            style={{float: 'right'}}
-                                            // user.wishList.map(list=>{ return list==item._id})
-                                            color={this.state.user ?(this.state.user.wishList.includes(item._id) ? "red" : "brown"):"brown"}
-                                            size="big"
-                                            
-                                        // link={}
-                                        />
-                                        {/* </a> */}
+                                                    }
+                                                }, () => {
+                                                    this.removeFavorite()
+                                                })
+                                                console.log('this.state.user.wishList in if', this.state.user.wishList)
+                                            }
+                                            // else {
+                                            //     this.setState({
+                                            //         ...this.state,
+                                            //         user: {
+                                            //             ...this.state.user,
+                                            //             wishList: [...this.state.user.wishList, item._id]
+
+                                            //         }
+                                            //     })
+                                            //     console.log('this.state.user.wishList', this.state.user.wishList)
+                                            //     localStorage.setItem('user', this.state.user);
+                                            // }
+
+                                        }} >
+                                            {/* <a onclick = {setwishList(item._id)}> */}
+                                            <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
+                                                corner="bottom right"
+                                                style={{ float: 'right' }}
+                                                // user.wishList.map(list=>{ return list==item._id})
+                                                color={this.state.user ? (this.state.user.wishList.includes(item._id) ? "red" : "brown") : "brown"}
+                                                size="big"
+
+                                            // link={}
+                                            />
+                                            {/* </a> */}
                                         </div>
-                                        </Card.Header>
+                                    </Card.Header>
                                     {item.title ? <div><Card.Description>
                                         <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
                                     </Card.Description>
@@ -377,7 +240,7 @@ class favorites extends Component {
 
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 </Card.Group>
-                 {/* ):<h1>NO Ads TO Display</h1>} */}
+               ):<h1>NO Ads TO Display</h1>}
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}
@@ -403,4 +266,4 @@ const mapStateToProps = (state) => ({
     vehicleAds: state.vehicle.publishedVehicleAdIds
 })
 
-export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById,userUpdate })(favorites);
+export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById, userUpdate })(favorites);

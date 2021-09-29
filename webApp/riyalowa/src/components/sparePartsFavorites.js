@@ -6,6 +6,7 @@ import { userUpdate } from '../redux/actions/userActions';
 import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
 class sparePartAdView extends Component {
+
     state = {
         sparepartsAds: [],
         pagination: {
@@ -23,6 +24,7 @@ class sparePartAdView extends Component {
         },
         counter: 0,
         user: null
+
     }
 
     sortAdsArray = () => {
@@ -56,21 +58,21 @@ class sparePartAdView extends Component {
         });
 
     }
-    removeFavorite=()=>{
+    removeFavorite = () => {
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
-        console.log('componentDidUpdate',this.state)
-        if(this.state.user){
-            this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+        console.log('componentDidUpdate', this.state)
+        if (this.state.user) {
+            this.props.userUpdate(this.state.user, this.state.user).then((res) => {
                 console.log('in post');
                 const { token } = res;
                 if (token) {
-                    console.log(token,"token")
+                    console.log(token, "token")
                     const user = jwt.decode(token);
                     this.setState({
                         ...this.state,
-                        sparepartsAds: this.state.sparepartsAds.filter((sparePart)=> user.wishList.includes(sparePart._id)),
-                        user:user
+                        sparepartsAds: this.state.sparepartsAds.filter((sparePart) => user.wishList.includes(sparePart._id)),
+                        user: user
                     })
                     // setAction(({
                     //     success:true
@@ -92,14 +94,14 @@ class sparePartAdView extends Component {
                     //     image:userResponds.image,
                     //     password:userResponds.password
                     // }
-                   
+
                     // console.log(userDetails);
-    
-                    
+
+
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
                 }
-                else{
+                else {
                     // this.setState({
                     //     ...this.state,
                     //     action:false
@@ -109,7 +111,7 @@ class sparePartAdView extends Component {
                 // setAction(({
                 //     success:false
                 //  }));
-               
+
             }).catch((err) => {
                 // reject(err)
                 // setAction(({
@@ -122,17 +124,21 @@ class sparePartAdView extends Component {
                 //   notify();
             })
         }
-        
+
     }
     componentDidMount = () => {
         this.props.getPublishedSparepartsAds().then((res) => {
             const userdetais = localStorage.getItem("user");
             const users = jwt.decode(userdetais);
+
+            console.log("users", users);
+            console.log("sparepartsAds", this.props.sparepartsAds)
+
             this.setState({
                 ...this.state,
-                user:users,
-                sparepartsAds:this.props.sparepartsAds.filter((spareparts)=> users.wishList.includes(spareparts._id))
-            },()=>{
+                user: users,
+                sparepartsAds: this.props.sparepartsAds.filter((spareparts) => users.wishList.includes(spareparts._id))
+            }, () => {
                 this.setState({
                     ...this.state,
                     pagination: {
@@ -140,15 +146,13 @@ class sparePartAdView extends Component {
                         indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
                         indexOfLastCard: (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                     },
-                    
-                },() => {
-                    console.log(this.state.vehicleAds)
+                }, () => {
+                    console.log(this.state.sparepartsAds)
                     this.setAdsForPage()
                 })
             })
-            
         }).catch((err) => {
-           console.log('error test1',err)
+            console.log('error test1', err)
         })
     }
 
@@ -165,12 +169,11 @@ class sparePartAdView extends Component {
         window.location.href = `/sparepartAdDetail/${id}`
     }
 
-
     render() {
         console.log(this.state.sparepartsAds)
         return (
             <div >
-                {/* {this.state.sparepartsAds.length >0 ? ( */}
+                {this.state.sparepartsAds.length >0 ? (
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
                         return <Card>
@@ -179,48 +182,48 @@ class sparePartAdView extends Component {
                             </Placeholder>}
                             <Card.Content>
                                 <Card.Header>{item.title}
-                                <div  hidden={this.state.user ? false:true} onClick={()=>{
-            
-            console.log('in set wishlist', item._id)
-            if (this.state.user.wishList.includes(item._id)) {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+                                    <div hidden={this.state.user ? false : true} onClick={() => {
 
-                    }
-                },()=>{
-                    this.removeFavorite()
-                })
-                console.log('this.state.user.wishList in if', this.state.user.wishList)
-            }
-            // else {
-            //     this.setState({
-            //         ...this.state,
-            //         user: {
-            //             ...this.state.user,
-            //             wishList: [...this.state.user.wishList, item._id]
+                                        console.log('in set wishlist', item._id)
+                                        if (this.state.user.wishList.includes(item._id)) {
+                                            this.setState({
+                                                ...this.state,
+                                                user: {
+                                                    ...this.state.user,
+                                                    wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
-            //         }
-            //     })
-            //     console.log('this.state.user.wishList', this.state.user.wishList)
-            //     localStorage.setItem('user', this.state.user);
-            // }
-          
-    }} >
-                                    {/* <a onclick = {setwishList(item._id)}> */}
+                                                }
+                                            }, () => {
+                                                this.removeFavorite()
+                                            })
+                                            console.log('this.state.user.wishList in if', this.state.user.wishList)
+                                        }
+                                        // else {
+                                        //     this.setState({
+                                        //         ...this.state,
+                                        //         user: {
+                                        //             ...this.state.user,
+                                        //             wishList: [...this.state.user.wishList, item._id]
+
+                                        //         }
+                                        //     })
+                                        //     console.log('this.state.user.wishList', this.state.user.wishList)
+                                        //     localStorage.setItem('user', this.state.user);
+                                        // }
+
+                                    }} >
+                                        {/* <a onclick = {setwishList(item._id)}> */}
                                         <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
                                             corner="bottom right"
-                                            style={{float: 'right'}}
+                                            style={{ float: 'right' }}
                                             // user.wishList.map(list=>{ return list==item._id})
-                                            color={this.state.user ?(this.state.user.wishList.includes(item._id) ? "red" : "brown"):"brown"}
+                                            color={this.state.user ? (this.state.user.wishList.includes(item._id) ? "red" : "brown") : "brown"}
                                             size="big"
-                                            
+
                                         // link={}
                                         />
                                         {/* </a> */}
-                                        </div>
+                                    </div>
                                 </Card.Header>
                                 {item.title ? <div><Card.Description>
                                     <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
@@ -229,12 +232,12 @@ class sparePartAdView extends Component {
                                     : null}
                             </Card.Content>
                             <Card.Content extra>
-                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this,item._id)} >view</Button>
+                                <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
                             </Card.Content>
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 </Card.Group>
-                {/* ):<h1>NO Ads TO Display</h1>} */}
+                 ):<h1>NO Ads TO Display</h1>} 
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}
@@ -262,4 +265,4 @@ const mapStateToProps = (state) => ({
     sparepartsAds: state.sparepart.publishSparepartAdIds
 })
 
-export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById,userUpdate })(sparePartAdView);
+export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate })(sparePartAdView);

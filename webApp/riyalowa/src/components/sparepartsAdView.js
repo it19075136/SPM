@@ -61,70 +61,69 @@ class sparePartAdView extends Component {
                 }
             })
         });
+    }
+    componentDidUpdate=()=>{
+        // const userdetais = localStorage.getItem("user");
+        // const decodeItem = jwt.decode(userdetais);
+        console.log('componentDidUpdate',this.state)
+        if(this.state.user){
+            this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+                console.log('in post');
+                const { token } = res;
+                if (token) {
+                    console.log(token,"token")
+                    // setAction(({
+                    //     success:true
+                    //  }));
+                    // this.setState({
+                    //     ...this.state,
+                    //     action:true
+                    //   })
+                    //   notify();
+                    // localStorage.setItem('user',token);
+                    // const userResponds = jwt.decode(token);
+                    // const userDetails = {
+                    //     _id: userResponds._id,
+                    //     name: userResponds.name,
+                    //     email: userResponds.email,
+                    //     type: userResponds.type,
+                    //     phoneNumber: userResponds.phoneNumber,
+                    //     wishList:userResponds.wishList,
+                    //     image:userResponds.image,
+                    //     password:userResponds.password
+                    // }
+
+                    // console.log(userDetails);
+
+
+                    // dispatch({type:'ADD_USER',payload:userDetails});
+                    // resolve(userDetails);
+                }
+                else{
+                    // this.setState({
+                    //     ...this.state,
+                    //     action:false
+                    //   })
+                    //   notify();
+                }
+                // setAction(({
+                //     success:false
+                //  }));
+
+            }).catch((err) => {
+                // reject(err)
+                // setAction(({
+                //     success:false
+                //  }));
+                // this.setState({
+                //     ...this.state,
+                //     action:false
+                //   })
+                //   notify();
+            })
+        }
 
     }
-    // componentDidUpdate=()=>{
-    //     // const userdetais = localStorage.getItem("user");
-    //     // const decodeItem = jwt.decode(userdetais);
-    //     console.log('componentDidUpdate',this.state)
-    //     if(this.state.user){
-    //         this.props.userUpdate(this.state.user,this.state.user).then((res) => {
-    //             console.log('in post');
-    //             const { token } = res;
-    //             if (token) {
-    //                 console.log(token,"token")
-    //                 // setAction(({
-    //                 //     success:true
-    //                 //  }));
-    //                 // this.setState({
-    //                 //     ...this.state,
-    //                 //     action:true
-    //                 //   })
-    //                 //   notify();
-    //                 // localStorage.setItem('user',token);
-    //                 // const userResponds = jwt.decode(token);
-    //                 // const userDetails = {
-    //                 //     _id: userResponds._id,
-    //                 //     name: userResponds.name,
-    //                 //     email: userResponds.email,
-    //                 //     type: userResponds.type,
-    //                 //     phoneNumber: userResponds.phoneNumber,
-    //                 //     wishList:userResponds.wishList,
-    //                 //     image:userResponds.image,
-    //                 //     password:userResponds.password
-    //                 // }
-
-    //                 // console.log(userDetails);
-
-
-    //                 // dispatch({type:'ADD_USER',payload:userDetails});
-    //                 // resolve(userDetails);
-    //             }
-    //             else{
-    //                 // this.setState({
-    //                 //     ...this.state,
-    //                 //     action:false
-    //                 //   })
-    //                 //   notify();
-    //             }
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-
-    //         }).catch((err) => {
-    //             // reject(err)
-    //             // setAction(({
-    //             //     success:false
-    //             //  }));
-    //             // this.setState({
-    //             //     ...this.state,
-    //             //     action:false
-    //             //   })
-    //             //   notify();
-    //         })
-    //     }
-
-    // }
     componentDidMount = () => {
         this.props.getPublishedSparepartsAds().then((res) => {
             const userdetais = localStorage.getItem("user");
@@ -137,8 +136,7 @@ class sparePartAdView extends Component {
                     indexOfLastCard: (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.sparepartsAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
                 },
                 user: users
-            })
-            this.setAdsForPage()
+            },()=>this.setAdsForPage())
         }).catch((err) => {
             alert('Connection error!')
         })
@@ -153,7 +151,6 @@ class sparePartAdView extends Component {
                 })
             })
         })
-
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -209,7 +206,6 @@ class sparePartAdView extends Component {
                     <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this, null)} />
                     <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
                 </center>
-
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
                         elem => {
