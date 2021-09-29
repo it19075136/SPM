@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import {getAllCategories,deleteCategories} from "../redux/actions/categoryActions";
 import { CSVLink } from 'react-csv';
 class categoryList extends Component {
-
+  
   constructor(props) {
     super(props);
 
@@ -26,11 +26,23 @@ class categoryList extends Component {
     this.categoryOnCLick= this.categoryOnCLick.bind(this);
     this.handleTypeChange = this.handleTypeChange.bind(this);
 
+
     this.state = {
       isModalOpen : false,
       deleteId : '',
       searchQuerry: '',
-      radioVehicleType : 'Vehicles'
+      radioVehicleType : 'Vehicles',
+      csvReport : {
+        data : [],
+        headers :  [
+          { label:'Category type', key:'type' }, //type
+          { label:'Category name', key:'mainName' }, //name
+          { label:'Category description', key:'mainDescription' }, //description
+          // { label:'Created At', key:'date' } //created At
+        ],
+        filename : 'categoryReport.csv'  
+      }
+
     }
   }
 
@@ -72,9 +84,6 @@ class categoryList extends Component {
     this.setState({isModalOpen:false})
   }
 
-
-
-
   componentDidMount(){
     this.props.getAllCategories();
   }
@@ -107,7 +116,8 @@ class categoryList extends Component {
   
   render() {
     const {categories} = this.props;  
-    const {searchQuerry} = this.state;  
+    console.log('categories: ', categories);
+    const {searchQuerry, csvReport} = this.state;  
 
     let categoriesCustom = categories.map((value) => {
      if(value.type == this.state.radioVehicleType){
@@ -115,12 +125,30 @@ class categoryList extends Component {
      }
     }).filter(n => n)
 
-    
+    let CSV = {
+      data : categories,
+      headers :  [
+        { label:'Category type', key:'type' }, //type
+        { label:'Category name', key:'mainName' }, //name
+        { label:'Category description', key:'mainDescription' }, //description
+        // { label:'Created At', key:'date' } //created At
+      ],
+      filename : 'categoryReport.csv'  
+    }
+    console.log('CSV: ', CSV.headers);
+
     return (
       <div className="main-form-wrapper-category-list">
         {this.basicCloseModal()}
 
         <Button className="add-category-btn" onClick={this.categoryOnCLick}>Add a new category</Button>
+        <CSVLink 
+        headers = {CSV.headers}
+        data = {CSV.data}
+        filename={"categoryList.csv"}
+         className='export-btn-category'
+          // hidden={this.props.sparepartsAd.length < 1}
+          >Export to CSV</CSVLink>
 
         <input type="text" className="search-bar-cat-list" placeholder="Search for..."  onChange={this.handleInputChange}/>
 
