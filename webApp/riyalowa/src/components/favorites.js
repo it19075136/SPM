@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon,Modal, Header, Form, Radio, Select } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon } from 'semantic-ui-react';
 
-class vehicleAdsView extends Component {
+class favorites extends Component {
 
     state = {
         vehicleAds: [],
@@ -23,10 +23,17 @@ class vehicleAdsView extends Component {
             disabled: true
         },
         counter: 0,
-        user: null,
-        filter: "",
-        open: false,
-        conditionFilter: null
+        user: null
+        // {
+        //     _id:"",
+        //     name:"",
+        //     email:"",
+        //     type:"",
+        //     phoneNumber:"",
+        //     image:[],
+        //     wishList:[],
+        //     password:"",
+        // }
     }
 
     sortAdsArray = () => {
@@ -47,9 +54,9 @@ class vehicleAdsView extends Component {
 
         this.setState({
             ...this.state,
-            vehicleAds: this.props.vehicleAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
+            vehicleAds: this.state.vehicleAds.slice(this.state.pagination.indexOfFirstCard, this.state.pagination.indexOfLastCard)
         }, () => {
-            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.props.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
+            this.setState({ ...this.state, pagination: { ...this.state.pagination, totalPages: this.state.vehicleAds.length / this.state.pagination.cardsPerPage } }, () => {
                 console.log(this.state.pagination.indexOfFirstCard, (this.state.vehicleAds.length - this.state.pagination.indexOfFirstCard))
                 for (let index = 0; index < this.state.pagination.indexOfLastCard - (9 * (this.state.pagination.activePage - 1)); index++) {
                     this.props.getVehicleAdById(this.state.vehicleAds[index]._id).then((res) => {
@@ -59,7 +66,7 @@ class vehicleAdsView extends Component {
             })
         });
     }
-    componentDidUpdate=()=>{
+    removeFavorite =()=>{
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
         console.log('componentDidUpdate',this.state)
@@ -69,6 +76,12 @@ class vehicleAdsView extends Component {
                 const { token } = res;
                 if (token) {
                     console.log(token,"token")
+                    const user = jwt.decode(token);
+                    this.setState({
+                        ...this.state,
+                        vehicleAds: this.state.vehicleAds.filter((vehicle)=> user.wishList.includes(vehicle._id)),
+                        user:user
+                    })
                     // setAction(({
                     //     success:true
                     //  }));
@@ -216,14 +229,14 @@ class vehicleAdsView extends Component {
         this.props.getPublishedVehicleAds().then((res) => {
             const userdetais = localStorage.getItem("user");
             const users = jwt.decode(userdetais);
+
+            console.log("users",users);
+            console.log("vehicles",this.props.vehicleAds)
+
             this.setState({
                 ...this.state,
-                pagination: {
-                    ...this.state.pagination,
-                    indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-                    indexOfLastCard: (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
-                },
-                user: users
+                user: users,
+                vehicleAds: this.props.vehicleAds.filter((vehicle)=> users.wishList.includes(vehicle._id))
                 // {
                 //     _id:users._id,
                 //     name:users.name,
@@ -234,8 +247,19 @@ class vehicleAdsView extends Component {
                 //     wishList:users.wishList,
                 //     password:users.password
                 // }
-            }, () => this.setAdsForPage()
-            )
+            }, () => {
+                this.setState({
+                    ...this.state,
+                    pagination: {
+                        ...this.state.pagination,
+                        indexOfFirstCard: (this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
+                        indexOfLastCard: (this.state.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.vehicleAds.length - ((this.state.pagination.activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (this.state.pagination.activePage - 1) : (this.state.pagination.activePage * this.state.pagination.cardsPerPage)
+                    }
+                },() => {
+                    console.log(this.state.vehicleAds)
+                    this.setAdsForPage()
+                })
+            })
         }).catch((err) => {
             alert('Connection error!')
         })
@@ -244,7 +268,7 @@ class vehicleAdsView extends Component {
     handlePaginationChange = (e, { activePage }) => this.setState({
         ...this.state, vehicleAds: [], counter: 0, pagination: {
             ...this.state.pagination, activePage, disabled: true, indexOfFirstCard: (activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage,
-            indexOfLastCard: (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.props.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
+            indexOfLastCard: (this.state.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) < 9 ? (this.state.vehicleAds.length - ((activePage * this.state.pagination.cardsPerPage) - this.state.pagination.cardsPerPage)) + 9 * (activePage - 1) : (activePage * this.state.pagination.cardsPerPage)
         }
     }, () => {
         this.setAdsForPage(this.state);
@@ -253,34 +277,9 @@ class vehicleAdsView extends Component {
     navigateToDetails = (id) => {
         window.location.href = `/vehicleAdDetail/${id}`
     }
-    handleChange =(context,event)=> {
-        switch (context) {
-            case "CONDITION":
-                this.setState({ conditionFilter: this.state.conditionFilter == event.target.textContent ? null : event.target.textContent });
-                break;
-            case "TYPE":
-                    console.log(event.target)
-                break;
-            default:
-                break;
-        }
-    }
-
-    handleModal = (e, { name }) => {
-        switch (name) {
-            case 'close':
-                this.setState({ ...this.state, open: false })
-                break;
-            case 'open':
-                this.setState({ ...this.state, open: true })
-                break;
-            default:
-                throw new Error('Unsupported Action!')
-        }
-    }
 
     render() {
-        const { filter } = this.state;
+        console.log("veh",this.state.vehicleAds)
         const setwishList=(id)=>{
             
                 console.log('in set wishlist', id)
@@ -311,17 +310,9 @@ class vehicleAdsView extends Component {
         }
         return (
             <div >
-                <center>
-                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange} />
-                <Button circular size="medium" color="blue" icon="filter" style={{marginLeft: 5}} onClick={this.handleModal} name='open' />
-                </center>
+                {this.state.vehicleAds.length >0 ? (
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
-                        elem => {
-                            return (elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
-                            &&  this.state.conditionFilter && elem.condition ? elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase() : elem 
-                            )}
-                    ).map((item) => {
+                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
                             {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
                                 <Placeholder.Image square />
@@ -340,21 +331,23 @@ class vehicleAdsView extends Component {
                         wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
 
                     }
+                },()=>{
+                    this.removeFavorite()
                 })
                 console.log('this.state.user.wishList in if', this.state.user.wishList)
             }
-            else {
-                this.setState({
-                    ...this.state,
-                    user: {
-                        ...this.state.user,
-                        wishList: [...this.state.user.wishList, item._id]
+            // else {
+            //     this.setState({
+            //         ...this.state,
+            //         user: {
+            //             ...this.state.user,
+            //             wishList: [...this.state.user.wishList, item._id]
 
-                    }
-                })
-                console.log('this.state.user.wishList', this.state.user.wishList)
-                localStorage.setItem('user', this.state.user);
-            }
+            //         }
+            //     })
+            //     console.log('this.state.user.wishList', this.state.user.wishList)
+            //     localStorage.setItem('user', this.state.user);
+            // }
           
     }} >
                                     {/* <a onclick = {setwishList(item._id)}> */}
@@ -384,6 +377,7 @@ class vehicleAdsView extends Component {
 
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 </Card.Group>
+                ):<h1>NO Ads TO Display</h1>}
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}
@@ -400,50 +394,6 @@ class vehicleAdsView extends Component {
                         disabled={this.state.pagination.disabled}
                     />
                 </div>
-                <Modal
-                    open={this.state.open}
-                    onClose={() => this.setState({ ...this.state, open: false })}
-                    onOpen={() => this.setState({ ...this.state, open: true })}
-                    size="small"
-                >
-                    <Modal.Header>Filter Your Result</Modal.Header>
-                    <Modal.Content>
-                        <Header as="h5">Condition</Header>
-                        <Form.Group inline>
-                            <Form.Field
-                                control={Radio}
-                                label="Unregistered"
-                                name="Unregistered"
-                                checked={this.state.conditionFilter == 'Unregistered'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
-                            />
-                            <Form.Field
-                                control={Radio}
-                                label="Registered"
-                                name="Registered"
-                                checked={this.state.conditionFilter == 'Registered'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
-                            />
-                        </Form.Group>
-                        <Header as="h5">Vehicle Category</Header>
-                        <Form.Field required
-                            width='16'
-                            control={Select}
-                            placeholder='Vehicle Type'
-                            onChange={this.handleChange.bind(this,"TYPE")}
-                            search
-                        />
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button negative onClick={() => this.setState({ ...this.state, open: false })}>
-                            Cancel
-                        </Button>
-                        <Button color="blue" onClick={() => this.setState({ ...this.state, open: false })}>
-                            Filter
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-            
             </div>
         )
     }
@@ -453,4 +403,4 @@ const mapStateToProps = (state) => ({
     vehicleAds: state.vehicle.publishedVehicleAdIds
 })
 
-export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById,userUpdate })(vehicleAdsView);
+export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById,userUpdate })(favorites);

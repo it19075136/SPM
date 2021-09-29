@@ -195,7 +195,7 @@ import jwt from 'jsonwebtoken'
 import { Button, Container, Divider, Grid, Header, Icon, Image, List, Loader,Dimmer } from 'semantic-ui-react'
 import ImageGallery from 'react-image-gallery';
 import { connect } from 'react-redux'
-import { ToastContainer, toast } from 'react-toastify';
+
 class myads extends Component {
     state = {
         vehicleAdDetails: [],
@@ -228,11 +228,14 @@ class myads extends Component {
                 // this.state.vehicleAdDetails.map(vehicleDetails=)
                 console.log('this.state.vehicleAdDetails',this.state.vehicleAdDetails)
         }).catch(err=>{
-            console.log(err)
+            // console.log(err)
+            alert('Connection error pas!')
         })
     }
     render() {
         return (
+            <div>
+            {this.state.vehicleAdDetails.length >0 ? (
             <div>
             {this.state.vehicleAdDetails ? this.state.vehicleAdDetails.map(vehicleAdDetails=>{
                 return <div style={{ margin: '0 auto' }}>
@@ -318,6 +321,8 @@ class myads extends Component {
         }
             
             </div>
+             ):<h1>NO Ads TO Display</h1>}
+             </div>
         )
     }
 }
