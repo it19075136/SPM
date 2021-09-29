@@ -170,6 +170,7 @@ class sparePartAdView extends Component {
         console.log(this.state.sparepartsAds)
         return (
             <div >
+                {this.state.sparepartsAds.length >0 ? (
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.map((item) => {
                         return <Card>
@@ -233,6 +234,7 @@ class sparePartAdView extends Component {
                         </Card>
                     }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 </Card.Group>
+                ):<h1>NO Ads TO Display</h1>}
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}
