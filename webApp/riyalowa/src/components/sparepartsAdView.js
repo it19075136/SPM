@@ -199,7 +199,7 @@ class sparePartAdView extends Component {
                         elem => {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`) 
-                                &&  this.state.conditionFilter ? elem.condition == this.state.conditionFilter.toLocaleLowerCase() : elem 
+                                &&  this.state.conditionFilter ? elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase() : elem 
                             )
                         }
                     ).map((item) => {
