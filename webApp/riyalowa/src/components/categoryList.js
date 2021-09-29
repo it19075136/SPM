@@ -12,7 +12,7 @@ import {
 import "../App.css";
 import { connect } from "react-redux";
 import {getAllCategories,deleteCategories} from "../redux/actions/categoryActions";
-
+import { CSVLink } from 'react-csv';
 class categoryList extends Component {
 
   constructor(props) {
@@ -107,9 +107,7 @@ class categoryList extends Component {
   
   render() {
     const {categories} = this.props;  
-    console.log('categories: ', categories);
     const {searchQuerry} = this.state;  
-    console.log('this.state.radioVehicleType: ', this.state.radioVehicleType);
 
     let categoriesCustom = categories.map((value) => {
      if(value.type == this.state.radioVehicleType){
@@ -117,7 +115,6 @@ class categoryList extends Component {
      }
     }).filter(n => n)
 
-    console.log('categoriesCustom: ', categoriesCustom);
     
     return (
       <div className="main-form-wrapper-category-list">
