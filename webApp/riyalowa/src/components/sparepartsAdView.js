@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Search, Grid, Modal, Header, Form, Radio } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Modal, Header, Form, Radio } from 'semantic-ui-react';
 import './sample.css'
+import { getAllCategories } from '../redux/actions/categoryActions';
 
 class sparePartAdView extends Component {
     state = {
@@ -26,7 +27,9 @@ class sparePartAdView extends Component {
         user: null,
         filter: "",
         open: false,
-        conditionFilter: null
+        conditionFilter: null,
+        categoryOption: [],
+        makeOption: []
     }
 
     sortAdsArray = () => {
@@ -139,6 +142,18 @@ class sparePartAdView extends Component {
         }).catch((err) => {
             alert('Connection error!')
         })
+
+        this.props.getAllCategories().then((res) => {
+            console.log(res)
+            res.filter(item => item.type == 'Spare Parts').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOption: [...this.state.categoryOption, { key: index, text: element.mainName, value: element.mainName }] }, () => {
+                    element.make.forEach((childrenElem) => {
+                        this.setState({ ...this.state, makeOption: [...this.state.makeOption, { key: element.mainName, text: childrenElem, value: childrenElem }] })
+                    })
+                })
+            })
+        })
+
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -166,7 +181,7 @@ class sparePartAdView extends Component {
                 console.log(event.target)
                 break;
             default:
-                this.setState({...this.state, filter: event.target.value })
+                this.setState({ ...this.state, filter: event.target.value })
                 break;
         }
     }
@@ -191,7 +206,7 @@ class sparePartAdView extends Component {
         return (
             <div>
                 <center>
-                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this,null)} />
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this, null)} />
                     <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
                 </center>
 
@@ -199,8 +214,8 @@ class sparePartAdView extends Component {
                     {this.state.sparepartsAds.length > 0 ? this.state.sparepartsAds.filter(
                         elem => {
                             return (
-                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`) 
-                                &&  ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                                && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
                             )
                         }
                     ).map((item) => {
@@ -315,9 +330,12 @@ class sparePartAdView extends Component {
                         <Form.Field required
                             width='16'
                             control={Select}
+                            name="category"
+                            options={this.state.categoryOption}
                             placeholder='Part or Accessory Type'
-                            onChange={this.handleChange.bind(this, "TYPE")}
                             search
+                            searchInput={{ id: 'category' }}
+                            onChange={this.handleChange.bind(this, "TYPE")}
                         />
                     </Modal.Content>
                     <Modal.Actions>
@@ -337,7 +355,8 @@ class sparePartAdView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    sparepartsAds: state.sparepart.publishSparepartAdIds
+    sparepartsAds: state.sparepart.publishSparepartAdIds,
+    categories: state.category.categories
 })
 
-export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate })(sparePartAdView);
+export default connect(mapStateToProps, { getPublishedSparepartsAds, getSparepartAdById, userUpdate, getAllCategories })(sparePartAdView);

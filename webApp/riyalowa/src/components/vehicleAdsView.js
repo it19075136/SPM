@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon,Modal, Header, Form, Radio, Select } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon, Modal, Header, Form, Radio, Select } from 'semantic-ui-react';
+import { getAllCategories } from '../redux/actions/categoryActions';
 
 class vehicleAdsView extends Component {
 
@@ -26,7 +27,9 @@ class vehicleAdsView extends Component {
         user: null,
         filter: "",
         open: false,
-        conditionFilter: null
+        conditionFilter: null,
+        categoryOptions: [],
+        makeOptions: []
     }
 
     sortAdsArray = () => {
@@ -59,16 +62,16 @@ class vehicleAdsView extends Component {
             })
         });
     }
-    componentDidUpdate=()=>{
+    componentDidUpdate = () => {
         // const userdetais = localStorage.getItem("user");
         // const decodeItem = jwt.decode(userdetais);
-        console.log('componentDidUpdate',this.state)
-        if(this.state.user){
-            this.props.userUpdate(this.state.user,this.state.user).then((res) => {
+        console.log('componentDidUpdate', this.state)
+        if (this.state.user) {
+            this.props.userUpdate(this.state.user, this.state.user).then((res) => {
                 console.log('in post');
                 const { token } = res;
                 if (token) {
-                    console.log(token,"token")
+                    console.log(token, "token")
                     // setAction(({
                     //     success:true
                     //  }));
@@ -89,14 +92,14 @@ class vehicleAdsView extends Component {
                     //     image:userResponds.image,
                     //     password:userResponds.password
                     // }
-                   
+
                     // console.log(userDetails);
-    
-                    
+
+
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
                 }
-                else{
+                else {
                     // this.setState({
                     //     ...this.state,
                     //     action:false
@@ -106,7 +109,7 @@ class vehicleAdsView extends Component {
                 // setAction(({
                 //     success:false
                 //  }));
-               
+
             }).catch((err) => {
                 // reject(err)
                 // setAction(({
@@ -119,7 +122,7 @@ class vehicleAdsView extends Component {
                 //   notify();
             })
         }
-        
+
     }
     // componentWillUnmount=()=>{
     //     console.log('componentWillUnmount',this.state)
@@ -148,10 +151,10 @@ class vehicleAdsView extends Component {
     //                 //     image:userResponds.image,
     //                 //     password:userResponds.password
     //                 // }
-                   
+
     //                 // console.log(userDetails);
-    
-                    
+
+
     //                 // dispatch({type:'ADD_USER',payload:userDetails});
     //                 // resolve(userDetails);
     //             // }
@@ -165,7 +168,7 @@ class vehicleAdsView extends Component {
     //             // setAction(({
     //             //     success:false
     //             //  }));
-               
+
     //         }).catch((err) => {
     //             // reject(err)
     //             // setAction(({
@@ -178,7 +181,7 @@ class vehicleAdsView extends Component {
     //             //   notify();
     //         })
     //     }
-        
+
     //     // window.location.href = ``
     // }
     // componentDidUpdate=()=>{
@@ -239,6 +242,16 @@ class vehicleAdsView extends Component {
         }).catch((err) => {
             alert('Connection error!')
         })
+
+        this.props.getAllCategories().then((res) => {
+            res.filter(item => item.type == 'Vehicles').forEach((element, index) => {
+                this.setState({ ...this.state, categoryOptions: [...this.state.categoryOptions, { key: index, text: element.mainName, value: element.mainName }] }, () => {
+                    element.make.forEach((childElem) => {
+                        this.setState({ ...this.state, makeOptions: [...this.state.makeOptions, { key: element.mainName, text: childElem, value: childElem }] })
+                    })
+                })
+            })
+        })
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -253,16 +266,16 @@ class vehicleAdsView extends Component {
     navigateToDetails = (id) => {
         window.location.href = `/vehicleAdDetail/${id}`
     }
-    handleChange =(context,event)=> {
+    handleChange = (context, event) => {
         switch (context) {
             case "CONDITION":
                 this.setState({ conditionFilter: this.state.conditionFilter == event.target.textContent ? null : event.target.textContent });
                 break;
             case "TYPE":
-                    console.log(event.target)
+                console.log(event.target)
                 break;
             default:
-                this.setState({...this.state, filter: event.target.value})
+                this.setState({ ...this.state, filter: event.target.value })
                 break;
         }
     }
@@ -282,65 +295,15 @@ class vehicleAdsView extends Component {
 
     render() {
         const { filter } = this.state;
-        const setwishList=(id)=>{
-            
-                console.log('in set wishlist', id)
-                if (this.state.user.wishList.includes(id)) {
-                    this.setState({
-                        ...this.state,
-                        user: {
-                            ...this.state.user,
-                            wishList: this.state.user.wishList.filter(Wish => Wish != id)
+        const setwishList = (id) => {
 
-                        }
-                    })
-                    console.log('this.state.user.wishList in if', this.state.user.wishList)
-                }
-                else {
-                    this.setState({
-                        ...this.state,
-                        user: {
-                            ...this.state.user,
-                            wishList: [...this.state.user.wishList, id]
-
-                        }
-                    })
-                    console.log('this.state.user.wishList', this.state.user.wishList)
-                    localStorage.setItem('user', this.state.user);
-                }
-              
-        }
-        return (
-            <div >
-                <center>
-                <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this,null)} />
-                <Button circular size="medium" color="blue" icon="filter" style={{marginLeft: 5}} onClick={this.handleModal} name='open' />
-                </center>
-                <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
-                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
-                        elem => {
-                            return (
-                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`) 
-                                &&  ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
-                            )
-                        }
-                    ).map((item) => {
-                        return <Card>
-                            {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
-                                <Placeholder.Image square />
-                            </Placeholder>}
-                            <Card.Content>
-                                <Card.Content>
-                                    <Card.Header>{item.title}
-                                    <div  hidden={this.state.user ? false:true} onClick={()=>{
-            
-            console.log('in set wishlist', item._id)
-            if (this.state.user.wishList.includes(item._id)) {
+            console.log('in set wishlist', id)
+            if (this.state.user.wishList.includes(id)) {
                 this.setState({
                     ...this.state,
                     user: {
                         ...this.state.user,
-                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+                        wishList: this.state.user.wishList.filter(Wish => Wish != id)
 
                     }
                 })
@@ -351,28 +314,78 @@ class vehicleAdsView extends Component {
                     ...this.state,
                     user: {
                         ...this.state.user,
-                        wishList: [...this.state.user.wishList, item._id]
+                        wishList: [...this.state.user.wishList, id]
 
                     }
                 })
                 console.log('this.state.user.wishList', this.state.user.wishList)
                 localStorage.setItem('user', this.state.user);
             }
-          
-    }} >
-                                    {/* <a onclick = {setwishList(item._id)}> */}
-                                        <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
-                                            corner="bottom right"
-                                            style={{float: 'right'}}
-                                            // user.wishList.map(list=>{ return list==item._id})
-                                            color={this.state.user ?(this.state.user.wishList.includes(item._id) ? "red" : "brown"):"brown"}
-                                            size="big"
-                                            
-                                        // link={}
-                                        />
-                                        {/* </a> */}
+
+        }
+        return (
+            <div >
+                <center>
+                    <input type="search" placeholder="Search" value={filter} onChange={this.handleChange.bind(this, null)} />
+                    <Button circular size="medium" color="blue" icon="filter" style={{ marginLeft: 5 }} onClick={this.handleModal} name='open' />
+                </center>
+                <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
+                    {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.filter(
+                        elem => {
+                            return (
+                                elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
+                                && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                            )
+                        }
+                    ).map((item) => {
+                        return <Card>
+                            {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
+                                <Placeholder.Image square />
+                            </Placeholder>}
+                            <Card.Content>
+                                <Card.Content>
+                                    <Card.Header>{item.title}
+                                        <div hidden={this.state.user ? false : true} onClick={() => {
+
+                                            console.log('in set wishlist', item._id)
+                                            if (this.state.user.wishList.includes(item._id)) {
+                                                this.setState({
+                                                    ...this.state,
+                                                    user: {
+                                                        ...this.state.user,
+                                                        wishList: this.state.user.wishList.filter(Wish => Wish != item._id)
+
+                                                    }
+                                                })
+                                                console.log('this.state.user.wishList in if', this.state.user.wishList)
+                                            }
+                                            else {
+                                                this.setState({
+                                                    ...this.state,
+                                                    user: {
+                                                        ...this.state.user,
+                                                        wishList: [...this.state.user.wishList, item._id]
+
+                                                    }
+                                                })
+                                                console.log('this.state.user.wishList', this.state.user.wishList)
+                                                localStorage.setItem('user', this.state.user);
+                                            }
+
+                                        }} >
+                                            {/* <a onclick = {setwishList(item._id)}> */}
+                                            <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
+                                                corner="bottom right"
+                                                style={{ float: 'right' }}
+                                                // user.wishList.map(list=>{ return list==item._id})
+                                                color={this.state.user ? (this.state.user.wishList.includes(item._id) ? "red" : "brown") : "brown"}
+                                                size="big"
+
+                                            // link={}
+                                            />
+                                            {/* </a> */}
                                         </div>
-                                        </Card.Header>
+                                    </Card.Header>
                                     {item.title ? <div><Card.Description>
                                         <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
                                     </Card.Description>
@@ -418,23 +431,35 @@ class vehicleAdsView extends Component {
                                 label="Unregistered"
                                 name="Unregistered"
                                 checked={this.state.conditionFilter == 'Unregistered'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                             <Form.Field
                                 control={Radio}
                                 label="Registered"
                                 name="Registered"
                                 checked={this.state.conditionFilter == 'Registered'}
-                                onChange={this.handleChange.bind(this,"CONDITION")}
+                                onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                         </Form.Group>
                         <Header as="h5">Vehicle Category</Header>
-                        <Form.Field required
+                        {/* <Form.Field required
                             width='16'
                             control={Select}
                             placeholder='Vehicle Type'
                             onChange={this.handleChange.bind(this,"TYPE")}
                             search
+                        /> */}
+                        <Form.Field required
+                            id='category'
+                            name="category"
+                            width='16'
+                            control={Select}
+                            options={this.state.categoryOptions} // get categories
+                            // label={{ children: 'Category', htmlFor: 'category' }}
+                            placeholder='Vehicle Category'
+                            search
+                            searchInput={{ id: 'category' }}
+                            onChange={this.handleChange.bind(this, "TYPE")}
                         />
                     </Modal.Content>
                     <Modal.Actions>
@@ -446,14 +471,15 @@ class vehicleAdsView extends Component {
                         </Button>
                     </Modal.Actions>
                 </Modal>
-            
+
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    vehicleAds: state.vehicle.publishedVehicleAdIds
+    vehicleAds: state.vehicle.publishedVehicleAdIds,
+    categories: state.category.categories
 })
 
-export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById,userUpdate })(vehicleAdsView);
+export default connect(mapStateToProps, { getPublishedVehicleAds, getVehicleAdById, userUpdate, getAllCategories })(vehicleAdsView);
