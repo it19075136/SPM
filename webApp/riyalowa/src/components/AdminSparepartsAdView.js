@@ -32,12 +32,8 @@ class AdminSparepartsAdView extends Component {
     componentDidMount = () => {
         this.props.getPendingSparepartsAds().then((data) => {
             this.setState({ ...this.state, payload: data }, () => {
-                this.props.getAllSellers().then((res) => {
-                    for (let index = 0; index < res.length; index++) {
-                        if (this.state.payload.find(elem => elem.userId == res[index]._id))
-                            this.setState({ ...this.state, payload: [...this.state.payload.filter(item => item.userId != res[index]._id), { ...this.state.payload.find(elem => elem.userId == res[index]._id), userId: res[index].name }]});
-                    }
-                    this.setState({ ...this.state, csvReport: {...this.csvReport,data: [...this.state.payload]}, loading: false })
+                this.props.getAllSellers("SPAREPART",this.props.sparepartsAd).then((res) => {
+                    this.setState({ ...this.state, csvReport: {...this.csvReport,data: [...res]}, loading: false })
                 });
             })
         }).catch((err) => {
@@ -129,7 +125,7 @@ class AdminSparepartsAdView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {!this.state.loading && this.props.sparepartsAd.length != 0 ? this.state.payload.filter(sparePart => sparePart.status != 'published').map(sparepart => {
+                        {!this.state.loading && this.props.sparepartsAd.length != 0 ? this.props.sparepartsAd.filter(sparePart => sparePart.status != 'published').map(sparepart => {
                             return (
                                 <Table.Row key={sparepart._id}>
                                     <Table.Cell collapsing selectable={false}>

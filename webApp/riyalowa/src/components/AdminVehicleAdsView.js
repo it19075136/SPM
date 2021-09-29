@@ -32,12 +32,8 @@ class AdminVehicleAdsView extends Component {
     componentDidMount = () => {
         this.props.getPendingVehicleAds().then((data) => {
             this.setState({ ...this.state, payload: data }, () => {
-                this.props.getAllSellers().then((res) => {
-                    for (let index = 0; index < res.length; index++) {
-                        if (this.state.payload.find(elem => elem.userId == res[index]._id))
-                            this.setState({ ...this.state, payload: [...this.state.payload.filter(item => item.userId != res[index]._id), { ...this.state.payload.find(elem => elem.userId == res[index]._id), userId: res[index].name }]});
-                    }
-                    this.setState({ ...this.state, csvReport: {...this.csvReport,data: [...this.state.payload]}, loading: false })
+                this.props.getAllSellers("VEHICLE",this.props.vehicleAds).then((res) => {
+                    this.setState({ ...this.state, csvReport: {...this.csvReport,data: [...res]}, loading: false })
                 });
             })
         }).catch((err) => {
@@ -107,7 +103,7 @@ class AdminVehicleAdsView extends Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {!this.state.loading && this.props.vehicleAds.length != 0 ? this.state.payload.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
+                        {!this.state.loading && this.props.vehicleAds.length != 0 ? this.props.vehicleAds.filter(vehicleAd => vehicleAd.status != 'published').map(vehicleAd => {
                             return (
                                 <Table.Row key={vehicleAd._id}>
                                     <Table.Cell collapsing selectable={false}>
