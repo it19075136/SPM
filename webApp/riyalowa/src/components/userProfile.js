@@ -343,7 +343,7 @@ class userProfile extends Component  {
                     <Header.Content>User Profile</Header.Content>
                 </Header>
                 <Header as='h5' icon textAlign='right' style={{marginRight: '-400px', color: '#076AE0', }}>
-                <Button color='blue' type='button' onClick={deleteProfile}>Delete Profile<Icon name='trash' circular /></Button>
+                
                     
                 </Header>
                 <Form className='user-profile-form-centered'>
@@ -530,7 +530,9 @@ class userProfile extends Component  {
                         onClick={submitHandler}
                         content='Update Profile'
                     /><br /><br />
+                    <Button color='red' type='button' onClick={deleteProfile}>Delete Profile<Icon name='trash' circular /></Button>
                 </Form>
+                
             </div>
             {/* <Divider vertical /> */}
             <div className="updateProfile">
