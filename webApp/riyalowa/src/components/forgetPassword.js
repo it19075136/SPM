@@ -23,7 +23,7 @@ state={
     _id:""
   },
   reEnterPassword:"",
-  OTP:0
+  OTP:null
 }
 render() {
 const item = localStorage.getItem("updatePasswordDetails");
@@ -55,7 +55,7 @@ const forgetPasswordHandle=(e)=>{
     // })
     this.setState({
       ...this.state,
-      reEnterPassword:e.target.value
+      [e.target.name]:e.target.value
     })
 }
 const submitHandler=(e)=>{
@@ -67,13 +67,18 @@ const submitHandler=(e)=>{
       ...this.state,
       user:{
         ...this.state.user,
-        password:passwordHash.generate(this.state.user.password)
+        password:passwordHash.generate(this.state.user.password),
       }
     })
     console.log('in promise in addNewPAssword')
+    console.log("this.state.reEnterPassword",this.state.reEnterPassword)
+    console.log("password",password)
+    console.log("this.state.OTP",OTPDetails.code)
+    console.log("this.state.OTP",this.state.OTP)
 
         if(passwordHash.verify(this.state.reEnterPassword,password) && passwordHash.verify(this.state.OTP,OTPDetails.code)){
                 // axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password})
+                console.log('out post');
                 this.props.userUpdate(this.state.user,user).then((res)=>{
                     console.log('in post');
                     const {token} =res;    

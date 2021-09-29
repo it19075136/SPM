@@ -235,6 +235,8 @@ class myads extends Component {
     render() {
         return (
             <div>
+            {this.state.vehicleAdDetails.length >0 ? (
+            <div>
             {this.state.vehicleAdDetails ? this.state.vehicleAdDetails.map(vehicleAdDetails=>{
                 return <div style={{ margin: '0 auto' }}>
                 <Grid style={{ margin: '0 auto' }}>
@@ -319,6 +321,8 @@ class myads extends Component {
         }
             
             </div>
+             ):<h1>NO Ads TO Display</h1>}
+             </div>
         )
     }
 }
