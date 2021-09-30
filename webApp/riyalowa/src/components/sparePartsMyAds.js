@@ -52,7 +52,6 @@ class sparepartAdDetails extends Component {
                     data: res.filter(spareParts => spareParts.userId == users._id)
                 }
             })
-            // this.setAdsForPage()
             console.log('this.state.vehicleAdDetails', this.state.vehicleAdDetails)
         }).catch((err) => {
             alert('Connection error pas!')
@@ -100,17 +99,19 @@ class sparepartAdDetails extends Component {
                                 </Card.Content>
                             </Card>
 
-                        }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
-                    </Card.Group>
+                        })  :<h1>No Ads TO Display</h1>} 
+                                            </Card.Group>
                 </div>
-                     ):<h1>NO Ads TO Display</h1>} 
+                     ): <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+
+                    
             </div>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    // sparepart: state.sparepart.sparepartAd
+    sparepart: state.sparepart.sparepartAd
 })
 
 export default connect(mapStateToProps, { getAllSparePartsAds })(sparepartAdDetails)
