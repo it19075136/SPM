@@ -4,18 +4,18 @@ import ImageUploading from 'react-images-uploading';
 import { connect } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById } from '../redux/actions/sparepartsActions';
 
-const partTypeOption = [
-    { key: 'b', text: 'Body Components', value: 'components' },
-    { key: 'a', text: 'Car Audio Systems', value: 'audio' },
-    { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
-]
 
 const locationOption = [
-    { key: 'c', text: 'Colombo', value: 'colombo' },
-    { key: 'k', text: 'Kandy', value: 'kandy' },
-    { key: 'm', text: 'Matara', value: 'matara' },
+    { key: '1', text: 'Kandy', value: 'kandy' },
+    { key: '2', text: 'Colombo', value: 'colombo' },
+    { key: '3', text: 'Malabe', value: 'malabe' },
+    { key: '4', text: 'Kegalle', value: 'kegalle' },
+    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
+    { key: '6', text: 'Jaffna', value: 'jaffna' },
+    { key: '7', text: 'Ampara', value: 'ampara' },
 ]
 const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
@@ -36,7 +36,25 @@ class updateSparePartsAdForm extends Component {
         error: false,
         loading: true,
         actionWaiting: false,
-        isDelete: false
+        isDelete: false,
+        categoryOptions: [],
+        makeOptions: []
+    }
+
+    arrangeCategories = (categories) => {
+
+        let cats = []
+        for (let index = 0; index < categories.length; index++)
+            cats.push({ key: index, text: categories[index].mainName, value: categories[index].mainName })
+
+        let makes = []
+        categories.forEach(elem => {
+            elem.make.forEach(child => {
+                makes.push({ key: elem.mainName, text: child, value: child })
+            })
+        })
+
+        this.setState({ ...this.state, categoryOptions: cats, makeOptions: makes }, () => console.log(this.state))
     }
 
     componentDidMount = () => {
@@ -50,6 +68,11 @@ class updateSparePartsAdForm extends Component {
             this.setState({ ...this.state, loading: false }, () => {
                 alert('Please check your network connection and refresh the page');
             });
+        })
+
+        this.props.getAllCategories().then((res) => {
+            console.log(this.props.getAllCategories())
+            this.arrangeCategories(res.filter(elem => elem.type == "Spare Parts"))
         })
     }
 
@@ -70,7 +93,7 @@ class updateSparePartsAdForm extends Component {
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
                 this.props.updateSparepartsAd(this.state.payload, window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
-                    console.log('in update',res);
+                    console.log('in update', res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
                         this.setState({ ...this.state, success: false, actionWaiting: false })
@@ -98,7 +121,7 @@ class updateSparePartsAdForm extends Component {
                     this.setState({ ...this.state, success: true, isDelete: true }, () => {
                         notify();
                         this.setState({ ...this.state, success: false, actionWaiting: false })
-                    },() =>{ 
+                    }, () => {
                         window.location.href = '/';
                     })
                 }).catch((err) => {
@@ -199,7 +222,7 @@ class updateSparePartsAdForm extends Component {
                         <Form.Field required
                             width='16'
                             control={Select}
-                            options={partTypeOption}
+                            options={this.state.categoryOptions}
                             label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
                             placeholder={this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Part or Accessory Type'}
                             value={this.state.payload.category}
@@ -431,22 +454,22 @@ class updateSparePartsAdForm extends Component {
                                 className='form-delete-btn'
                                 disabled={this.state.actionWaiting}
                                 onClick={handleDelete}
-                            >{this.state.actionWaiting?'Please wait..': 'Delete Ad'}
+                            >{this.state.actionWaiting ? 'Please wait..' : 'Delete Ad'}
                             </Button>
                             <Form.Group>
-                            <Form.Field
-                            primary
-                            id='submit'
-                            name="formSubmit"
-                            type ='submit'
-                            className='form-update-btn'
-                            control={Button}
-                            content={this.state.actionWaiting?'Please wait..': 'Update Ad'}
-                            disabled={this.state.actionWaiting}
-                            />
+                                <Form.Field
+                                    primary
+                                    id='submit'
+                                    name="formSubmit"
+                                    type='submit'
+                                    className='form-update-btn'
+                                    control={Button}
+                                    content={this.state.actionWaiting ? 'Please wait..' : 'Update Ad'}
+                                    disabled={this.state.actionWaiting}
+                                />
                             </Form.Group>
 
-                        {this.state.actionWaiting?<Loader active inline />: null}
+                            {this.state.actionWaiting ? <Loader active inline /> : null}
                         </div>
                     </Form>
                     :
@@ -460,7 +483,8 @@ class updateSparePartsAdForm extends Component {
 }
 
 const mapStateToProps = state => ({
-    sparepartsAd: state.sparepart.sparepartAd
+    sparepartsAd: state.sparepart.sparepartAd,
+    categories: state.category.categories
 });
 
-export default connect(mapStateToProps, { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById })(updateSparePartsAdForm)
+export default connect(mapStateToProps, { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById, getAllCategories })(updateSparePartsAdForm)
