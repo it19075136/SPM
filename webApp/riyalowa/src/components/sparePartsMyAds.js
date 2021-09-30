@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Container, Divider, Grid, Header, Icon, Image, List, Loader,Dimmer } from 'semantic-ui-react'
+import { Button, Container, Divider, Grid, Header, Icon, Image, List, Loader, Dimmer, Card, Placeholder } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import {getAllSparePartsAds } from '../redux/actions/sparepartsActions'
+import { getAllSparePartsAds } from '../redux/actions/sparepartsActions'
 import ImageGallery from 'react-image-gallery';
 import jwt from 'jsonwebtoken'
 import { CSVLink } from "react-csv";
@@ -27,10 +27,10 @@ class sparepartAdDetails extends Component {
     ];
 
     state = {
-        sparepartAdDetails: null,
+        sparepartAdDetails: [],
         loading: true,
         images: [],
-        user:null,
+        user: null,
         csvReport: {
             data: [],
             headers: this.headers,
@@ -42,103 +42,63 @@ class sparepartAdDetails extends Component {
         this.props.getAllSparePartsAds().then((res) => {
             const userdetais = localStorage.getItem("user");
             const users = jwt.decode(userdetais);
-            console.log("res",res)
+            console.log("res", res)
             this.setState({
                 ...this.state,
-                user:users,
-                sparepartAdDetails:res.filter(sparePart=> sparePart.userId ==users._id),
+                user: users,
+                sparepartAdDetails: res.filter(sparePart => sparePart.userId == users._id),
                 csvReport: {
                     ...this.state.csvReport,
-                    data:res.filter(spareParts=> spareParts.userId ==users._id)
+                    data: res.filter(spareParts => spareParts.userId == users._id)
                 }
             })
             // this.setAdsForPage()
-            console.log('this.state.vehicleAdDetails',this.state.vehicleAdDetails)
+            console.log('this.state.vehicleAdDetails', this.state.vehicleAdDetails)
         }).catch((err) => {
             alert('Connection error pas!')
         })
     }
 
+    navigateToDetails = (id) => {
+        window.location.href = `/sparepartAdDetail/${id}`
+    }
+
+    navigateToEdit = (id) => {
+        window.location.href = `/sparePartsAd/update/${id}`
+    }
+
     render() {
         return (
             <div>
-                 {this.state.sparepartAdDetails  ? (
-                     <div>
-                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.sparepartAdDetails.length < 1 }  >Export to CSV</CSVLink> 
-           
-            <div>  
-            {this.state.sparepartAdDetails ? this.state.sparepartAdDetails.map(sparepartAdDetails=>{            
-            return<div style={{ margin: '0 auto' }}>
-                <Grid style={{ margin: '0 auto' }}>
-                    <Grid.Column width={6}>
-                        <ImageGallery items={sparepartAdDetails.images} style={{ padding: '10px' }} />
-                    </Grid.Column>
-                    <Grid.Column width={6}>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header><h1>{sparepartAdDetails.title}&nbsp;</h1></Header><p style={{ marginTop: '10px' }}>Posted on {sparepartAdDetails.updatedAt.split('T')[0]}</p>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header><h2>Rs. {sparepartAdDetails.price}&nbsp;</h2></Header>{!sparepartAdDetails.Negotiable ? ' Negotiable' : null}
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Specifications</Header>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Grid.Column width={3}>
-                                <List verticalAlign='middle' divided>
-                                    <List.Item>Condition: <b>{sparepartAdDetails.condition}</b></List.Item>
-                                    <List.Item>Category: <b>{sparepartAdDetails.category}</b></List.Item>
-                                    <List.Item>Delivery: <b>{sparepartAdDetails.delivery ? 'Available' : 'Not Applicable'}</b></List.Item>
-                                </List>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Description</Header>
-                        </Grid.Row>
-                        <Grid.Row>
-                            <Container textAlign='left'>
-                                {sparepartAdDetails.description}
-                            </Container>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                        <a href={'tel:'+ sparepartAdDetails.contactNumbers ?sparepartAdDetails.contactNumbers[0].split(')')[1]:(null)} ><Button icon labelPosition='left' color='blue'>
-                            <Icon name='phone' />
-                            CONTACT SELLER
-                        </Button></a>
-                         {/* add mail from user when available */}
-                        <a href={'mailto:'+sparepartAdDetails.contactNumbers[0].split(')')[1]}><Button icon labelPosition='left' color='orange'>
-                            <Icon name='mail' />
-                            EMAIL
-                        </Button></a>
-                        <a href={'/sparePartsAd/update/'+sparepartAdDetails._id}><Button icon labelPosition='left' color='orange'>
-                            <Icon name='edit' />
-                            Edit
-                        </Button></a>
-                        </Grid.Row>
-                    </Grid.Column>
-                    <Grid.Column width={4}>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Seller: abc</Header>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Location: {sparepartAdDetails.location} </Header> <Icon name='map marker alternate' size="big" style={{marginTop: '-10px'}}  color="blue"/>
-                        </Grid.Row>
-                        <Grid.Row style={{ padding: '10px' }} >
-                            <Header>status: {sparepartAdDetails.status} </Header> 
-                            {/* <Icon name='map marker alternate' /> */}
-                        </Grid.Row>
-                    </Grid.Column>
-                </Grid>
+                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.sparepartAdDetails.length < 1}  >Export to CSV</CSVLink>
+                <div>
+                    <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
+                        {this.state.sparepartAdDetails ? this.state.sparepartAdDetails.map((item) => {
+                            return <Card>
+                                {item.images ? item.images[0] ? <Image src={item.images[0]['data_url']} wrapped centered ui={false} /> : <h1>No Image</h1> : <Placeholder >
+                                    <Placeholder.Image square />
+                                </Placeholder>}
+                                <Card.Content>
+                                    <Card.Content>
+                                        <Card.Header>
+                                            {item.title} 
+                                        </Card.Header>
+                                        {item.title ? <div><Card.Description>
+                                            <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
+                                        </Card.Description>
+                                            <Card.Meta>{item.location}</Card.Meta></div>
+                                            : null}
+                                    </Card.Content>
+                                    <Card.Content extra>
+                                        <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
+                                        <Button primary icon='pencil' label='Edit' onClick={this.navigateToEdit.bind(this, item._id)} >Edit</Button>
+                                    </Card.Content>
+                                </Card.Content>
+                            </Card>
+
+                        }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+                    </Card.Group>
                 </div>
-                }):<Dimmer active inverted style={{ margin: '0 auto' }}>
-                <Loader size='large'>Loading</Loader>
-            </Dimmer>
-        // <ToastContainer style={{ fontSize: '20px' }} />
-        }
-       
-            </div>
-            </div>
-             ):<h1>NO Ads TO Display</h1>}
             </div>
         )
     }

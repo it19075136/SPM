@@ -4,6 +4,7 @@ import { Form, Input, TextArea, Button, Select, Header, Icon, Modal, Segment, Li
 import ImageUploading from 'react-images-uploading';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateVehicleAd, deleteVehicleAd, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 
 const categoryOptions = [
@@ -86,7 +87,25 @@ class updateVehicleAdForm extends Component {
         error: false,
         loading: true,
         actionWaiting: false,
-        isDelete: false
+        isDelete: false,
+        categoryOptions: [],
+        makeOptions: []
+    }
+
+    arrangeCategories = (categories) => {
+
+        let cats = []
+        for (let index = 0; index < categories.length; index++)
+            cats.push({ key: index, text: categories[index].mainName, value: categories[index].mainName })
+
+        let makes = []
+        categories.forEach(elem => {
+            elem.make.forEach(child => {
+                makes.push({ key: elem.mainName, text: child, value: child })
+            })
+        })
+
+        this.setState({ ...this.state, categoryOptions: cats, makeOptions: makes }, () => console.log(this.state))
     }
 
     componentDidMount = () => {
@@ -100,6 +119,10 @@ class updateVehicleAdForm extends Component {
             this.setState({ ...this.state, loading: false }, () => {
                 alert('Please check your network connection and refresh the page')
             });
+        })
+
+        this.props.getAllCategories().then((res) => {
+            this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"))
         })
     }
 
@@ -212,7 +235,7 @@ class updateVehicleAdForm extends Component {
                                 name="category"
                                 width='16'
                                 control={Select}
-                                options={categoryOptions} // get categories
+                                options={this.state.categoryOptions} // get categories
                                 value={this.state.payload.category}
                                 label={{ children: 'Category', htmlFor: 'category' }}
                                 placeholder={this.state.loading ? 'Please wait...' : this.state.payload.category ? this.state.payload.category : 'Vehicle Category'}
@@ -226,7 +249,7 @@ class updateVehicleAdForm extends Component {
                                 name="make"
                                 width='16'
                                 control={Select}
-                                options={vehicleMakeOptions}
+                                options={this.state.payload.category ? this.state.makeOptions.filter(item => item.key == this.state.payload.category) : this.state.makeOptions}
                                 value={this.state.payload.make}
                                 label={{ children: 'Vehicle Make', htmlFor: 'vehicleMake' }}
                                 placeholder={this.state.payload.make ? this.state.payload.make : 'Vehicle Make'}
@@ -616,4 +639,4 @@ const mapStateToProps = state => ({
     vehicleAd: state.vehicle.vehicleAd
 });
 
-export default connect(mapStateToProps, { updateVehicleAd, deleteVehicleAd, getVehicleAdById })(updateVehicleAdForm)
+export default connect(mapStateToProps, { updateVehicleAd, deleteVehicleAd, getVehicleAdById, getAllCategories })(updateVehicleAdForm)
