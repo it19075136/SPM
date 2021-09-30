@@ -6,6 +6,7 @@ import {publishSparepartsAd} from '../redux/actions/sparepartsActions';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {districts} from '../utils/districts';
 
 const partTypeOption = [
     { key: 'b', text: 'Body Components', value: 'components' },
@@ -13,11 +14,6 @@ const partTypeOption = [
     { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
 ]
 
-const locationOption = [
-    { key: 'c', text: 'Colombo', value: 'colombo' },
-    { key: 'k', text: 'Kandy', value: 'kandy' },
-    { key: 'm', text: 'Matara', value: 'matara' },
-]
 const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
 ]
@@ -44,9 +40,19 @@ class sparePartAdForm extends Component {
         error: false,
         actionWaiting: false,
         categoryOption: [],
-        makeOption: []
+        makeOption: [],
+        locationOptions: []
     }
 
+    arrangeDistricts = () => {
+
+        let dists = []
+        for (let index = 0; index < districts.length; index++) 
+            dists.push({ key: index, text: districts[index], value: districts[index] })
+
+        this.setState({...this.state,locationOptions:dists})            
+        
+    }
 
     componentDidMount = () => {
         this.props.getAllCategories().then((res) => {
@@ -58,6 +64,7 @@ class sparePartAdForm extends Component {
                     })
                 })
             })
+            this.arrangeDistricts();
         })
     }
 
@@ -227,7 +234,7 @@ class sparePartAdForm extends Component {
                     name="location"
                     id="location"
                     control={Select}
-                    options={locationOption}
+                    options={this.state.locationOptions}
                     error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Your Location'
