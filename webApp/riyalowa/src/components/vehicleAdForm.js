@@ -450,7 +450,7 @@ class vehicleAdForm extends Component {
                     size='huge'
                     verticalAlign='middle'
                 >
-                    {this.state.payload.contactNumbers.map((item) => (
+                    {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
                         <List.Item key={item}>
                             <Icon name='call' />
                             <List.Content header={item} />

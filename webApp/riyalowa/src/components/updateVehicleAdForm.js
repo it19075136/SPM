@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateVehicleAd, deleteVehicleAd, getVehicleAdById } from '../redux/actions/vehicleAdActions';
+import {districts} from '../utils/districts';
 
 const categoryOptions = [
     { key: 'c', text: 'Car', value: 'car' },
@@ -89,7 +90,18 @@ class updateVehicleAdForm extends Component {
         actionWaiting: false,
         isDelete: false,
         categoryOptions: [],
-        makeOptions: []
+        makeOptions: [],
+        locationOptions: []
+    }
+
+    arrangeDistricts = () => {
+
+        let dists = []
+        for (let index = 0; index < districts.length; index++) 
+            dists.push({ key: index, text: districts[index], value: districts[index] })
+
+        this.setState({...this.state,locationOptions:dists})            
+        
     }
 
     arrangeCategories = (categories) => {
@@ -122,7 +134,8 @@ class updateVehicleAdForm extends Component {
         })
 
         this.props.getAllCategories().then((res) => {
-            this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"))
+            this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"));
+            this.arrangeDistricts();
         })
     }
 
@@ -335,7 +348,7 @@ class updateVehicleAdForm extends Component {
                                 name="location"
                                 width='16'
                                 control={Select}
-                                options={locationOptions}
+                                options={this.state.locationOptions}
                                 value={this.state.payload.location}
                                 label={{ children: 'location', htmlFor: 'location' }}
                                 placeholder={this.state.payload.location ? this.state.payload.location : 'Select location'}
@@ -564,7 +577,7 @@ class updateVehicleAdForm extends Component {
                                                         <Button
                                                             color='red'
                                                             type='button'
-                                                            disabled={this.state.payload.contactNumbers.length === 0}
+                                                            disabled={this.state.payload.contactNumbers.length === 1}
                                                             icon='trash'
                                                             onClick={this.deletePhone}
                                                         />
@@ -586,7 +599,7 @@ class updateVehicleAdForm extends Component {
                                             size='huge'
                                             verticalAlign='middle'
                                         >
-                                            {this.state.payload.contactNumbers.map((item) => (
+                    {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
                                                 <List.Item key={item}>
                                                     <Icon name='call' />
                                                     <List.Content header={item} />

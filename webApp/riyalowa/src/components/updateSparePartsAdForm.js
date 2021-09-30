@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateSparepartsAd, deleteSparepartsAd, getSparepartAdById } from '../redux/actions/sparepartsActions';
-
+import {districts} from '../utils/districts';
 
 const locationOption = [
     { key: '1', text: 'Kandy', value: 'kandy' },
@@ -38,7 +38,18 @@ class updateSparePartsAdForm extends Component {
         actionWaiting: false,
         isDelete: false,
         categoryOptions: [],
-        makeOptions: []
+        makeOptions: [],
+        locationOptions: []
+    }
+
+    arrangeDistricts = () => {
+
+        let dists = []
+        for (let index = 0; index < districts.length; index++) 
+            dists.push({ key: index, text: districts[index], value: districts[index] })
+
+        this.setState({...this.state,locationOptions:dists})            
+        
     }
 
     arrangeCategories = (categories) => {
@@ -72,7 +83,8 @@ class updateSparePartsAdForm extends Component {
 
         this.props.getAllCategories().then((res) => {
             console.log(this.props.getAllCategories())
-            this.arrangeCategories(res.filter(elem => elem.type == "Spare Parts"))
+            this.arrangeCategories(res.filter(elem => elem.type == "Spare Parts"));
+            this.arrangeDistricts();
         })
     }
 
@@ -265,7 +277,6 @@ class updateSparePartsAdForm extends Component {
                                 id='description'
                                 control={TextArea}
                                 value={this.state.payload.description}
-                                // label='Description'
                                 placeholder='Description'
                                 disabled={this.state.descriptionState ? this.state.descriptionState : false}
                                 onChange={handleChange}
@@ -287,7 +298,6 @@ class updateSparePartsAdForm extends Component {
                                 type='number'
                                 value={this.state.payload.price}
                                 control={Input}
-                                // label='Price(Rs.)'
                                 placeholder='Price(Rs)'
                                 disabled={this.state.priceState ? this.state.priceState : false}
                                 onChange={handleChange}
@@ -305,7 +315,7 @@ class updateSparePartsAdForm extends Component {
                             name="location"
                             id="location"
                             control={Select}
-                            options={locationOption}
+                            options={this.state.locationOptions}
                             value={this.state.payload.location}
                             label={{ children: 'Location', htmlFor: 'location' }}
                             placeholder={this.state.loading ? 'Please wait...' : this.state.payload.location ? this.state.payload.location : 'Your Location'}
@@ -410,7 +420,7 @@ class updateSparePartsAdForm extends Component {
                                                     <Button
                                                         color='red'
                                                         type='button'
-                                                        disabled={this.state.payload.contactNumbers.length === 0}
+                                                        disabled={this.state.payload.contactNumbers.length === 1}
                                                         icon='trash'
                                                         onClick={this.deletePhone}
                                                     />
@@ -432,7 +442,7 @@ class updateSparePartsAdForm extends Component {
                                         size='huge'
                                         verticalAlign='middle'
                                     >
-                                        {this.state.payload.contactNumbers.map((item) => (
+                    {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
                                             <List.Item key={item}>
                                                 <Icon name='call' />
                                                 <List.Content header={item} />
