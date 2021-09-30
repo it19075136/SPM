@@ -25,7 +25,7 @@ class signup extends Component {
 
   render() {
     const responseGoogle = (response) => {
-
+      console.log('in responseGoogle')
       this.setState({
         ...this.state,
         user: {
@@ -42,10 +42,11 @@ class signup extends Component {
         login: true
       }
       localStorage.setItem('login', login);
-
+      console.log('this.state.user',this.state.user)
       this.props.addUser(this.state.user).then(res => {
         const { token } = res;
-
+        console.log('res',res)
+        console.log('token',token)
 
         if (token) {
 
@@ -55,7 +56,7 @@ class signup extends Component {
             action: true
           })
           notify();
-
+          
           window.location.href = '/'
 
         }
