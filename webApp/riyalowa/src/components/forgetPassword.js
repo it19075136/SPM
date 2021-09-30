@@ -18,10 +18,7 @@ class forgetPassword extends Component {
 //     OTP:0
 // })
 state={
-  user:{
-    password:"",
-    _id:""
-  },
+  user:null,
   reEnterPassword:"",
   OTP:null
 }
@@ -63,11 +60,12 @@ const submitHandler=(e)=>{
     e.preventDefault();
     // const password = passwordHash.generate(user.password);
      const password = passwordHash.generate(this.state.user.password);
+     console.log("hashpassword",password)
     this.setState({
       ...this.state,
       user:{
         ...this.state.user,
-        password:passwordHash.generate(this.state.user.password),
+        password:password
       }
     })
     console.log('in promise in addNewPAssword')
@@ -78,12 +76,16 @@ const submitHandler=(e)=>{
 
         if(passwordHash.verify(this.state.reEnterPassword,password) && passwordHash.verify(this.state.OTP,OTPDetails.code)){
                 // axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password})
-                console.log('out post');
-                this.props.userUpdate(this.state.user,user).then((res)=>{
+                // const userdetais = localStorage.getItem("user");
+                // const user = jwt.decode(userdetais);
+                console.log("updatedetails",OTPDetails)
+                console.log('this.state.user',this.state.user);
+                console.log('password',password);
+                this.props.userUpdate({"password":password},OTPDetails).then((res)=>{
                     console.log('in post');
                     const {token} =res;    
                 if(token){
-                    // localStorage.setItem('user',token);
+                    localStorage.removeItem('user');
                     const userResponds = jwt.decode(token);
                     const userDetails ={
                         _id:userResponds._id,
@@ -101,11 +103,13 @@ const submitHandler=(e)=>{
                       action:true
                     })
                       notify();
+                      window.location.href = '/signin'
                     // dispatch({type:'ADD_USER',payload:userDetails});
                     // resolve(userDetails);
                 }
                 else{
                   // console.log(userDetails);
+                  window.location.href = '/'
                     this.setState({
                       ...this.state,
                       action:false

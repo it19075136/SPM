@@ -145,6 +145,7 @@ export const getCode =(payload)=>dispatch =>{
         axios.post('http://localhost:5000/user/getCode', payload).then((res) => {
         //localstorage ekati reducx ekati danna oneda
         const { token } = res.data;
+        console.log("updatePasswordDetails",token)
         localStorage.setItem('updatePasswordDetails', token);
            const userResponds  =jwt.decode(token);
            const userDetails ={
