@@ -235,9 +235,9 @@ class sparePartAdView extends Component {
                                 <Button primary icon='eye' label='view' onClick={this.navigateToDetails.bind(this, item._id)} >view</Button>
                             </Card.Content>
                         </Card>
-                    }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+                    }):<h1>No Ads TO Display</h1>} 
                 </Card.Group>
-                 ):<h1>NO Ads TO Display</h1>} 
+                 ):<Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}

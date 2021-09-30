@@ -9,7 +9,6 @@ export default function (state = initstate, action) {
     switch (action.type) {
         case ADD_USER:
             return {
-                ...state,
                 user: action.payload,
             }
         case UPDATE_USER:
