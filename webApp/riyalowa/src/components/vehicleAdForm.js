@@ -6,16 +6,7 @@ import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const locationOptions = [
-    { key: '1', text: 'Kandy', value: 'kandy' },
-    { key: '2', text: 'Colombo', value: 'colombo' },
-    { key: '3', text: 'Malabe', value: 'malabe' },
-    { key: '4', text: 'Kegalle', value: 'kegalle' },
-    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
-    { key: '6', text: 'Jaffna', value: 'jaffna' },
-    { key: '7', text: 'Ampara', value: 'ampara' },
-]
+import {districts} from '../utils/districts';
 
 const vehicleModelOptions = [
     { key: 'ax', text: 'Axio', value: 'axio' },
@@ -84,7 +75,8 @@ class vehicleAdForm extends Component {
         error: false,
         actionWaiting: false,
         categoryOptions:[],
-        makeOptions:[]
+        makeOptions:[],
+        locationOptions: []
         // validation: {
         //     year: false,
         //     make: false,
@@ -114,51 +106,25 @@ class vehicleAdForm extends Component {
         this.setState({...this.state, categoryOptions: cats, makeOptions: makes},() => console.log(this.state))
     }
 
+    arrangeDistricts = () => {
+
+        let dists = []
+        for (let index = 0; index < districts.length; index++) 
+            dists.push({ key: index, text: districts[index], value: districts[index] })
+
+        this.setState({...this.state,locationOptions:dists})            
+        
+    }
+
     componentDidMount = () => {
 
         this.props.getAllCategories().then((res) => {
-                this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"))
+                this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"));
+                this.arrangeDistricts();
         })
+
+
     }
-
-    // validateFields(payload) {
-
-    //     let success = true;
-
-    //     return new Promise((resolve, reject) => {
-    //         if (payload.year == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, year: true } })
-    //             success = false;
-    //         }
-    //         if (payload.make == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, make: true } })
-    //             success = false;
-    //         } if (payload.model == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, model: true } })
-    //             success = false;
-    //         } if (payload.category == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, category: true } })
-    //             success = false;
-    //         } if (payload.location == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, location: true } })
-    //             success = false;
-    //         } if (payload.bodyType == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, bodyType: true } })
-    //             success = false;
-    //         } if (payload.transmission == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, transmission: true } })
-    //             success = false;
-    //         } if (payload.condition == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, condition: true } })
-    //             success = false;
-    //         } if (payload.fuelType == '') {
-    //             this.setState({ ...this.state, validation: { ...this.state.validation, fuelType: true } })
-    //             success = false;
-    //         }
-    //         resolve(success);
-    //     });
-
-    // }
 
     addPhone = () =>
         this.setState({ ...this.state, payload: { ...this.state.payload, contactNumbers: [...this.state.payload.contactNumbers, this.state.code + this.state.phone] } }, () => {
@@ -233,7 +199,7 @@ class vehicleAdForm extends Component {
                     name="location"
                     width='16'
                     control={Select}
-                    options={locationOptions}
+                    options={this.state.locationOptions}
                     error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Select location'

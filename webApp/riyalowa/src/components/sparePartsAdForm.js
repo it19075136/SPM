@@ -6,18 +6,10 @@ import {publishSparepartsAd} from '../redux/actions/sparepartsActions';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {districts} from '../utils/districts';
 
 
 
-const locationOption = [
-    { key: '1', text: 'Kandy', value: 'kandy' },
-    { key: '2', text: 'Colombo', value: 'colombo' },
-    { key: '3', text: 'Malabe', value: 'malabe' },
-    { key: '4', text: 'Kegalle', value: 'kegalle' },
-    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
-    { key: '6', text: 'Jaffna', value: 'jaffna' },
-    { key: '7', text: 'Ampara', value: 'ampara' },
-]
 const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
 ]
@@ -43,10 +35,21 @@ class sparePartAdForm extends Component {
         success: false,
         error: false,
         actionWaiting: false,
-        categoryOptions: [],
-        makeOptions: []
+        categoryOption: [],
+        makeOption: [],
+        locationOptions: []
     }
 
+    arrangeDistricts = () => {
+
+        let dists = []
+        for (let index = 0; index < districts.length; index++) 
+            dists.push({ key: index, text: districts[index], value: districts[index] })
+
+        this.setState({...this.state,locationOptions:dists})            
+        
+    }
+    
     arrangeCategories = (categories) => {
 
         let cats = []
@@ -58,6 +61,7 @@ class sparePartAdForm extends Component {
             elem.make.forEach(child => {
                 makes.push({ key: elem.mainName, text: child, value: child })
             })
+            this.arrangeDistricts();
         })
 
         this.setState({...this.state, categoryOptions: cats, makeOptions: makes},() => console.log(this.state))
@@ -236,7 +240,7 @@ class sparePartAdForm extends Component {
                     name="location"
                     id="location"
                     control={Select}
-                    options={locationOption}
+                    options={this.state.locationOptions}
                     error={this.state.payload.location == ''}
                     label={{ children: 'Location', htmlFor: 'location' }}
                     placeholder='Your Location'
