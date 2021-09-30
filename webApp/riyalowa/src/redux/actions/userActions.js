@@ -1,7 +1,7 @@
 import axios from "axios"
 import passwordHash from 'password-hash'
 import jwt from 'jsonwebtoken'
-import { UPDATE_PENDING_SPAREPARTS_ADS, UPDATE_PENDING_VEHICLE_ADS } from "../../utils/constants"
+import { UPDATE_PENDING_SPAREPARTS_ADS, UPDATE_PENDING_VEHICLE_ADS ,ADD_USER} from "../../utils/constants"
 export const addUser =(payload)=>dispatch =>{
     return new Promise((resolve, reject) => {
         axios.post('http://localhost:5000/user/add',payload).then(res=>{
@@ -25,15 +25,15 @@ export const addUser =(payload)=>dispatch =>{
                 type : userResponds.type,
                 phoneNumber :userResponds.phoneNumber,
                 password:userResponds.password,
-                // wishList:userResponds.wishList,
-
+                wishList:userResponds.wishList ? userResponds.wishList: [],
+                image:userResponds.image ? userResponds.image: []
             }
 
             console.log('decode token userRespond',userResponds);
             console.log('send details to redux',userDetails)
             localStorage.setItem('user',token);
             // window.location.href = '/'
-            dispatch({type:'ADD_USER',payload:userDetails})
+            dispatch({type:ADD_USER,payload:userDetails})
             resolve(res.data);
         }
         // else(token =='Email Already Exists'){
@@ -87,6 +87,7 @@ export const getUser =(payload)=>dispatch =>{
                 wishList:userResponds.wishList ? userResponds.wishList: [],
                 image:userResponds.image ? userResponds.image: []
               }
+              dispatch({type:ADD_USER,payload:userDetails})
             //   setAction(({
             //    success:true
             // }));
@@ -101,7 +102,7 @@ export const getUser =(payload)=>dispatch =>{
             //  console.log('action',action)
               
               console.log('decode token userRespond', userResponds);
-              dispatch({type:'ADD_USER',payload: userResponds})
+              dispatch({type:ADD_USER,payload: userResponds})
               localStorage.setItem('user', token);
               console.log('in findUser');
               resolve(res.data)
@@ -161,7 +162,8 @@ export const getCode =(payload)=>dispatch =>{
         if(token){
 
           // localStorage.setItem('user', token);
-          // dispatch({type:'ADD_USER',payload:userDetails});
+          // dispatch({type:ADD_USER,payload:userDetails});
+          dispatch({type:ADD_USER,payload:userDetails})
         console.log('action axios');
         console.log(token);
         resolve(res.data)
@@ -210,7 +212,7 @@ export const userUpdate =(payload,decodeItem)=>dispatch =>{
                 console.log("userDetails",userDetails);
 
                 
-                dispatch({type:'ADD_USER',payload:userDetails});
+                dispatch({type:ADD_USER,payload:userDetails});
                 resolve(res.data);
             }
             else{
@@ -273,7 +275,7 @@ export const getAllSellers = (type, pendingAds) => dispatch => {
 }
 
 export const login = (payload) => dispatch => {
-  dispatch({ type: 'ADD_USER', payload: payload })
+  dispatch({ type: ADD_USER, payload: payload })
 }
 export const deleteProfile =(payload)=>dispatch =>{
   return new Promise((resolve, reject) => {
@@ -304,7 +306,7 @@ export const deleteProfile =(payload)=>dispatch =>{
           // console.log('send details to redux',userDetails)
           // localStorage.setItem('user',token);
           // window.location.href = '/'
-          // dispatch({type:'ADD_USER',payload:userDetails})
+          // dispatch({type:ADD_USER,payload:userDetails})
           // resolve(res.data);
           
       // }

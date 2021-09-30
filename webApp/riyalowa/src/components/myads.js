@@ -45,16 +45,6 @@ class myads extends Component {
     }
 
     componentDidMount = () => {
-        // this.props.getVehicleAdById(window.location.pathname.replace('/vehicleAdDetail/', '')).then((res) => {
-        //     this.setState({ ...this.state, loading: false, vehicleAdDetails: res }, () => {
-        //         console.log(this.state)
-        //         for (let index = 0; index < res.images.length; index++) {
-        //             this.setState({ ...this.state, images: [...this.state.images, { original: res.images[index]['data_url'], thumbnail: res.images[index]['data_url'] }] })
-        //         }
-        //     })
-        // }).catch(err => {
-        //     console.log(err)
-        // })
         this.props.getAllVehicleAds().then(res => {
             console.log('res in getall vehicles', res)
             const userdetais = localStorage.getItem("user");
@@ -69,10 +59,8 @@ class myads extends Component {
                     data: res.filter(vehicle => vehicle.userId == users._id)
                 }
             })
-            // this.state.vehicleAdDetails.map(vehicleDetails=)
             console.log('this.state.vehicleAdDetails', this.state.vehicleAdDetails)
         }).catch(err => {
-            // console.log(err)
             alert('Connection error pas!')
         })
     }
@@ -116,16 +104,17 @@ class myads extends Component {
                                 </Card.Content>
                             </Card>
 
-                        }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+                        }) :<h1>No Ads TO Display</h1>}
+                        
                     </Card.Group>
 
                 </div>
-                 ):<h1>NO Ads TO Display</h1>}
+                 ): <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
             </div>
         )
     }
 }
 const mapStateToProps = (state) => ({
-    // vehicleAds: state.vehicle.publishedVehicleAdIds
+    vehicleAds: state.vehicle.publishedVehicleAdIds
 })
 export default connect(mapStateToProps, { getAllVehicleAds })(myads);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, Form, Header, Icon } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Header, Icon,Input } from 'semantic-ui-react'
 import GoogleLogin from 'react-google-login'
 import axios from "axios"
 import passwordHash from 'password-hash'
@@ -9,18 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { userUpdate } from '../redux/actions/userActions';
 import { connect } from 'react-redux'
 class forgetPassword extends Component { 
-//   const [user, setUser] = useState({
-//      password:""
-   
-// })
-// const [forgetPassword, setForgetPassword] = useState({
-//     reEnterPassword:"",
-//     OTP:0
-// })
+
 state={
-  user:null,
+  user:{
+    password:""
+  },
   reEnterPassword:"",
-  OTP:null
+  OTP:""
 }
 render() {
 const item = localStorage.getItem("updatePasswordDetails");
@@ -29,14 +24,6 @@ const userdetais = localStorage.getItem("user");
 const user = jwt.decode(userdetais);
 
 const formHandler =(e)=>{
-// setUser({
-//   ...this.user,
-//   [e.target.name]:e.target.value
-// })
-// setUser(prevState => ({
-//  ...prevState,
-//  [e.target.name]:e.target.value
-// }));
 this.setState({
   ...this.state,
   user:{
@@ -46,19 +33,14 @@ this.setState({
 })
 }
 const forgetPasswordHandle=(e)=>{
-    // setForgetPassword({
-    //     ...forgetPassword,
-    //     [e.target.name]:e.target.value
-    // })
+  
     this.setState({
       ...this.state,
       [e.target.name]:e.target.value
     })
 }
 const submitHandler=(e)=>{
-  // console.log(user,"user");
     e.preventDefault();
-    // const password = passwordHash.generate(user.password);
      const password = passwordHash.generate(this.state.user.password);
      console.log("hashpassword",password)
     this.setState({
@@ -75,9 +57,6 @@ const submitHandler=(e)=>{
     console.log("this.state.OTP",this.state.OTP)
 
         if(passwordHash.verify(this.state.reEnterPassword,password) && passwordHash.verify(this.state.OTP,OTPDetails.code)){
-                // axios.post(`http://localhost:5000/user/update/${this.state.user._id}`,{password})
-                // const userdetais = localStorage.getItem("user");
-                // const user = jwt.decode(userdetais);
                 console.log("updatedetails",OTPDetails)
                 console.log('this.state.user',this.state.user);
                 console.log('password',password);
@@ -97,18 +76,17 @@ const submitHandler=(e)=>{
                         wishList:userResponds.userResponds,
                         image:userResponds.image
                     }
-                    // console.log(userDetails);
+                  
                     this.setState({
                       ...this.state,
                       action:true
                     })
                       notify();
                       window.location.href = '/signin'
-                    // dispatch({type:'ADD_USER',payload:userDetails});
-                    // resolve(userDetails);
+                    
                 }
                 else{
-                  // console.log(userDetails);
+                 
                   window.location.href = '/'
                     this.setState({
                       ...this.state,
@@ -117,7 +95,7 @@ const submitHandler=(e)=>{
                       notify();
                 }
                 }).catch((err)=>{
-                    // reject(err)
+                   
                 })
             }
 }
@@ -144,27 +122,63 @@ const notify = () => this.state.action ? toast.success('Login  was  successfull!
       <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
       <Icon name="sign-in"/> Sign In
                 </Header>
-    <Form.Field>
+    {/* <Form.Field>
       <div>
     <Icon name="mail"/>
       <label>OTP Code<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input placeholder='OTP Code' name="OTP" onChange={forgetPasswordHandle}/>
-    </Form.Field>
-    <Form.Field>
+    </Form.Field> */}
+    <Icon name="key" />
+         <Form.Field required
+                    width='16'
+                    id='OTP'
+                    name="OTP"
+                    control={Input}
+                    label='OTP'
+                    placeholder='Enter OTP Code'
+                    onChange={forgetPasswordHandle}
+                    error={this.state.OTP == ""}
+                />
+    {/* <Form.Field>
+    
     <div>
     <Icon name="key"/>
       <label>new Password<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input placeholder='new Password' name="password" type="password" onChange={formHandler}/>
-    </Form.Field>
-    <Form.Field>
+    </Form.Field> */}
+    <Icon name="key" />
+         <Form.Field required
+                    width='16'
+                    id='password'
+                    name="password"
+                    control={Input}
+                    label='password'
+                    placeholder='Enter New Password'
+                    onChange={formHandler}
+                    error={this.state.user.password == ""}
+                    type='password'
+                />
+    {/* <Form.Field>
     <div>
     <Icon name="key"/>
       <label>Re Enter Password<span style={{ color: '#FF0000' }}>*</span></label>
       </div>
       <input placeholder='Re Enter Password' name="reEnterPassword" type="password" onChange={forgetPasswordHandle}/>
-    </Form.Field>
+    </Form.Field> */}
+    <Icon name="key" />
+         <Form.Field required
+                    width='16'
+                    id='reEnterPassword'
+                    name="reEnterPassword"
+                    control={Input}
+                    label='Re Enter Password'
+                    placeholder='Re Enter password'
+                    onChange={forgetPasswordHandle}
+                    error={this.state.reEnterPassword == ""}
+                    type='password'
+                />
     <Button type='submit' onClick={submitHandler}>Re Set Password</Button>
   </Form>
   <ToastContainer />

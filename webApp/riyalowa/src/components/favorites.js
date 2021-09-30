@@ -58,8 +58,6 @@ class favorites extends Component {
         });
     }
     removeFavorite = () => {
-        // const userdetais = localStorage.getItem("user");
-        // const decodeItem = jwt.decode(userdetais);
         console.log('componentDidUpdate', this.state)
         if (this.state.user) {
             this.props.userUpdate(this.state.user, this.state.user).then((res) => {
@@ -73,54 +71,12 @@ class favorites extends Component {
                         vehicleAds: this.state.vehicleAds.filter((vehicle) => user.wishList.includes(vehicle._id)),
                         user: user
                     })
-                    // setAction(({
-                    //     success:true
-                    //  }));
-                    // this.setState({
-                    //     ...this.state,
-                    //     action:true
-                    //   })
-                    //   notify();
-                    // localStorage.setItem('user',token);
-                    // const userResponds = jwt.decode(token);
-                    // const userDetails = {
-                    //     _id: userResponds._id,
-                    //     name: userResponds.name,
-                    //     email: userResponds.email,
-                    //     type: userResponds.type,
-                    //     phoneNumber: userResponds.phoneNumber,
-                    //     wishList:userResponds.wishList,
-                    //     image:userResponds.image,
-                    //     password:userResponds.password
-                    // }
-
-                    // console.log(userDetails);
-
-
-                    // dispatch({type:'ADD_USER',payload:userDetails});
-                    // resolve(userDetails);
+                   
                 }
-                else {
-                    // this.setState({
-                    //     ...this.state,
-                    //     action:false
-                    //   })
-                    //   notify();
-                }
-                // setAction(({
-                //     success:false
-                //  }));
+               
 
             }).catch((err) => {
-                // reject(err)
-                // setAction(({
-                //     success:false
-                //  }));
-                // this.setState({
-                //     ...this.state,
-                //     action:false
-                //   })
-                //   notify();
+            
             })
         }
 
@@ -173,7 +129,7 @@ class favorites extends Component {
         console.log("veh", this.state.vehicleAds)
         return (
             <div >
-                {this.state.vehicleAds.length >0 ? (
+                {this.state.vehicleAds.length >0  ? (
                 <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                     {this.state.vehicleAds.length > 0 ? this.state.vehicleAds.map((item) => {
                         return <Card>
@@ -199,31 +155,16 @@ class favorites extends Component {
                                                 })
                                                 console.log('this.state.user.wishList in if', this.state.user.wishList)
                                             }
-                                            // else {
-                                            //     this.setState({
-                                            //         ...this.state,
-                                            //         user: {
-                                            //             ...this.state.user,
-                                            //             wishList: [...this.state.user.wishList, item._id]
-
-                                            //         }
-                                            //     })
-                                            //     console.log('this.state.user.wishList', this.state.user.wishList)
-                                            //     localStorage.setItem('user', this.state.user);
-                                            // }
+                                
 
                                         }} >
-                                            {/* <a onclick = {setwishList(item._id)}> */}
+                                           
                                             <Icon name="heart" disabled={this.state.user ? !this.state.user.wishList.includes(item._id) : true}
                                                 corner="bottom right"
                                                 style={{ float: 'right' }}
-                                                // user.wishList.map(list=>{ return list==item._id})
                                                 color={this.state.user ? (this.state.user.wishList.includes(item._id) ? "red" : "brown") : "brown"}
                                                 size="big"
-
-                                            // link={}
                                             />
-                                            {/* </a> */}
                                         </div>
                                     </Card.Header>
                                     {item.title ? <div><Card.Description>
@@ -238,9 +179,10 @@ class favorites extends Component {
                             </Card.Content>
                         </Card>
 
-                    }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+                    }):<h1>No Ads TO Display</h1>} 
                 </Card.Group>
-               ):<h1>NO Ads TO Display</h1>}
+                ): <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
+               
                 <div className='pagination'>
                     <Pagination
                         activePage={this.state.pagination.activePage}
