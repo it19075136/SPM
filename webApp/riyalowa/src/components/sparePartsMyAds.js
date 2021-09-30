@@ -70,8 +70,11 @@ class sparepartAdDetails extends Component {
     render() {
         return (
             <div>
-                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.sparepartAdDetails.length < 1}  >Export to CSV</CSVLink>
+                {this.state.sparepartAdDetails.length >0 ? (
+                    
+                
                 <div>
+                    <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.sparepartAdDetails.length < 1}  >Export to CSV</CSVLink>
                     <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                         {this.state.sparepartAdDetails ? this.state.sparepartAdDetails.map((item) => {
                             return <Card>
@@ -86,7 +89,8 @@ class sparepartAdDetails extends Component {
                                         {item.title ? <div><Card.Description>
                                             <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
                                         </Card.Description>
-                                            <Card.Meta>{item.location}</Card.Meta></div>
+                                            <Card.Meta>{item.location}</Card.Meta>
+                                            <Card.Meta>{item.status}</Card.Meta></div>
                                             : null}
                                     </Card.Content>
                                     <Card.Content extra>
@@ -99,6 +103,7 @@ class sparepartAdDetails extends Component {
                         }) : <Loader active inline='centered' indeterminate size='massive' style={{ margin: '0 auto' }} />}
                     </Card.Group>
                 </div>
+                     ):<h1>NO Ads TO Display</h1>} 
             </div>
         )
     }
