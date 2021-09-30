@@ -29,7 +29,8 @@ class vehicleAdsView extends Component {
         open: false,
         conditionFilter: null,
         categoryOptions: [],
-        makeOptions: []
+        makeOptions: [],
+        catFilter: null
     }
 
     sortAdsArray = () => {
@@ -151,6 +152,13 @@ class vehicleAdsView extends Component {
                 })
             })
         })
+
+        const search = this.props.location.search; // returns the URL query String
+        const params = new URLSearchParams(search); 
+        const ctFliter = params.get('filter'); 
+
+        this.setState({...this.state,catFilter: ctFliter})
+
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -208,6 +216,7 @@ class vehicleAdsView extends Component {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
                                 && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.catFilter != "")))
                             )
                         }
                     ).map((item) => {
@@ -219,7 +228,6 @@ class vehicleAdsView extends Component {
                                 <Card.Content>
                                     <Card.Header>{item.title}
                                         <div hidden={this.state.user ? false : true} onClick={() => {
-
                                             console.log('in set wishlist', item._id)
                                             if (this.state.user.wishList.includes(item._id)) {
                                                 this.setState({

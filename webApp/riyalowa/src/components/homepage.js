@@ -107,7 +107,7 @@ class homepage extends Component {
                 <Grid.Column key={index}>
                   <Card.Content color="blue" extra>
                     <Icon name="car" size="big" color="blue" circular bordered inverted flipped />
-                    <Button color="blue" size="big" animated="vertical" primary inverted onClick={() => window.location.href = '/vehicleAds'}>
+                    <Button color="blue" size="big" animated="vertical" primary inverted onClick={() => window.location.href = `/vehicleAds?filter=${data.mainName}`}>
                       <Button.Content visible>{data.mainName}</Button.Content>
                       <Button.Content hidden>{data.mainName}</Button.Content>
                     </Button>
@@ -128,7 +128,7 @@ class homepage extends Component {
                 <Grid.Column key={index}>
                   <Card.Content color="blue" extra>
                     <Icon name="settings" size="big" color="blue" circular bordered flipped />
-                    <Button  size="big" animated="vertical" inverted primary onClick={() => window.location.href = '/sparePartsAds'}>
+                    <Button  size="big" animated="vertical" inverted primary onClick={() => window.location.href = `/sparePartsAds?filter=${data.mainName}`}>
                       <Button.Content visible>{data.mainName}</Button.Content>
                       <Button.Content hidden>{data.mainName}</Button.Content>
                     </Button>

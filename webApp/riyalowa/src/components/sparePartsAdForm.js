@@ -334,7 +334,7 @@ class sparePartAdForm extends Component {
                                 <Button
                                     color='red'
                                     type='button'
-                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                    disabled={this.state.payload.contactNumbers.length === 1}
                                     icon='trash'
                                     onClick={this.deletePhone}
                                 />
@@ -357,7 +357,7 @@ class sparePartAdForm extends Component {
                     size='huge'
                     verticalAlign='middle'
                 >
-                    {this.state.payload.contactNumbers.map((item) => (
+                    {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
                         <List.Item key={item}>
                             <Icon name='call' />
                             <List.Content header={item} />

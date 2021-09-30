@@ -11,7 +11,8 @@ class vehicleAdDetails extends Component {
         vehicleAdDetails: null,
         sellerMail: null,
         loading: true,
-        images: []
+        images: [],
+        sellerName: null
     }
 
     componentDidMount = () => {
@@ -23,7 +24,7 @@ class vehicleAdDetails extends Component {
                 }
                 this.setState({...this.state, images: images})
                 axios.get(`http://localhost:5000/user/${this.state.vehicleAdDetails.userId}`).then((res) => {
-                    this.setState({...this.state,sellerMail: res.data.email}, () => console.log('sellerMail',this.state.sellerMail))
+                    this.setState({...this.state,sellerMail: res.data.email, sellerName: res.data.name}, () => console.log('sellerMail',this.state.sellerMail))
                 }).catch((err) => {
                     alert(String.toString(err))
                 })
@@ -86,7 +87,7 @@ class vehicleAdDetails extends Component {
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row style={{ padding: '10px' }} >
-                            <Header>Seller: abc</Header>
+                            <Header>Seller: {this.state.sellerName}</Header>
                         </Grid.Row>
                         <Grid.Row style={{ padding: '10px' }} >
                             <Header>Location: {this.state.vehicleAdDetails.location} </Header> <Icon name='map marker alternate' size="big" style={{marginTop: '-10px'}}  color="blue"/>
