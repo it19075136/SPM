@@ -334,7 +334,7 @@ class sparePartAdForm extends Component {
                                 <Button
                                     color='red'
                                     type='button'
-                                    disabled={this.state.payload.contactNumbers.length === 0}
+                                    disabled={this.state.payload.contactNumbers.length === 1}
                                     icon='trash'
                                     onClick={this.deletePhone}
                                 />
