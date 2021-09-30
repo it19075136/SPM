@@ -28,6 +28,7 @@ class sparePartAdView extends Component {
         filter: "",
         open: false,
         conditionFilter: null,
+        catFilter: null,
         categoryOption: [],
         makeOption: []
     }
@@ -151,6 +152,12 @@ class sparePartAdView extends Component {
                 })
             })
         })
+
+        const search = this.props.location.search; // returns the URL query String
+        const params = new URLSearchParams(search); 
+        const ctFliter = params.get('filter'); 
+
+        this.setState({...this.state,catFilter: ctFliter}, () => console.log(this.state.catFilter))
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -198,7 +205,7 @@ class sparePartAdView extends Component {
 
 
     render() {
-        console.log(this.state.sparepartsAds);
+
         const { filter } = this.state;
         return (
             <div>
@@ -212,6 +219,7 @@ class sparePartAdView extends Component {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
                                 && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
+                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.catFilter != "")))
                             )
                         }
                     ).map((item) => {
