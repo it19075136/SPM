@@ -88,9 +88,9 @@ class myads extends Component {
     render() {
         return (
             <div>
-                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.vehicleAdDetails.length < 1}  >Export to CSV</CSVLink>
-                {/* {this.state.vehicleAdDetails.length >0 ? ( */}
+                            {this.state.vehicleAdDetails.length >0 ? (
                 <div>
+                <CSVLink {...this.state.csvReport} className='export-btn' hidden={this.state.vehicleAdDetails.length < 1}  >Export to CSV</CSVLink>
                     <Card.Group itemsPerRow={3} stackable className='ad-cards-group'>
                         {this.state.vehicleAdDetails ? this.state.vehicleAdDetails.map((item) => {
                             return <Card>
@@ -105,7 +105,8 @@ class myads extends Component {
                                         {item.title ? <div><Card.Description>
                                             <h4 className="date">Rs. {item.price} {item.negotiable ? 'Negotiable' : null}</h4>
                                         </Card.Description>
-                                            <Card.Meta>{item.location}</Card.Meta></div>
+                                            <Card.Meta>{item.location}</Card.Meta>
+                                            <Card.Meta>{item.status}</Card.Meta></div>
                                             : null}
                                     </Card.Content>
                                     <Card.Content extra>
@@ -119,7 +120,7 @@ class myads extends Component {
                     </Card.Group>
 
                 </div>
-                {/* ):<h1>NO Ads TO Display</h1>} */}
+                 ):<h1>NO Ads TO Display</h1>}
             </div>
         )
     }

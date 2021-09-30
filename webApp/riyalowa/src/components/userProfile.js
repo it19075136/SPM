@@ -211,17 +211,22 @@ class userProfile extends Component  {
         // console.log(newPassword, "newPassword");
         // console.log(currentPassword, "currentPassword");
         e.preventDefault();
-
+        console.log('this.state',this.state);
         if (this.state.newPassword === this.state.repassword && hashPassword.verify(this.state.currentPassword, this.state.user.password)) {
             console.log('in promise in addNewPAssword')
             // newPassword.password = hashPassword.generate(newPassword.password);
+            const password = hashPassword.generate(this.state.newPassword)
+            console.log("password",password)
             this.setState({
                 ...this.state,
                 newPassword:hashPassword.generate(this.state.newPassword)
               })
-              this.props.userUpdate(this.state.user,decodeItem).then((res) => {
+              console.log('this.state',this.state);
+              this.props.userUpdate({"password":password},decodeItem).then((res) => {
                 console.log('in post');
                 const { token } = res;
+                console.log("token",token)
+                console.log("res",res)
                 if (token) {
                     // setAction(({
                     //     success:true
