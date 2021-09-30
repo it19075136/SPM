@@ -27,7 +27,9 @@ export const updateSparepartsAd = (payload, id) => dispatch => {
                 dispatch({
                     type: actionType.UPDATE_SPAREPARTS_AD,
                     payload: res.data
-                })}
+                })
+                resolve(res);
+            }
             else
                 resolve(res);
         }).catch((err) => {

@@ -70,7 +70,7 @@ class updateSparePartsAdForm extends Component {
             e.preventDefault();
             this.setState({ ...this.state, actionWaiting: true }, () => {
                 this.props.updateSparepartsAd(this.state.payload, window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
-                    console.log(res);
+                    console.log('in update',res);
                     this.setState({ ...this.state, success: true }, () => {
                         notify();
                         this.setState({ ...this.state, success: false, actionWaiting: false })
