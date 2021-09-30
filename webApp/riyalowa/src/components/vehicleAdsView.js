@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getPublishedVehicleAds, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Icon, Modal, Header, Form, Radio, Select } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Icon, Modal, Header, Form, Radio, Select, Dropdown, Input } from 'semantic-ui-react';
 import { getAllCategories } from '../redux/actions/categoryActions';
 
 class vehicleAdsView extends Component {
@@ -30,7 +30,8 @@ class vehicleAdsView extends Component {
         conditionFilter: null,
         categoryOptions: [],
         makeOptions: [],
-        catFilter: null
+        catFilter: null,
+        priceFilt: { min: 0, max: 99999999 }
     }
 
     sortAdsArray = () => {
@@ -157,7 +158,7 @@ class vehicleAdsView extends Component {
         const params = new URLSearchParams(search); 
         const ctFliter = params.get('filter'); 
 
-        this.setState({...this.state,catFilter: ctFliter})
+        this.setState({...this.state,catFilter: ctFliter.replace('%20',' ')})
 
     }
 
@@ -216,7 +217,8 @@ class vehicleAdsView extends Component {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
                                 && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
-                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.catFilter != "")))
+                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.filter != "")))
+                                && ((this.state.priceFilt != null && elem.price) ? (elem.price < this.state.priceFilt.max && elem.price > this.state.priceFilt.min) : (this.state.filter == "") || (this.state.priceFilt == null && (this.state.filter != "")))
                             )
                         }
                     ).map((item) => {
@@ -322,26 +324,24 @@ class vehicleAdsView extends Component {
                                 onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                         </Form.Group>
-                        <Header as="h5">Vehicle Category</Header>
-                        {/* <Form.Field required
-                            width='16'
-                            control={Select}
-                            placeholder='Vehicle Type'
-                            onChange={this.handleChange.bind(this,"TYPE")}
-                            search
-                        /> */}
-                        <Form.Field required
-                            id='category'
-                            name="category"
-                            width='16'
-                            control={Select}
-                            options={this.state.categoryOptions} // get categories
-                            // label={{ children: 'Category', htmlFor: 'category' }}
-                            placeholder='Vehicle Category'
-                            search
-                            searchInput={{ id: 'category' }}
-                            onChange={this.handleChange.bind(this, "TYPE")}
+                        <Header as="h5">Select Price Range</Header>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyItems: 'flex-start', alignItems: 'center'}}>
+                        <Form.Field
+                            control={Input}
+                            label="Min"
+                            name="min"
+                            style={{marginRight: '10px'}}
+                            value={this.state.priceFilt.min}
+                            onChange={(e) => this.setState({...this.state,priceFilt: {...this.state.priceFilt, min: e.target.value}},() => console.log(this.state.priceFilt))}
+                        />                        
+                        <Form.Field
+                            control={Input}
+                            label="Max"
+                            name="max"
+                            value={this.state.priceFilt.max}
+                            onChange={(e) => this.setState({...this.state,priceFilt: {...this.state.priceFilt, max: e.target.value}},() => console.log(this.state.priceFilt))}
                         />
+                        </div>
                     </Modal.Content>
                     <Modal.Actions>
                         <Button negative onClick={() => this.setState({ ...this.state, open: false })}>

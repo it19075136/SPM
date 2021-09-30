@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getPublishedSparepartsAds, getSparepartAdById } from '../redux/actions/sparepartsActions';
 import jwt from 'jsonwebtoken'
 import { userUpdate } from '../redux/actions/userActions';
-import { Card, Placeholder, Loader, Button, Pagination, Image, Select, Icon, Modal, Header, Form, Radio } from 'semantic-ui-react';
+import { Card, Placeholder, Loader, Button, Pagination, Image, Input, Icon, Modal, Header, Form, Radio } from 'semantic-ui-react';
 import './sample.css'
 import { getAllCategories } from '../redux/actions/categoryActions';
 
@@ -29,6 +29,7 @@ class sparePartAdView extends Component {
         open: false,
         conditionFilter: null,
         catFilter: null,
+        priceFilt: { min: 0, max: 99999999 },
         categoryOption: [],
         makeOption: []
     }
@@ -157,7 +158,7 @@ class sparePartAdView extends Component {
         const params = new URLSearchParams(search); 
         const ctFliter = params.get('filter'); 
 
-        this.setState({...this.state,catFilter: ctFliter}, () => console.log(this.state.catFilter))
+        this.setState({...this.state,catFilter: ctFliter.replace('%20',' ')})
     }
 
     handlePaginationChange = (e, { activePage }) => this.setState({
@@ -219,7 +220,8 @@ class sparePartAdView extends Component {
                             return (
                                 elem.title.toLowerCase().includes(`${filter.toLocaleLowerCase()}`)
                                 && ((this.state.conditionFilter != null && elem.condition) ? (elem.condition.toLocaleLowerCase() == this.state.conditionFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.conditionFilter == null && (this.state.filter != "")))
-                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.catFilter != "")))
+                                && ((this.state.catFilter != null && elem.category) ? (elem.category.toLocaleLowerCase() == this.state.catFilter.toLocaleLowerCase()) : (this.state.filter == "") || (this.state.catFilter == null && (this.state.filter != "")))
+                                && ((this.state.priceFilt != null && elem.price) ? (elem.price <= this.state.priceFilt.max && elem.price >= this.state.priceFilt.min) : (this.state.filter == "") || (this.state.priceFilt == null && (this.state.filter != "")))
                             )
                         }
                     ).map((item) => {
@@ -330,17 +332,24 @@ class sparePartAdView extends Component {
                                 onChange={this.handleChange.bind(this, "CONDITION")}
                             />
                         </Form.Group>
-                        <Header as="h5">Sparepart Category</Header>
-                        <Form.Field required
-                            width='16'
-                            control={Select}
-                            name="category"
-                            options={this.state.categoryOption}
-                            placeholder='Part or Accessory Type'
-                            search
-                            searchInput={{ id: 'category' }}
-                            onChange={this.handleChange.bind(this, "TYPE")}
+                        <Header as="h5">Select Price Range</Header>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyItems: 'flex-start', alignItems: 'center'}}>
+                        <Form.Field
+                            control={Input}
+                            label="Min"
+                            name="min"
+                            value={this.state.priceFilt.min}
+                            style={{marginRight: '10px'}}
+                            onChange={(e) => this.setState({...this.state,priceFilt: {...this.state.priceFilt, min: e.target.value}},() => console.log(this.state.priceFilt))}
+                        />                        
+                        <Form.Field
+                            control={Input}
+                            label="Max"
+                            name="max"
+                            value={this.state.priceFilt.max}
+                            onChange={(e) => this.setState({...this.state,priceFilt: {...this.state.priceFilt, max: e.target.value}},() => console.log(this.state.priceFilt))}
                         />
+                        </div>
                     </Modal.Content>
                     <Modal.Actions>
                         <Button negative onClick={() => this.setState({ ...this.state, open: false })}>

@@ -8,33 +8,6 @@ import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateVehicleAd, deleteVehicleAd, getVehicleAdById } from '../redux/actions/vehicleAdActions';
 import {districts} from '../utils/districts';
 
-const categoryOptions = [
-    { key: 'c', text: 'Car', value: 'car' },
-    { key: 's', text: 'SUV', value: 'suv' },
-    { key: 'v', text: 'Van', value: 'van' },
-    { key: 'b', text: 'Bus', value: 'bus' },
-    { key: 'l', text: 'Lorry', value: 'lorry' },
-    { key: 'm', text: 'Motor Cycle', value: 'motorCycle' },
-    { key: 'o', text: 'Other', value: 'othe' },
-]
-
-const locationOptions = [
-    { key: '1', text: 'Kandy', value: 'kandy' },
-    { key: '2', text: 'Colombo', value: 'colombo' },
-    { key: '3', text: 'Malabe', value: 'malabe' },
-    { key: '4', text: 'Kegalle', value: 'kegalle' },
-    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
-    { key: '6', text: 'Jaffna', value: 'jaffna' },
-    { key: '7', text: 'Ampara', value: 'ampara' },
-]
-
-
-const vehicleMakeOptions = [
-    { key: 't', text: 'Toyota', value: 'toyota' },
-    { key: 's', text: 'Suzuki', value: 'suzuki' },
-    { key: 'h', text: 'Honda', value: 'honda' },
-]
-
 const vehicleModelOptions = [
     { key: 'ax', text: 'Axio', value: 'axio' },
     { key: 'al', text: 'Allion', value: 'allion' },
