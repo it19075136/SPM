@@ -7,16 +7,16 @@ import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const partTypeOption = [
-    { key: 'b', text: 'Body Components', value: 'components' },
-    { key: 'a', text: 'Car Audio Systems', value: 'audio' },
-    { key: 'e', text: 'Engines & Engine Parts', value: 'engine' },
-]
+
 
 const locationOption = [
-    { key: 'c', text: 'Colombo', value: 'colombo' },
-    { key: 'k', text: 'Kandy', value: 'kandy' },
-    { key: 'm', text: 'Matara', value: 'matara' },
+    { key: '1', text: 'Kandy', value: 'kandy' },
+    { key: '2', text: 'Colombo', value: 'colombo' },
+    { key: '3', text: 'Malabe', value: 'malabe' },
+    { key: '4', text: 'Kegalle', value: 'kegalle' },
+    { key: '5', text: 'Kurunegala', value: 'kurunegala' },
+    { key: '6', text: 'Jaffna', value: 'jaffna' },
+    { key: '7', text: 'Ampara', value: 'ampara' },
 ]
 const phoneOptions = [
     { key: 'sl', text: 'Sri Lanka (+94)', value: '+94' }
@@ -43,22 +43,31 @@ class sparePartAdForm extends Component {
         success: false,
         error: false,
         actionWaiting: false,
-        categoryOption: [],
-        makeOption: []
+        categoryOptions: [],
+        makeOptions: []
     }
 
+    arrangeCategories = (categories) => {
+
+        let cats = []
+        for (let index = 0; index < categories.length; index++)
+            cats.push({ key: index, text: categories[index].mainName, value: categories[index].mainName })
+
+        let makes = []
+        categories.forEach(elem => {
+            elem.make.forEach(child => {
+                makes.push({ key: elem.mainName, text: child, value: child })
+            })
+        })
+
+        this.setState({...this.state, categoryOptions: cats, makeOptions: makes},() => console.log(this.state))
+    }
 
     componentDidMount = () => {
         this.props.getAllCategories().then((res) => {
-            console.log(res)
-            res.filter(item => item.type == 'Spare Parts').forEach((element, index) => {
-                this.setState({ ...this.state, categoryOption: [...this.state.categoryOption, {key: index, text: element.mainName, value: element.mainName}]}, () => {
-                    element.make.forEach((childrenElem) => {
-                        this.setState({...this.state, makeOption: [...this.state.makeOption, {key: element.mainName , text: childrenElem, value: childrenElem}]})
-                    })
-                })
-            })
-        })
+            console.log(this.props.getAllCategories())
+            this.arrangeCategories(res.filter(elem => elem.type == "Spare Parts"))
+    })
     }
 
     addPhone = () => {
@@ -170,7 +179,7 @@ class sparePartAdForm extends Component {
                     width='16'
                     control={Select}
                     name="category"
-                    options={this.state.categoryOption}
+                    options={this.state.categoryOptions}
                     label={{ children: 'Part or Accessory Type', htmlFor: 'accessoryType' }}
                     placeholder='Part or Accessory Type'
                     error={this.state.payload.category == ''}
