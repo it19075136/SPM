@@ -79,7 +79,7 @@ export default class navbar extends Component {
                               window.location.href = '/adminsparePartsAds'
                         }}
                     ></Menu.Item>:null}
-                    {user ?                       <Menu.Item
+                    {user && user.type != 'admin'? <Menu.Item
                         className="item"
                         name='Wish List'
                         position='right'
@@ -93,7 +93,7 @@ export default class navbar extends Component {
                               window.location.href = '/favorites'
                         }}
                     ></Menu.Item>:null}
-                    {user ?                       <Menu.Item
+                    {user && user.type != 'admin' ? <Menu.Item
                         className="item"
                         name='My Ads'
                         active={this.state.activeItem  === '/myads'}
@@ -106,7 +106,7 @@ export default class navbar extends Component {
                               window.location.href = '/myads'
                         }}
                     ></Menu.Item>:null}
-                    {user ?                       <Menu.Item
+                    {user && user.type != 'admin' ? <Menu.Item
                         className="item"
                         name='My Profile'
                         active={this.state.activeItem  === '/userProfile'}
@@ -126,6 +126,7 @@ export default class navbar extends Component {
                     <Menu.Item
                         className="item"
                         name='sign-out'
+                        position={user.type == 'admin' ? 'right':null}
                         // active={activeItem === 'sign-out'}
                         onClick={()=>{
                             const login = {
@@ -156,6 +157,7 @@ export default class navbar extends Component {
                     (<Menu.Item
                         className="item"
                         name='sign-out'
+                        position={user.type == 'admin' ? 'right':null}
                         active={this.state.activeItem === 'sign-out'}
                         onClick={this.handleItemClick.bind(this,'sign-out')}
                     >
@@ -176,8 +178,7 @@ export default class navbar extends Component {
                         </Menu.Item>
                         )
                     }
-
-                    <Menu.Item
+                    {user && user.type != 'admin' ? <Menu.Item
                         className="item"
                         style={{ color: 'orange' }}
                         name='publishAd'
@@ -185,7 +186,7 @@ export default class navbar extends Component {
                         onClick={this.handleItemClick.bind(this,'publishAd')}
                     >
                         Publish ad for free
-                    </Menu.Item>
+                    </Menu.Item>:null}
                 </Menu>
                 <Modal
                     basic
