@@ -103,7 +103,7 @@ class updateSparePartsAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            this.setState({ ...this.state, actionWaiting: true }, () => {
+            this.setState({ ...this.state, actionWaiting: true, payload: {...this.state.payload, status: 'pending'}  }, () => {
                 this.props.updateSparepartsAd(this.state.payload, window.location.pathname.replace('/sparePartsAd/update/', '')).then((res) => {
                     console.log('in update', res);
                     this.setState({ ...this.state, success: true }, () => {
