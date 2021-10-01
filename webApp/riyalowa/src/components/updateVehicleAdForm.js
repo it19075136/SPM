@@ -6,18 +6,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { updateVehicleAd, deleteVehicleAd, getVehicleAdById } from '../redux/actions/vehicleAdActions';
-import {districts} from '../utils/districts';
-
-const vehicleModelOptions = [
-    { key: 'ax', text: 'Axio', value: 'axio' },
-    { key: 'al', text: 'Allion', value: 'allion' },
-    { key: 'v', text: 'Vitz', value: 'vitz' },
-]
+import { districts } from '../utils/districts';
+import axios from 'axios';
 
 const vehicleBodyOptions = [
     { key: 'h', text: 'Hatchback', value: 'hatchback' },
     { key: 's', text: 'Sedan', value: 'sedan' },
     { key: 'c', text: 'Coupe', value: 'coupe' },
+    { key: 'o', text: 'Other', value: 'other' }
 ]
 
 const transmissionOptions = [
@@ -64,17 +60,30 @@ class updateVehicleAdForm extends Component {
         isDelete: false,
         categoryOptions: [],
         makeOptions: [],
-        locationOptions: []
+        locationOptions: [],
+        vehicleModelOptions: [],
+        setModelsLoading: false
     }
 
     arrangeDistricts = () => {
 
         let dists = []
-        for (let index = 0; index < districts.length; index++) 
+        for (let index = 0; index < districts.length; index++)
             dists.push({ key: index, text: districts[index], value: districts[index] })
 
-        this.setState({...this.state,locationOptions:dists})            
-        
+        this.setState({ ...this.state, locationOptions: dists })
+
+    }
+
+
+    arrangeModels = (models) => {
+
+        let mods = []
+        for (let index = 0; index < models.length; index++)
+            mods.push({ key: models[index].Model_ID, text: models[index].Model_Name, value: models[index].Model_Name })
+
+        this.setState({ ...this.state, vehicleModelOptions: mods, setModelsLoading: false })
+
     }
 
     arrangeCategories = (categories) => {
@@ -131,7 +140,7 @@ class updateVehicleAdForm extends Component {
         const handleSubmit = (e) => {
             console.log(this.state);
             e.preventDefault();
-            this.setState({ ...this.state, actionWaiting: true }, () => {
+            this.setState({ ...this.state, actionWaiting: true, payload: {...this.state.payload, status: 'pending'} }, () => {
                 this.props.updateVehicleAd(this.state.payload, window.location.pathname.replace('/vehicleAd/update/', '')).then((res) => {
                     console.log(res);
                     this.setState({ ...this.state, success: true }, () => {
@@ -241,20 +250,35 @@ class updateVehicleAdForm extends Component {
                                 placeholder={this.state.payload.make ? this.state.payload.make : 'Vehicle Make'}
                                 search
                                 searchInput={{ id: 'vehicleMake' }}
-                                onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText } }, () => {
-                                    console.log(this.state)
-                                })}
+                                onChange={(e) => this.setState(
+                                    { ...this.state, payload: { ...this.state.payload, make: e.target.innerText }, setModelsLoading: true },
+                                    () => {
+                                        axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${this.state.payload.make.toLocaleLowerCase()}?format=json`).then((res) => this.arrangeModels(res.data.Results)).catch((err) => {
+                                            alert('No Models found!!')
+                                            this.setState({ ...this.state, setModelsLoading: false })
+                                        }
+                                        );
+                                    })}
                             />
                             <Form.Field required
                                 name="model"
                                 width='16'
                                 control={Select}
                                 value={this.state.payload.model}
-                                options={vehicleModelOptions}
+                                options={this.state.vehicleModelOptions.length > 0 ? this.state.vehicleModelOptions : null}
                                 label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
-                                placeholder={this.state.payload.model ? this.state.payload.model : 'Vehicle Model'}
+                                placeholder={this.state.setModelsLoading ? 'please wait...' : (this.state.payload.model ? this.state.payload.model : 'Vehicle Model')}
                                 search
                                 searchInput={{ id: 'vehicleModel' }}
+                                onClick={() => {
+                                    this.setState({ ...this.state, setModelsLoading: true }, () => {
+                                        axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${this.state.payload.make.toLocaleLowerCase()}?format=json`).then((res) => this.arrangeModels(res.data.Results)).catch((err) => {
+                                            alert('No Models found!!')
+                                            this.setState({ ...this.state, setModelsLoading: false })
+                                        }
+                                        );
+                                    })
+                                }}
                                 onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, model: e.target.innerText } }, () => {
                                     console.log(this.state)
                                 })}
@@ -572,7 +596,7 @@ class updateVehicleAdForm extends Component {
                                             size='huge'
                                             verticalAlign='middle'
                                         >
-                    {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
+                                            {this.state.payload.contactNumbers.filter(elem => elem != '').map((item) => (
                                                 <List.Item key={item}>
                                                     <Icon name='call' />
                                                     <List.Content header={item} />

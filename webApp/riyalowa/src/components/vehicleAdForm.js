@@ -6,18 +6,14 @@ import { publishVehicleAd } from '../redux/actions/vehicleAdActions';
 import { getAllCategories } from '../redux/actions/categoryActions';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {districts} from '../utils/districts';
-
-const vehicleModelOptions = [
-    { key: 'ax', text: 'Axio', value: 'axio' },
-    { key: 'al', text: 'Allion', value: 'allion' },
-    { key: 'v', text: 'Vitz', value: 'vitz' },
-]
+import { districts } from '../utils/districts';
+import axios from 'axios';
 
 const vehicleBodyOptions = [
     { key: 'h', text: 'Hatchback', value: 'hatchback' },
     { key: 's', text: 'Sedan', value: 'sedan' },
     { key: 'c', text: 'Coupe', value: 'coupe' },
+    { key: 'o', text: 'Other', value: 'other' },
 ]
 
 const transmissionOptions = [
@@ -74,9 +70,11 @@ class vehicleAdForm extends Component {
         success: false,
         error: false,
         actionWaiting: false,
-        categoryOptions:[],
-        makeOptions:[],
-        locationOptions: []
+        categoryOptions: [],
+        makeOptions: [],
+        locationOptions: [],
+        vehicleModelOptions: [],
+        setModelsLoading: false
         // validation: {
         //     year: false,
         //     make: false,
@@ -103,24 +101,34 @@ class vehicleAdForm extends Component {
             })
         })
 
-        this.setState({...this.state, categoryOptions: cats, makeOptions: makes},() => console.log(this.state))
+        this.setState({ ...this.state, categoryOptions: cats, makeOptions: makes }, () => console.log(this.state))
     }
 
     arrangeDistricts = () => {
 
         let dists = []
-        for (let index = 0; index < districts.length; index++) 
+        for (let index = 0; index < districts.length; index++)
             dists.push({ key: index, text: districts[index], value: districts[index] })
 
-        this.setState({...this.state,locationOptions:dists})            
-        
+        this.setState({ ...this.state, locationOptions: dists })
+
+    }
+
+    arrangeModels = (models) => {
+
+        let mods = []
+        for (let index = 0; index < models.length; index++)
+            mods.push({ key: models[index].Model_ID, text: models[index].Model_Name, value: models[index].Model_Name })
+
+        this.setState({ ...this.state, vehicleModelOptions: mods, setModelsLoading: false })
+
     }
 
     componentDidMount = () => {
 
         this.props.getAllCategories().then((res) => {
-                this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"));
-                this.arrangeDistricts();
+            this.arrangeCategories(res.filter(elem => elem.type == "Vehicles"));
+            this.arrangeDistricts();
         })
 
 
@@ -137,7 +145,7 @@ class vehicleAdForm extends Component {
     render() {
 
         const handleChange = (e) => {
-            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value }});
+            this.setState({ ...this.state, payload: { ...this.state.payload, [e.target.name]: e.target.value } });
         }
 
         const handleSubmit = (e) => {
@@ -230,15 +238,23 @@ class vehicleAdForm extends Component {
                     placeholder='Vehicle Make'
                     search
                     searchInput={{ id: 'vehicleMake' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, make: e.target.innerText }})}
+                    onChange={(e) => this.setState(
+                        { ...this.state, payload: { ...this.state.payload, make: e.target.innerText }, setModelsLoading: true },
+                        () => {
+                            axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/${this.state.payload.make.toLocaleLowerCase()}?format=json`).then((res) => this.arrangeModels(res.data.Results)).catch((err) => {
+                                alert('No Models found!!')
+                                this.setState({ ...this.state, setModelsLoading: false })
+                            }
+                            );
+                        })}
                 />
                 <Form.Field required
                     name="model"
                     width='16'
                     control={Select}
-                    options={vehicleModelOptions}
+                    options={this.state.vehicleModelOptions.length > 0 ? this.state.vehicleModelOptions : null}
                     label={{ children: 'Vehicle Model', htmlFor: 'vehicleModel' }}
-                    placeholder='Vehicle Model'
+                    placeholder={this.state.setModelsLoading ? 'please wait...' : 'Vehicle Model'}
                     error={this.state.payload.model == ''}
                     search
                     searchInput={{ id: 'vehicleModel' }}
@@ -255,7 +271,7 @@ class vehicleAdForm extends Component {
                     placeholder='Manufacture Date'
                     search
                     searchInput={{ id: 'year' }}
-                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText }})} />
+                    onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, year: e.target.innerText } })} />
                 <Form.Field required
                     name='bodyType'
                     width='16'
@@ -299,7 +315,7 @@ class vehicleAdForm extends Component {
                         error={this.state.payload.fuelType == ''}
                         search
                         searchInput={{ id: 'fuelType' }}
-                        onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText }})}
+                        onChange={(e) => this.setState({ ...this.state, payload: { ...this.state.payload, fuelType: e.target.innerText } })}
                     />
                 </Form.Group>
                 <Form.Field required
