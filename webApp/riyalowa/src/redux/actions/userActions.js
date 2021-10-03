@@ -169,29 +169,30 @@ export const userUpdate =(payload,decodeItem)=>dispatch =>{
 
 export const getAllSellers = (type, pendingAds) => dispatch => {
 
+  let arr = [];
   return new Promise((resolve, reject) => {
     axios.get('http://localhost:5000/user/').then((res) => {
-      for (let index = 0; index < res.data.length; index++) {
-        if (pendingAds.find(elem => elem.userId == res.data[index]._id))
-          pendingAds = [...pendingAds.filter(item => item.userId != res.data[index]._id), { ...pendingAds.find(elem => elem.userId == res.data[index]._id), userId: res.data[index].name }];
-      }
+      pendingAds.forEach((element) => {
+        arr.push({...element,userId: res.data.find(seller => seller._id === element.userId).name})
+      });
+      
       switch (type) {
         case "VEHICLE":
           dispatch({
             type: UPDATE_PENDING_VEHICLE_ADS,
-            payload: pendingAds
+            payload: arr
           })
           break;
         case "SPAREPART":
           dispatch({
             type: UPDATE_PENDING_SPAREPARTS_ADS,
-            payload: pendingAds
+            payload: arr
           })
           break;
         default:
           break;
       }
-      resolve(pendingAds)
+      resolve(arr)
     }).catch((err) => {
       reject(err)
     })
