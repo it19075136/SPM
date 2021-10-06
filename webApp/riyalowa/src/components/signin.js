@@ -16,6 +16,7 @@ class signin extends Component {
       password: ""
     },
     action: false,
+    text:""
   }
   render() {
 
@@ -49,7 +50,10 @@ class signin extends Component {
 
           this.setState({
             ...this.state,
-            action: true
+            action: true,
+            text:""
+          },()=>{
+            notify();
           })
 
 
@@ -58,15 +62,17 @@ class signin extends Component {
           console.log('in findUser');
 
           window.location.href = '/'
-          notify();
+          
         }
         else {
 
           this.setState({
             ...this.state,
-            action: false
+            action: false,
+            text:""
+          },()=>{
+            notify();
           })
-          notify();
           console.log('in else');
         }
 
@@ -74,9 +80,11 @@ class signin extends Component {
 
         this.setState({
           ...this.state,
-          action: false
+          action: false,
+          text:""
+        },()=>{
+          notify();
         })
-        notify();
         console.log('err');
         console.log(err);
 
@@ -85,9 +93,11 @@ class signin extends Component {
     const ErrResponseGoogle = (response) => {
       this.setState({
         ...this.state,
-        action: false
+        action: false,
+        text:""
+      },()=>{
+        notify();
       })
-      notify();
 
 
     }
@@ -115,7 +125,7 @@ class signin extends Component {
           password: ""
         }
       })
-
+      if(this.state.user.email && this.state.user.password){
       this.props.getUser(this.state.user).then((res) => {
         console.log('in dispathc');
 
@@ -129,7 +139,10 @@ class signin extends Component {
 
           this.setState({
             ...this.state,
-            action: true
+            action: true,
+            text:""
+          },()=>{
+            notify();
           })
           const login = {
             login: false
@@ -144,29 +157,49 @@ class signin extends Component {
           console.log('in findUser');
 
           window.location.href = '/'
-          notify();
+          
         }
         else {
 
           this.setState({
             ...this.state,
-            action: false
+            action: false,
+            text:""
+          },()=>{
+            notify();
           })
-          notify();
           console.log('in else');
         }
+        // this.setState({
+        //   ...this.state,
+        //   action: false,
+        //   text:""
+        // })
 
       }).catch((err) => {
 
         this.setState({
           ...this.state,
-          action: false
+          action: false,
+          text:""
+        },()=>{
+          notify();
         })
-        notify();
+        
         console.log('err');
         console.log(err);
 
       })
+    }
+    else{
+      this.setState({
+        ...this.state,
+        action: false,
+        text:""
+      },()=>{
+        notify();
+      })
+    }
     }
     const forgetPasswordHandler = (e) => {
 
@@ -188,6 +221,17 @@ class signin extends Component {
 
         })
       }
+      else{
+        this.setState({
+          ...this.state,
+          action: false,
+          text:"You need to Enter the email first"
+        },()=>{
+          console.log(this.state,'this.state')
+        notify();
+        })
+        
+      }
 
 
     }
@@ -199,7 +243,7 @@ class signin extends Component {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-    }) : toast.error('Login was unsuccessful', {
+    }) : toast.error( (this.state.text ? this.state.text :('Login was unsuccessful')), {
       position: "bottom-right",
       autoClose: 2000,
       hideProgressBar: false,
