@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { userUpdate } from '../redux/actions/userActions';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 class forgetPassword extends Component { 
 
 state={
@@ -87,19 +87,31 @@ const submitHandler=(e)=>{
                 }
                 else{
                  
-                  window.location.href = '/'
+                  
                     this.setState({
                       ...this.state,
                       action:false
-                    })
+                    },()=>{
                       notify();
+                      window.location.href = '/'
+                    })
+                     
                 }
                 }).catch((err)=>{
                    
                 })
             }
+            else{
+              this.setState({
+                ...this.state,
+                action:false
+              },()=>{
+                notify();
+                // window.location.href = '/'
+              })
+            }
 }
-const notify = () => this.state.action ? toast.success('Login  was  successfull!', {
+const notify = () => this.state.action ? toast.success('password change  was  successfull!', {
   position: "bottom-right",
   autoClose: 2000,
   hideProgressBar: false,
@@ -107,7 +119,7 @@ const notify = () => this.state.action ? toast.success('Login  was  successfull!
   pauseOnHover: true,
   draggable: true,
   progress: undefined,
-}) : toast.error('Login was unsuccessful', {
+}) : toast.error('password change unsuccessful', {
   position: "bottom-right",
   autoClose: 2000,
   hideProgressBar: false,
@@ -120,7 +132,8 @@ const notify = () => this.state.action ? toast.success('Login  was  successfull!
     <div>
   <Form className='user-form-centered'>
       <Header as='h2' style={{ color: '#076AE0' }} textAlign='center'>
-      <Icon name="sign-in"/> Sign In
+      {/* <Icon name="sign-in"/> */}
+       Forgot Password
                 </Header>
     {/* <Form.Field>
       <div>

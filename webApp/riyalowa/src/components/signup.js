@@ -96,7 +96,17 @@ class signup extends Component {
     const submitHandler = (e) => {
 
       e.preventDefault();
-      this.state.user.password = hashPassword.generate(this.state.user.password);
+      console.log('this.state',this.state)
+      if( this.state.user.email && this.state.user.password && this.state.user.phoneNumber && this.state.user.name && (this.state.repassword===  this.state.user.password)){
+       console.log('in if')
+        const pass = hashPassword.generate(this.state.user.password);
+      this.setState({
+        ...this.state,
+        user:{
+          ...this.state.user,
+          password:pass
+        }
+      })
       this.props.addUser(this.state.user).then(res => {
         console.log(res, "res.data")
         const { token } = res;
@@ -130,6 +140,15 @@ class signup extends Component {
         console.log(err)
 
       })
+    }
+    else{
+      this.setState({
+        ...this.state,
+        action: false,
+      },()=>{
+        notify();
+      })
+    }
     }
     const notify = () => this.state.action ? toast.success('singup is successfull!', {
       position: "bottom-right",
@@ -242,7 +261,7 @@ class signup extends Component {
           control={Input}
           label='Re Enter password'
           placeholder='Re enterEnter password'
-          onChange={(e) => { this.setState({ ...this.state, repassword: [e.target.value] }) }}
+          onChange={(e) => { this.setState({ ...this.state, repassword: e.target.value }) }}
           error={this.state.repassword == ""}
           type='password'
         />
