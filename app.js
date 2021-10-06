@@ -8,7 +8,7 @@ const categoryRouter = require('./routes/categoryRoutes');
 const sparePartsRouter = require('./routes/sparePartsRoutes');
 // const documentRouter = require('./routes/documentRoutes');
 
-mongoose.connect(process.env.DB_KEY||'&w=majority', {
+mongoose.connect('mongodb+srv://rest_user:root1234@cluster0.mebjx.mongodb.net/UEE?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -24,6 +24,10 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true}))
 
 app.use(cors());
+
+app.get('/', (req,res) => {
+    res.json("I'm up, - riyapola backend service")
+});
 
 app.use('/user', userRouter);//user routes
 
