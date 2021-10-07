@@ -1,5 +1,5 @@
 let User = require("../models/userModel");
-const passwordHash = require('password-hash');
+// const passwordHash = require('password-hash');
 var nodemailer = require('nodemailer');
  function createuser(body) {
  
@@ -141,7 +141,8 @@ var nodemailer = require('nodemailer');
         // const codes=passwordHash.generate(code);
         console.log('below subject2')
         console.log(code);
-        const codes = passwordHash.generate(code.toString());
+        // const codes = passwordHash.generate(code.toString());
+        const codes =code.toString();
         console.log(codes);
         const updatePasswordDetails = {
           _id:user._id,
