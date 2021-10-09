@@ -65,7 +65,7 @@ function deleteSparepartsById(id){
 //getPublishedSparepartsAds() function
 function getPublishedSparepartsAds() {
     return new Promise((resolve, reject) => {
-        spareParts.find({ status: 'published' }, '_id title location price negotiable', { sort: { title: 1 } }).then((doc) => {
+        spareParts.find({ status: 'published' }, '_id title location price negotiable condition', { sort: { title: 1 } }).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);

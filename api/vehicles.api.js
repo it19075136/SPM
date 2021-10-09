@@ -65,7 +65,7 @@ function deleteVehicleAdById(id) {
 //getPublishedVehicleAds() function
 function getPublishedVehicleAds() {
     return new Promise((resolve, reject) => {
-        Vehicle.find({ status: 'published' }, '_id title location price negotiable', { sort: { title: 1 } }).then((doc) => {
+        Vehicle.find({ status: 'published' }, '_id title location price negotiable condition', { sort: { title: 1 } }).then((doc) => {
             resolve(doc);
         }).catch((err) => {
             reject(err);
