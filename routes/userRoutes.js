@@ -1,22 +1,23 @@
 const router  = require('express').Router();
 const { createuser, getAllUsers,getAllSellers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode,addwishListToItem }  = require('../api/user.api');
-const jsonwebtoken = require('jsonwebtoken');
+// const jsonwebtoken = require('jsonwebtoken');
 //add user
 router.post('/add', (req, res) => {
     console.log('req.body',req.body)
     createuser(req.body).then((newUser) => {
         console.log('newUser',newUser)
         if (newUser != 'Email Already Exists'){
-        const token = jsonwebtoken.sign({
-            _id:newUser._id,
-            name :newUser.name,
-            email : newUser.email,
-            type : newUser.type,
-            phoneNumber :newUser.phoneNumber,
-            wishList:newUser.wishList,
-            password:newUser.password,
-            image:newUser.image
-        },"jwtSecret")
+        const token = newUser;
+        // jsonwebtoken.sign({
+        //     _id:newUser._id,
+        //     name :newUser.name,
+        //     email : newUser.email,
+        //     type : newUser.type,
+        //     phoneNumber :newUser.phoneNumber,
+        //     wishList:newUser.wishList,
+        //     password:newUser.password,
+        //     image:newUser.image
+        // },"jwtSecret")
         console.log('SEND THE token')
         res.json({token});
     }
@@ -64,16 +65,17 @@ router.post('/getUser',(req,res)=>{
     getUsetByEmailAndPassword(req.body).then(user=>{
         console.log('in router get');
         console.log(user);
-        const token = jsonwebtoken.sign({
-            _id:user._id,
-            name :user.name,
-            email : user.email,
-            type : user.type,
-            phoneNumber :user.phoneNumber,
-            wishList:user.wishList,
-            image:user.image,
-            password:user.password
-        },"jwtSecret")
+        const token = user;
+        // jsonwebtoken.sign({
+        //     _id:user._id,
+        //     name :user.name,
+        //     email : user.email,
+        //     type : user.type,
+        //     phoneNumber :user.phoneNumber,
+        //     wishList:user.wishList,
+        //     image:user.image,
+        //     password:user.password
+        // },"jwtSecret")
         const password = user.password;
         console.log('in router get');
         res.json({token,password});
@@ -107,16 +109,17 @@ router.post('/update/:id', (req, res) => {
         .then((user) => {
             if(user){
                 console.log('in router post in then and user',user)
-            const token = jsonwebtoken.sign({
-                _id:user._id,
-                name :user.name,
-                email : user.email,
-                type : user.type,
-                phoneNumber :user.phoneNumber,
-                wishList:user.wishList,
-                image:user.image,
-                password:user.password
-            },"jwtSecret")
+            const token = user;
+            // jsonwebtoken.sign({
+            //     _id:user._id,
+            //     name :user.name,
+            //     email : user.email,
+            //     type : user.type,
+            //     phoneNumber :user.phoneNumber,
+            //     wishList:user.wishList,
+            //     image:user.image,
+            //     password:user.password
+            // },"jwtSecret")
             res.json(
                 {token}
             )
@@ -135,17 +138,18 @@ router.post('/getCode',(req,res)=>{
     getEmailAndPassCode(req.body.email).then(details=>{
         console.log('router post in getEmail')
         if(details.code){
-            const token = jsonwebtoken.sign({
-                _id:details._id,
-                name :details.name,
-                email : details.email,
-                type : details.type,
-                phoneNumber :details.phoneNumber,
-                wishList:details.wishList,
-                image:details.image,
-                password:details.password,
-                code:details.code
-            },"jwtSecret")
+            const token = details;
+            // jsonwebtoken.sign({
+            //     _id:details._id,
+            //     name :details.name,
+            //     email : details.email,
+            //     type : details.type,
+            //     phoneNumber :details.phoneNumber,
+            //     wishList:details.wishList,
+            //     image:details.image,
+            //     password:details.password,
+            //     code:details.code
+            // },"jwtSecret")
             res.json({token});
         }
         else{
